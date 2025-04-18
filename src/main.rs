@@ -3,12 +3,18 @@ use std::io::{Read, Write};
 use std::iter::Enumerate;
 use std::net::TcpStream;
 
+use comms::PID;
+
 pub mod comms;
 
 fn main() -> std::io::Result<()> {
     let mut stream = TcpStream::connect("127.0.0.1:5054")?;
     stream.write_all(b"01 0C\r")?;
     stream.set_read_timeout(Some(time::Duration::from_secs(1)));
+    let mut test = PID::new();
+    test.service_num = b"01".to_owned();
+    test.pid_hex = b"0C".to_owned();
+    println!("Cmd: {}", test.cmd());
 
     let mut buffer = [0u8, 128];
     let mut response = String::new();
@@ -35,7 +41,6 @@ fn main() -> std::io::Result<()> {
         .collect::<Vec<&str>>();
     let formatted = chunks.join(" ");
 
-    
     let chunk_a = chunks.get(4).unwrap();
     let chunk_b = chunks.get(5).unwrap();
     let a = i32::from_str_radix(&chunk_a, 16).unwrap_or(0);
