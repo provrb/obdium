@@ -1,9 +1,7 @@
-use std::borrow::Cow;
+use crate::cmd::Command;
 
 pub struct PID {
-    pub pid_hex: [u8;2],
-    pub service_num: [u8;2],
-    command: [u8; 4],         // service_num + pid_hex
+    command: Command,
     response: Option<String>, // Hex Response from ECU
     bytes: u8,                // How many bytes in the response
 }
@@ -11,17 +9,18 @@ pub struct PID {
 impl PID {
     pub fn new() -> Self {
         Self {
-            pid_hex: [0;2],
-            service_num: [0;2],
-            command: [0; 4],
+            command: Command::default(),
             response: None,
             bytes: 0,
         }
     }
 
-    pub fn cmd(&self) -> String {
-        let command = [self.service_num, self.pid_hex].concat();
-        println!("{:?}", command);
+    pub fn set_command(&mut self, cmd: &[u8; 4]) -> bool {
+        self.command.set_command(cmd)
+    }
+
+    pub fn get_command(&self) -> String {
+        let command = self.command.get_command();
         String::from_utf8_lossy(&command).to_string()
     }
 
