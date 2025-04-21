@@ -7,7 +7,10 @@ pub struct Command {
 
 impl Command {
     pub fn new(command: &[u8; 4]) -> Self {
-        todo!()
+        let mut s = Command::default();
+        s.set_command(command);
+
+        s
     }
 
     pub fn set_command(&mut self, command: &[u8; 4]) -> bool {

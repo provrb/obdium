@@ -1,27 +1,15 @@
-use crate::cmd::Command;
-
-pub struct PID {
-    command: Command,
+#[derive(Debug)]
+pub struct Response {
     response: Option<String>, // Hex Response from ECU
     bytes: u8,                // How many bytes in the response
 }
 
-impl PID {
-    pub fn new() -> Self {
+impl Response {
+    pub fn new(res: String) -> Self {
         Self {
-            command: Command::default(),
-            response: None,
+            response: Some(res),
             bytes: 0,
         }
-    }
-
-    pub fn set_command(&mut self, cmd: &[u8; 4]) -> bool {
-        self.command.set_command(cmd)
-    }
-
-    pub fn get_command(&self) -> String {
-        let command = self.command.get_command();
-        String::from_utf8_lossy(&command).to_string()
     }
 
     // TODO:
