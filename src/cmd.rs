@@ -27,14 +27,10 @@ impl Command {
     }
 
     pub fn is_valid_command(&self, command: &[u8; 4]) -> bool {
-        let service = self.service_from_command(command);
-        if !service.starts_with(b"0") {
-            return false;
-        }
-
-        for c in service {
-            println!("char: {}", c);
-        }
+        // let service = self.service_from_command(command);
+        // if !service.starts_with(b"0") {
+        //     return false;
+        // }
 
         return true;
     }

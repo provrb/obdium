@@ -1,7 +1,6 @@
 use core::time;
-use std::error::Error;
 use std::io::{Read, Write};
-use std::{io::ErrorKind, net::TcpStream};
+use std::net::TcpStream;
 
 use crate::{cmd::Command, pid::Response};
 
@@ -72,34 +71,48 @@ impl OBD {
             }
 
             let text = String::from_utf8_lossy(&buffer[..bytes_read]);
-            let trimmed = text.trim();
-            if trimmed.ends_with(">") {
-                break;
-            }
-
-            response.push_str(&trimmed);
+            response.push_str(&text);
         }
+
+        let ecu_count = response.chars().filter(|c| *c == '\r').count() - 2;
+        response = response.replace(" ", "");
+        response = response.replace("\r", "");
+        response = response.replace(">", "");
 
         if response.is_empty() {
             return None;
         }
 
-        let parsed = Self::parse_response(&response);
-        println!("Parsed: {}", parsed);
-        Some(Response::new(parsed))
+        if response.len() < 2 {
+            // Invalid response
+            return None;
+        }
+        
+        let bytes = response.len() / 2; // 2 hex chars = 1 byte
+        let parsed = Self::format_response(&response);
+        let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
+        let no_whitespace = parsed.replace(" ", "");
+        let as_bytes = no_whitespace.as_bytes();
+
+        let mut meta_data = Response::default();
+        meta_data.ecu_count = ecu_count;
+        meta_data.raw_response = Some(parsed.clone());
+        meta_data.payload_size = payload_size;
+        meta_data.service = [as_bytes[0], as_bytes[1]];
+        meta_data.pid = [as_bytes[2], as_bytes[3]];
+
+        meta_data.payload = Some(meta_data.payload_from_response());
+
+        Some(meta_data)
     }
 
     fn append_return_carriage(byte_string: [u8; 4]) -> Vec<u8> {
-        let slice = byte_string.as_slice();
-        let r = '\r' as u8;
-
-        let mut result = Vec::with_capacity(slice.len() + 1);
-        result.extend_from_slice(slice);
-        result.push(r);
+        let mut result = byte_string.to_vec();
+        result.push(b'\r');
         result
     }
 
-    fn parse_response(response: &String) -> String {
+    pub fn format_response(response: &str) -> String {
         let chunks = response
             .as_bytes()
             .chunks(2)

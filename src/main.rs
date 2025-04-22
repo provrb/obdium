@@ -1,58 +1,34 @@
-use core::time;
-use std::io::{Read, Write};
-use std::net::TcpStream;
-use std::thread::sleep;
-
-mod cmd;
-mod obd;
-mod pid;
-
-use cmd::Command;
-use pid::Response;
+use obdium::cmd::Command;
+use obdium::obd::OBD;
 
 fn main() -> std::io::Result<()> {
-    let mut obd = obd::OBD::new();
-    obd.connect("127.0.0.1", "5054");
-    obd.send_request(Command::new(b"010C"));
-    println!("{:?}", obd.get_response().unwrap());
-    sleep(time::Duration::from_secs(1));
-    // // Get response
+    let mut obd = OBD::new();
+    if !obd.connect("127.0.0.1", "5054") {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Couldn't connect with TCP",
+        ));
+    }
 
-    // let mut buffer = [0u8, 128];
-    // let mut response = String::new();
-    // loop {
-    //     let bytes_read = stream.read(&mut buffer).unwrap_or(0);
-    //     if bytes_read <= 0 {
-    //         println!("Zero bytes read. Breaking.");
-    //         break;
-    //     }
+    if !obd.send_request(Command::new(b"010C")) {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to send request",
+        ));
+    }
 
-    //     let text = String::from_utf8_lossy(&buffer[..bytes_read]);
-    //     let trimmed = text.trim();
-    //     if trimmed.ends_with(">") {
-    //         break;
-    //     }
+    let response = match obd.get_response() {
+        Some(res) => res,
+        None => {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to receive response",
+            ))
+        }
+    };
+    
+    println!("Payload: {}", response.get_payload().unwrap());
+    response.get_payload_bytes();
 
-    //     response.push_str(&trimmed);
-    // }
-
-    // let chunks = response
-    //     .as_bytes()
-    //     .chunks(2)
-    //     .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
-    //     .collect::<Vec<&str>>();
-    // let formatted = chunks.join(" ");
-
-    // let chunk_a = chunks.get(4).unwrap();
-    // let chunk_b = chunks.get(5).unwrap();
-    // let a = i32::from_str_radix(&chunk_a, 16).unwrap_or(0);
-    // let b = i32::from_str_radix(&chunk_b, 16).unwrap_or(0);
-
-    // println!("Response: {}", formatted);
-    // println!("A: {}", a);
-    // println!("B: {}", b);
-    // let rpm = ((256 * a) + b) / 4;
-    // println!("RPM: {}", rpm);
-    // stream.shutdown(std::net::Shutdown::Both)?;
     Ok(())
 }
