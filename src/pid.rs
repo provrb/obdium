@@ -38,10 +38,10 @@ pub struct Response {
     /**
      * Information pulled from the raw_response.
      * This string is of size, 'payload_size'
-     * 
+     *
      * Includes the response to the request sent,
      * and the data (a, b, c, d values...)
-     * 
+     *
      * A raw response may look like:
      * 01 0C 41 0C 11 D0 41 0C 11 D0
      *
@@ -49,10 +49,10 @@ pub struct Response {
      *     01 0C - the request sent (engine rpms)
      *     41 0C - a response to the request sent
      *     11 D0 - the data. (11: a-value, D0: b-value).
-     * 
+     *
      * Then the payload would be:
      * 41 0C 11 D0
-     * 
+     *
      * Excluding the second response from a second ECU (41 0C 11 D0)
      * and excluding the request sent from us.
      */
@@ -141,18 +141,23 @@ impl Response {
         self.get_component(PayloadComponent::D)
     }
 
-    fn get_component(&self, value: PayloadComponent) -> f32 {        
+    fn get_component(&self, value: PayloadComponent) -> f32 {
         let components = self.get_payload_components();
-        let bytes = components.get(value.as_usize()).unwrap_or_else(||{
-            panic!("warning; payload does not have a '{value:?} value' ({})", value.as_usize());
+        let bytes = components.get(value.as_usize()).unwrap_or_else(|| {
+            panic!(
+                "warning; payload does not have a '{value:?} value' ({})",
+                value.as_usize()
+            );
         });
 
         let utf8 = std::str::from_utf8(&bytes).unwrap_or_else(|err| {
             panic!("error; converting value {bytes:?} to utf-8. {err}");
         });
 
-        let decimal = u8::from_str_radix(utf8, 16) .unwrap_or_else(|err|{
-            panic!("error; converting utf8 to u8. bytes: {bytes:?}. value: {value:?}. error: {err}.");
+        let decimal = u8::from_str_radix(utf8, 16).unwrap_or_else(|err| {
+            panic!(
+                "error; converting utf8 to u8. bytes: {bytes:?}. value: {value:?}. error: {err}."
+            );
         });
 
         decimal as f32

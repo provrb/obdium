@@ -64,7 +64,6 @@ impl OBD {
 
         let mut buffer = [0u8; 2];
         let mut response = String::new();
-        let mut x  =0;
         loop {
             let bytes_read = stream.read(&mut buffer).unwrap_or(0);
             if bytes_read <= 0 {
@@ -103,7 +102,10 @@ impl OBD {
         meta_data.pid = [as_bytes[2], as_bytes[3]];
 
         meta_data.payload = Some(meta_data.payload_from_response());
-        println!("response: {:?}, payload_size: {}", meta_data.payload, meta_data.payload_size);
+        println!(
+            "response: {:?}, payload_size: {}",
+            meta_data.payload, meta_data.payload_size
+        );
 
         Some(meta_data)
     }
@@ -129,10 +131,10 @@ impl OBD {
         };
 
         let rpm = ((256f32 * response.a_value()) + response.b_value()) / 4f32;
-        
+
         rpm
     }
-    
+
     pub fn engine_load() {}
     pub fn coolant_temp() {}
     pub fn short_term_fuel_trim() {}
