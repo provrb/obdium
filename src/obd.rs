@@ -64,6 +64,7 @@ impl OBD {
 
         let mut buffer = [0u8; 2];
         let mut response = String::new();
+        let mut x  =0;
         loop {
             let bytes_read = stream.read(&mut buffer).unwrap_or(0);
             if bytes_read <= 0 {
@@ -87,7 +88,7 @@ impl OBD {
             // Invalid response
             return None;
         }
-        
+
         let bytes = response.len() / 2; // 2 hex chars = 1 byte
         let parsed = Self::format_response(&response);
         let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
@@ -102,14 +103,9 @@ impl OBD {
         meta_data.pid = [as_bytes[2], as_bytes[3]];
 
         meta_data.payload = Some(meta_data.payload_from_response());
+        println!("response: {:?}, payload_size: {}", meta_data.payload, meta_data.payload_size);
 
         Some(meta_data)
-    }
-
-    fn append_return_carriage(byte_string: [u8; 4]) -> Vec<u8> {
-        let mut result = byte_string.to_vec();
-        result.push(b'\r');
-        result
     }
 
     pub fn format_response(response: &str) -> String {
@@ -118,10 +114,25 @@ impl OBD {
             .chunks(2)
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
-        chunks.join(" ")
+        let as_string = chunks.join(" ");
+        println!("formatted response: {as_string}");
+        as_string
     }
 
-    pub fn rpm() {}
+    pub fn rpm(&mut self) -> f32 {
+        let response = match self.query(Command::new(b"010C")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get engine rpm. response is 'None'");
+                return 0f32;
+            }
+        };
+
+        let rpm = ((256f32 * response.a_value()) + response.b_value()) / 4f32;
+        
+        rpm
+    }
+    
     pub fn engine_load() {}
     pub fn coolant_temp() {}
     pub fn short_term_fuel_trim() {}
@@ -173,4 +184,19 @@ impl OBD {
 
     pub fn exhaust_pressure() {}
     pub fn exhaust_gas_temp() {}
+
+    fn query(&mut self, request: Command) -> Option<Response> {
+        let sent = self.send_request(request);
+        if !sent {
+            return None;
+        }
+
+        self.get_response()
+    }
+
+    fn append_return_carriage(byte_string: [u8; 4]) -> Vec<u8> {
+        let mut result = byte_string.to_vec();
+        result.push(b'\r');
+        result
+    }
 }

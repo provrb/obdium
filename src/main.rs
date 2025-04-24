@@ -10,25 +10,7 @@ fn main() -> std::io::Result<()> {
         ));
     }
 
-    if !obd.send_request(Command::new(b"010C")) {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Failed to send request",
-        ));
-    }
-
-    let response = match obd.get_response() {
-        Some(res) => res,
-        None => {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Failed to receive response",
-            ))
-        }
-    };
-    
-    println!("Payload: {}", response.get_payload().unwrap());
-    response.get_payload_bytes();
+    println!("RPM: {}", obd.rpm());
 
     Ok(())
 }
