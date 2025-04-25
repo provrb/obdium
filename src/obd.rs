@@ -3,6 +3,8 @@ use std::error::Error;
 use std::fmt::Display;
 use std::io::{Read, Write};
 use std::net::TcpStream;
+use std::time::Duration;
+use serialport::SerialPort;
 
 use crate::{cmd::Command, pid::Response};
 
@@ -19,14 +21,14 @@ pub enum OBDError {
 
 impl Display for OBDError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "obd error; {}", self);
+        // write!(f, "obd error; {}", self);
         Ok(())
     }
 }
 
 pub struct OBD {
-    connection: Option<TcpStream>,
-    // connection: Option<Box<dyn SerialPort>>,
+    // connection: Option<TcpStream>,
+    connection: Option<Box<dyn SerialPort>>,
 }
 
 impl OBD {
@@ -36,25 +38,25 @@ impl OBD {
 
     // TODO: do elm327 connection rather than tcp.
     // TCP connection is for testing.
-    pub fn connect(&mut self, addr: &str, port: &str) -> bool {
-        let conn_addr = format!("{}:{}", addr, port);
-
-        match TcpStream::connect(&conn_addr) {
-            Ok(stream) => {
-                let _ = stream.set_read_timeout(Some(time::Duration::from_secs(1)));
-                self.connection = Some(stream);
+    pub fn connect(&mut self, port: &str, baud_rate: u32) -> bool {
+        match serialport::new(port, baud_rate)
+            .timeout(Duration::from_secs(2))
+            .open()
+        {
+            Ok(port) => {
+                self.connection = Some(port);
                 true
             }
             Err(e) => {
-                println!("OBD error; connecting to TCP. Address: {conn_addr} : {e}");
-                self.connection = None;
+                println!("OBD error; opening serial port {}: {}", port, e);
                 false
             }
         }
     }
 
-    pub fn send_request(&self, req: Command) -> bool {
-        let mut stream = match &self.connection {
+
+    pub fn send_request(&mut self, req: Command) -> bool {
+        let stream = match &mut self.connection {
             Some(stream) => stream,
             None => {
                 println!("OBD error; sending request. Connection not active.");
@@ -63,53 +65,48 @@ impl OBD {
         };
 
         let cmd = Self::append_return_carriage(req.get_command());
-        match stream.write(&cmd) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("OBD error; sending request. {err}");
-                return false;
-            }
+        if let Err(err) = stream.write_all(&cmd) {
+            println!("OBD error; writing to serial port: {}", err);
+            return false;
         }
 
         true
     }
 
-    pub fn get_response(&self) -> Option<Response> {
-        let mut stream = match &self.connection {
-            Some(stream) => stream,
+    pub fn get_response(&mut self) -> Option<Response> {
+        let port = match &mut self.connection {
+            Some(port) => port,
             None => {
-                println!("OBD error; getting response. Connection not active.");
+                println!("OBD error; no serial connection.");
                 return None;
             }
         };
 
-        let mut buffer = [0u8; 2];
+        let mut buffer = [0u8; 1];
         let mut response = String::new();
+
         loop {
-            let bytes_read = stream.read(&mut buffer).unwrap_or(0);
-            if bytes_read <= 0 {
-                break;
+            match port.read(&mut buffer) {
+                Ok(0) => break,
+                Ok(_) => {
+                    let ch = buffer[0] as char;
+                    if ch == '>' {
+                        break;
+                    }
+                    response.push(ch);
+                }
+                Err(_) => break,
             }
-
-            let text = String::from_utf8_lossy(&buffer[..bytes_read]);
-            response.push_str(&text);
         }
 
-        let ecu_count = response.chars().filter(|c| *c == '\r').count() - 2;
-        response = response.replace(" ", "");
-        response = response.replace("\r", "");
-        response = response.replace(">", "");
-
-        if response.is_empty() {
-            return None;
-        }
+        // Same post-processing as your original function
+        let ecu_count = response.chars().filter(|c| *c == '\r').count().saturating_sub(2);
+        response = response.replace(" ", "").replace("\r", "").replace(">", "");
 
         if response.len() < 2 {
-            // Invalid response
             return None;
         }
 
-        let bytes = response.len() / 2; // 2 hex chars = 1 byte
         let parsed = match Self::format_response(&response) {
             Ok(response) => response,
             Err(err) => {
@@ -118,6 +115,7 @@ impl OBD {
             }
         };
 
+        let bytes = response.len() / 2;
         let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
@@ -149,7 +147,7 @@ impl OBD {
         Ok(as_string)
     }
 
-    pub fn rpm(&self) -> f32 {
+    pub fn rpm(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010C")) {
             Some(data) => data,
             None => {
@@ -161,7 +159,7 @@ impl OBD {
         ((256.0 * response.a_value()) + response.b_value()) / 4.0
     }
 
-    pub fn engine_load(&self) -> f32 {
+    pub fn engine_load(&mut self) -> f32 {
         let response = match self.query(Command::new(b"0104")) {
             Some(data) => data,
             None => {
@@ -173,7 +171,7 @@ impl OBD {
         response.a_value() / 2.55
     }
 
-    pub fn coolant_temp(&self) -> f32 {
+    pub fn coolant_temp(&mut self) -> f32 {
         let response = match self.query(Command::new(b"0105")) {
             Some(data) => data,
             None => {
@@ -185,7 +183,7 @@ impl OBD {
         response.a_value() - 40.0
     }
 
-    pub fn short_term_fuel_trim(&self, bank: BankNumber) -> f32 {
+    pub fn short_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
         let mut command = Command::default();
 
         match bank {
@@ -208,7 +206,7 @@ impl OBD {
         (response.a_value() / 1.28) - 100.0
     }
 
-    pub fn long_term_fuel_trim(&self, bank: BankNumber) -> f32 {
+    pub fn long_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
         let mut command = Command::default();
 
         match bank {
@@ -231,7 +229,7 @@ impl OBD {
         (response.a_value() / 1.28) - 100.0
     }
 
-    pub fn fuel_pressure(&self) -> f32 {
+    pub fn fuel_pressure(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010A")) {
             Some(data) => data,
             None => {
@@ -243,7 +241,7 @@ impl OBD {
         response.a_value() * 3.0
     }
 
-    pub fn intake_manifold_abs_pressure(&self) -> f32 {
+    pub fn intake_manifold_abs_pressure(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010B")) {
             Some(data) => data,
             None => {
@@ -255,7 +253,7 @@ impl OBD {
         response.a_value()
     }
 
-    pub fn vehicle_speed(&self) -> f32 {
+    pub fn vehicle_speed(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010D")) {
             Some(data) => data,
             None => {
@@ -267,7 +265,7 @@ impl OBD {
         response.a_value()
     }
 
-    pub fn timing_advance(&self) -> f32 {
+    pub fn timing_advance(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010E")) {
             Some(data) => data,
             None => {
@@ -279,7 +277,7 @@ impl OBD {
         (response.a_value() / 2.0) - 64.0
     }
 
-    pub fn intake_air_temp(&self) -> f32 {
+    pub fn intake_air_temp(&mut self) -> f32 {
         let response = match self.query(Command::new(b"010F")) {
             Some(data) => data,
             None => {
@@ -291,7 +289,7 @@ impl OBD {
         response.a_value() - 40.0
     }
 
-    pub fn maf_air_flow_rate(&self) -> f32 {
+    pub fn maf_air_flow_rate(&mut self) -> f32 {
         let response = match self.query(Command::new(b"0110")) {
             Some(data) => data,
             None => {
@@ -303,7 +301,7 @@ impl OBD {
         ((response.a_value() * 256.0) + response.b_value()) / 100.0
     } // Mass airflow sensor
 
-    pub fn throttle_position(&self) -> f32 {
+    pub fn throttle_position(&mut self) -> f32 {
         let response = match self.query(Command::new(b"0111")) {
             Some(data) => data,
             None => {
@@ -381,7 +379,7 @@ impl OBD {
     pub fn exhaust_pressure() {}
     pub fn exhaust_gas_temp() {}
 
-    fn query(&self, request: Command) -> Option<Response> {
+    fn query(&mut self, request: Command) -> Option<Response> {
         let sent = self.send_request(request);
         if !sent {
             return None;
