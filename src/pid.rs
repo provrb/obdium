@@ -143,12 +143,13 @@ impl Response {
 
     fn get_component(&self, value: PayloadComponent) -> f32 {
         let components = self.get_payload_components();
-        let bytes = components.get(value.as_usize()).unwrap_or_else(|| {
-            panic!(
-                "warning; payload does not have a '{value:?} value' ({})",
-                value.as_usize()
-            );
-        });
+        let bytes = match components.get(value.as_usize()) {
+            Some(b) => b,
+            None => {
+                println!("warning; payload does not have a '{value:?} value' ({})",value.as_usize());
+                return 0.0;
+            }
+        };
 
         let utf8 = std::str::from_utf8(&bytes).unwrap_or_else(|err| {
             panic!("error; converting value {bytes:?} to utf-8. {err}");
@@ -197,6 +198,6 @@ impl Response {
             pairs += 1;
         }
 
-        OBD::format_response(&payload)
+        OBD::format_response(&payload).unwrap()
     }
 }

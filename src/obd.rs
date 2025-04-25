@@ -1,5 +1,6 @@
 use core::time;
-use serialport::SerialPort;
+use std::error::Error;
+use std::fmt::Display;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
@@ -9,6 +10,18 @@ use crate::{cmd::Command, pid::Response};
 pub enum BankNumber {
     Bank1,
     Bank2,
+}
+
+#[derive(Debug)]
+pub enum OBDError {
+    InvalidResponse,
+}
+
+impl Display for OBDError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "obd error; {}", self);
+        Ok(())
+    }
 }
 
 pub struct OBD {
@@ -97,7 +110,14 @@ impl OBD {
         }
 
         let bytes = response.len() / 2; // 2 hex chars = 1 byte
-        let parsed = Self::format_response(&response);
+        let parsed = match Self::format_response(&response) {
+            Ok(response) => response,
+            Err(err) => {
+                println!("error when formatting response: {}", err);
+                return None;
+            }
+        };
+
         let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
@@ -114,14 +134,19 @@ impl OBD {
         Some(meta_data)
     }
 
-    pub fn format_response(response: &str) -> String {
+    pub fn format_response(response: &str) -> Result<String, OBDError> {
         let chunks = response
             .as_bytes()
             .chunks(2)
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
         let as_string = chunks.join(" ");
-        as_string
+        
+        if as_string.contains("NO DA TA") {
+            return Err(OBDError::InvalidResponse);
+        }
+        
+        Ok(as_string)
     }
 
     pub fn rpm(&self) -> f32 {
