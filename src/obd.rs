@@ -1,11 +1,19 @@
 use core::time;
+use serialport::SerialPort;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
 use crate::{cmd::Command, pid::Response};
 
+#[derive(Debug)]
+pub enum BankNumber {
+    Bank1,
+    Bank2,
+}
+
 pub struct OBD {
     connection: Option<TcpStream>,
+    // connection: Option<Box<dyn SerialPort>>,
 }
 
 impl OBD {
@@ -32,7 +40,7 @@ impl OBD {
         }
     }
 
-    pub fn send_request(&mut self, req: Command) -> bool {
+    pub fn send_request(&self, req: Command) -> bool {
         let mut stream = match &self.connection {
             Some(stream) => stream,
             None => {
@@ -53,7 +61,7 @@ impl OBD {
         true
     }
 
-    pub fn get_response(&mut self) -> Option<Response> {
+    pub fn get_response(&self) -> Option<Response> {
         let mut stream = match &self.connection {
             Some(stream) => stream,
             None => {
@@ -102,10 +110,6 @@ impl OBD {
         meta_data.pid = [as_bytes[2], as_bytes[3]];
 
         meta_data.payload = Some(meta_data.payload_from_response());
-        println!(
-            "response: {:?}, payload_size: {}",
-            meta_data.payload, meta_data.payload_size
-        );
 
         Some(meta_data)
     }
@@ -117,61 +121,226 @@ impl OBD {
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
         let as_string = chunks.join(" ");
-        println!("formatted response: {as_string}");
         as_string
     }
 
-    pub fn rpm(&mut self) -> f32 {
+    pub fn rpm(&self) -> f32 {
         let response = match self.query(Command::new(b"010C")) {
             Some(data) => data,
             None => {
                 println!("failed to get engine rpm. response is 'None'");
-                return 0f32;
+                return 0.0;
             }
         };
 
-        let rpm = ((256f32 * response.a_value()) + response.b_value()) / 4f32;
-
-        rpm
+        ((256.0 * response.a_value()) + response.b_value()) / 4.0
     }
 
-    pub fn engine_load() {}
-    pub fn coolant_temp() {}
-    pub fn short_term_fuel_trim() {}
-    pub fn long_term_fuel_trim() {}
-    pub fn fuel_pressure() {}
-    pub fn intake_manifold_abs_pressure() {}
-    pub fn vehicle_speed() {}
-    pub fn timing_advance() {}
-    pub fn intake_air_temp() {}
-    pub fn maf_air_flow_rate() {} // Mass airflow sensor
-    pub fn throttle_position() {}
-    pub fn oxygen_sensors_present() {}
-    pub fn read_oxygen_sensor() {}
-    pub fn obd_standards() {}
-    pub fn aux_input_status() {}
-    pub fn engine_runtime() {}
-    pub fn dist_travelled_with_mlt() {}
-    pub fn fuel_rail_pressure() {}
-    pub fn fuel_rail_guage_pressure() {}
-    pub fn o2_sensor_air_fuel_ratio() {}
-    pub fn catalyst_temp() {}
-    pub fn control_module_voltage() {}
-    pub fn cmd_air_fuel_equivalance_ratio() {}
-    pub fn relative_throttle_pos() {}
-    pub fn ambient_air_temp() {}
-    pub fn absolute_throttle_pos() {}
-    pub fn time_since_codes_cleared() {}
-    pub fn max_values_for() {} // fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
-    pub fn max_air_flow_rate_from_maf() {}
-    pub fn fuel_type() {}
-    pub fn ethanol_fuel_percentage() {}
-    pub fn abs_evap_sys_vapor_pressure() {}
-    pub fn evap_sys_vapor_pressure() {}
-    pub fn engine_oil_temp() {}
-    pub fn fuel_injection_timing() {}
-    pub fn engine_fuel_rate() {}
-    pub fn emission_requirements() {}
+    pub fn engine_load(&self) -> f32 {
+        let response = match self.query(Command::new(b"0104")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get engine load. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value() / 2.55
+    }
+
+    pub fn coolant_temp(&self) -> f32 {
+        let response = match self.query(Command::new(b"0105")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get coolant temp. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value() - 40.0
+    }
+
+    pub fn short_term_fuel_trim(&self, bank: BankNumber) -> f32 {
+        let mut command = Command::default();
+
+        match bank {
+            BankNumber::Bank1 => {
+                command.set_command(b"0106");
+            }
+            BankNumber::Bank2 => {
+                command.set_command(b"0108");
+            }
+        }
+
+        let response = match self.query(command) {
+            Some(data) => data,
+            None => {
+                println!("failed to get short term fuel trim. bank: {bank:?}. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        (response.a_value() / 1.28) - 100.0
+    }
+
+    pub fn long_term_fuel_trim(&self, bank: BankNumber) -> f32 {
+        let mut command = Command::default();
+
+        match bank {
+            BankNumber::Bank1 => {
+                command.set_command(b"0107");
+            }
+            BankNumber::Bank2 => {
+                command.set_command(b"0109");
+            }
+        }
+
+        let response = match self.query(command) {
+            Some(data) => data,
+            None => {
+                println!("failed to get long term fuel trim. bank: {bank:?}. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        (response.a_value() / 1.28) - 100.0
+    }
+
+    pub fn fuel_pressure(&self) -> f32 {
+        let response = match self.query(Command::new(b"010A")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get fuel pressure. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value() * 3.0
+    }
+
+    pub fn intake_manifold_abs_pressure(&self) -> f32 {
+        let response = match self.query(Command::new(b"010B")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get intake manifold absolute pressure. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value()
+    }
+
+    pub fn vehicle_speed(&self) -> f32 {
+        let response = match self.query(Command::new(b"010D")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get vehicle speed. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value()
+    }
+
+    pub fn timing_advance(&self) -> f32 {
+        let response = match self.query(Command::new(b"010E")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get timing advance. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        (response.a_value() / 2.0) - 64.0
+    }
+
+    pub fn intake_air_temp(&self) -> f32 {
+        let response = match self.query(Command::new(b"010F")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get intake air temperature. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value() - 40.0
+    }
+
+    pub fn maf_air_flow_rate(&self) -> f32 {
+        let response = match self.query(Command::new(b"0110")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get maf sensor air flow rate. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        ((response.a_value() * 256.0) + response.b_value()) / 100.0
+    } // Mass airflow sensor
+
+    pub fn throttle_position(&self) -> f32 {
+        let response = match self.query(Command::new(b"0111")) {
+            Some(data) => data,
+            None => {
+                println!("failed to get throttle position. response is 'None'");
+                return 0.0;
+            }
+        };
+
+        response.a_value() * (100.0 / 255.0)
+    }
+
+    // pub fn oxygen_sensors_present(&self) -> f32 {}
+
+    // pub fn read_oxygen_sensor(&self) -> f32 {}
+
+    // pub fn obd_standards(&self) -> f32 {}
+
+    // pub fn aux_input_status(&self) -> f32 {}
+
+    // pub fn engine_runtime(&self) -> f32 {}
+
+    // pub fn dist_travelled_with_mlt(&self) -> f32 {}
+
+    // pub fn fuel_rail_pressure(&self) -> f32 {}
+
+    // pub fn fuel_rail_guage_pressure(&self) -> f32 {}
+
+    // pub fn o2_sensor_air_fuel_ratio(&self) -> f32 {}
+
+    // pub fn catalyst_temp(&self) -> f32 {}
+
+    // pub fn control_module_voltage(&self) -> f32 {}
+
+    // pub fn cmd_air_fuel_equivalance_ratio(&self) -> f32 {}
+
+    // pub fn relative_throttle_pos(&self) -> f32 {}
+
+    // pub fn ambient_air_temp(&self) -> f32 {}
+
+    // pub fn absolute_throttle_pos(&self) -> f32 {}
+
+    // pub fn time_since_codes_cleared(&self) -> f32 {}
+
+    // pub fn max_values_for(&self) -> f32 {} // fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
+
+    // pub fn max_air_flow_rate_from_maf(&self) -> f32 {}
+
+    // pub fn fuel_type(&self) -> f32 {}
+
+    // pub fn ethanol_fuel_percentage(&self) -> f32 {}
+
+    // pub fn abs_evap_sys_vapor_pressure(&self) -> f32 {}
+
+    // pub fn evap_sys_vapor_pressure(&self) -> f32 {}
+
+    // pub fn engine_oil_temp(&self) -> f32 {}
+
+    // pub fn fuel_injection_timing(&self) -> f32 {}
+
+    // pub fn engine_fuel_rate(&self) -> f32 {}
+
+    // pub fn emission_requirements(&self) -> f32 {}
 
     pub fn drivers_demand_engine_torque() {}
     pub fn actual_engine_torque() {}
@@ -187,7 +356,7 @@ impl OBD {
     pub fn exhaust_pressure() {}
     pub fn exhaust_gas_temp() {}
 
-    fn query(&mut self, request: Command) -> Option<Response> {
+    fn query(&self, request: Command) -> Option<Response> {
         let sent = self.send_request(request);
         if !sent {
             return None;
