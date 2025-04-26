@@ -108,7 +108,7 @@ impl Response {
         let clean = match self.get_payload() {
             Some(resp) => {
                 if resp.len() < 6 {
-                    println!("invalid response payload: {resp}");
+                    println!("invalid response payload: '{resp}'");
                     return Vec::new();
                 }
                 resp[6..].to_string()
@@ -169,6 +169,8 @@ impl Response {
             Some(resp) => resp.to_owned(),
             None => return String::default(),
         };
+
+        println!("extracting payload from response: '{response}'");
 
         let stripped = &response.replace(" ", "");
 
