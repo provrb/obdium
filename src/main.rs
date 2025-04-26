@@ -12,7 +12,7 @@ fn main() -> std::io::Result<()> {
     //     ));
     // }
 
-    if !obd.connect("COM4", 38400) {
+    if !obd.connect("/dev/ttyUSB0", 38400) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Couldn't connect to ELM327",
@@ -20,6 +20,7 @@ fn main() -> std::io::Result<()> {
     }
 
     obd.init();
+    obd.coolant_temp();
 
     loop {
         let mut buffer = String::new();

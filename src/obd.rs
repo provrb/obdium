@@ -74,7 +74,7 @@ impl OBD {
             println!("OBD error; writing to serial port: {}", err);
             return false;
         }
-
+        std::thread::sleep(Duration::from_millis(100));
         let _ = stream.clear(serialport::ClearBuffer::All);
 
         let mut buffer = [0u8; 1];
