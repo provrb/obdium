@@ -1,4 +1,5 @@
 use std::io::{self, BufRead};
+use std::time::Duration;
 
 use obdium::cmd::Command;
 use obdium::obd::{BankNumber, OBD};
@@ -20,7 +21,12 @@ fn main() -> std::io::Result<()> {
     }
 
     obd.init();
+    std::thread::sleep(Duration::from_secs(1));
     obd.coolant_temp();
+    std::thread::sleep(Duration::from_secs(1));
+    obd.fuel_pressure();
+    std::thread::sleep(Duration::from_secs(1));
+    obd.engine_load();
 
     loop {
         let mut buffer = String::new();

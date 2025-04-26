@@ -17,12 +17,14 @@ pub enum BankNumber {
 #[derive(Debug)]
 pub enum OBDError {
     InvalidResponse,
+    ECUIsAsleep,
 }
 
 impl Display for OBDError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
             OBDError::InvalidResponse => write!(f, "obd error; invalid response from ecu."),
+            OBDError::ECUIsAsleep => write!(f, "obd error; ecu not online. not taking requests."),
         }
     }
 }
@@ -74,7 +76,7 @@ impl OBD {
             println!("OBD error; writing to serial port: {}", err);
             return false;
         }
-        std::thread::sleep(Duration::from_millis(100));
+        std::thread::sleep(Duration::from_millis(8));
         let _ = stream.clear(serialport::ClearBuffer::All);
 
         let mut buffer = [0u8; 1];
@@ -215,16 +217,18 @@ impl OBD {
     }
 
     pub fn format_response(response: &str) -> Result<String, OBDError> {
+        if response.contains("NODATA") {
+            return Err(OBDError::InvalidResponse);
+        } else if response.contains("SEARCHING") {
+            return Err(OBDError::ECUIsAsleep);
+        }
+        
         let chunks = response
             .as_bytes()
             .chunks(2)
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
         let as_string = chunks.join(" ");
-
-        if as_string.contains("NO DA TA") {
-            return Err(OBDError::InvalidResponse);
-        }
 
         Ok(as_string)
     }
