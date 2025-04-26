@@ -146,7 +146,10 @@ impl Response {
         let bytes = match components.get(value.as_usize()) {
             Some(b) => b,
             None => {
-                println!("warning; payload does not have a '{value:?} value' ({})",value.as_usize());
+                println!(
+                    "warning; payload does not have a '{value:?} value' ({})",
+                    value.as_usize()
+                );
                 return 0.0;
             }
         };

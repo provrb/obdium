@@ -1,10 +1,10 @@
 use core::time;
+use serialport::SerialPort;
 use std::error::Error;
 use std::fmt::Display;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::time::Duration;
-use serialport::SerialPort;
 
 use crate::{cmd::Command, pid::Response};
 
@@ -22,14 +22,14 @@ pub enum OBDError {
 impl Display for OBDError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
-            OBDError::InvalidResponse => write!(f, "invalid response from ecu."),
+            OBDError::InvalidResponse => write!(f, "obd error; invalid response from ecu."),
         }
     }
 }
 
 pub struct OBD {
     // connection: Option<TcpStream>,
-    connection: Option<Box<dyn SerialPort>>,
+    pub connection: Option<Box<dyn SerialPort>>,
 }
 
 impl OBD {
@@ -37,8 +37,6 @@ impl OBD {
         Self { connection: None }
     }
 
-    // TODO: do elm327 connection rather than tcp.
-    // TCP connection is for testing.
     pub fn connect(&mut self, port: &str, baud_rate: u32) -> bool {
         match serialport::new(port, baud_rate)
             .timeout(Duration::from_secs(2))
@@ -55,6 +53,58 @@ impl OBD {
         }
     }
 
+    pub fn init(&mut self) {
+        let stream = match &mut self.connection {
+            Some(stream) => stream,
+            None => {
+                println!("OBD error; initializing. Connection not active.");
+                return;
+            }
+        };
+
+        OBD::send_string(b"ATZ\r", stream);
+        OBD::send_string(b"ATE0\r", stream);
+        OBD::send_string(b"ATL0\r", stream);
+        OBD::send_string(b"ATH0\r", stream);
+        OBD::send_string(b"ATSP0\r", stream);
+    }
+
+    pub fn send_string(req: &[u8], stream: &mut Box<dyn SerialPort>) -> bool {
+        if let Err(err) = stream.write_all(req) {
+            println!("OBD error; writing to serial port: {}", err);
+            return false;
+        }
+
+        let _ = stream.clear(serialport::ClearBuffer::All);
+
+        let mut buffer = [0u8; 1];
+        let mut response = String::new();
+
+        loop {
+            match stream.read(&mut buffer) {
+                Ok(1) => {
+                    let byte = buffer[0];
+                    if byte == b'>' {
+                        break;
+                    }
+
+                    response.push(byte as char);
+                }
+                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
+                Ok(_) => {
+                    println!("Unexpected number of bytes read.");
+                    break;
+                }
+                Err(_) => break,
+            }
+        }
+
+        response = response.replace("\r", "/r");
+
+        println!("sent string. received {response}");
+
+        true
+    }
 
     pub fn send_request(&mut self, req: Command) -> bool {
         let stream = match &mut self.connection {
@@ -65,6 +115,8 @@ impl OBD {
             }
         };
 
+        let _ = stream.clear(serialport::ClearBuffer::All);
+
         let cmd = Self::append_return_carriage(req.get_command());
         if let Err(err) = stream.write_all(&cmd) {
             println!("OBD error; writing to serial port: {}", err);
@@ -74,7 +126,7 @@ impl OBD {
         true
     }
 
-    pub fn get_response(&mut self) -> Option<Response> {
+    fn read_until(&mut self, until: u8) -> Option<String> {
         let port = match &mut self.connection {
             Some(port) => port,
             None => {
@@ -83,25 +135,52 @@ impl OBD {
             }
         };
 
+        let _ = port.clear(serialport::ClearBuffer::All);
+
         let mut buffer = [0u8; 1];
         let mut response = String::new();
 
         loop {
             match port.read(&mut buffer) {
-                Ok(0) => break,
-                Ok(bytes) => {
-                    let text = String::from_utf8_lossy(&buffer[..bytes]);
-                    response.push_str(&text);
+                Ok(1) => {
+                    let byte = buffer[0];
+                    if byte == until {
+                        break;
+                    }
+
+                    response.push(byte as char);
+                }
+                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
+                Ok(_) => {
+                    println!("Unexpected number of bytes read.");
+                    break;
                 }
                 Err(_) => break,
             }
         }
+        Some(response)
+    }
 
-        println!("Raw response from ECU: {}", response);
+    pub fn get_response(&mut self) -> Option<Response> {
+        let mut response: String = match self.read_until(b'>') {
+            Some(response) => response,
+            None => {
+                println!("failed to read until.");
+                return None;
+            }
+        };
 
-        let ecu_count = response.chars().filter(|c| *c == '\r').count().saturating_sub(2);
-        response = response.replace(" ", "").replace("\r", "").replace(">", "");
-        
+        let mut ecu_count = response
+            .chars()
+            .filter(|c| *c == '\r')
+            .count()
+            .saturating_sub(2);
+        if ecu_count == 0 {
+            ecu_count = 1;
+        }
+
+        response = response.replace(" ", "").replace("\r", "");
+
         println!("Post-processed response from ECU: {}", response);
 
         if response.len() < 2 {
@@ -130,6 +209,8 @@ impl OBD {
 
         meta_data.payload = Some(meta_data.payload_from_response());
 
+        println!("received parsed response: {:?}", meta_data.payload);
+
         Some(meta_data)
     }
 
@@ -140,11 +221,11 @@ impl OBD {
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
         let as_string = chunks.join(" ");
-        
+
         if as_string.contains("NO DA TA") {
             return Err(OBDError::InvalidResponse);
         }
-        
+
         Ok(as_string)
     }
 
