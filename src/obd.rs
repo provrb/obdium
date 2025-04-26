@@ -21,8 +21,9 @@ pub enum OBDError {
 
 impl Display for OBDError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // write!(f, "obd error; {}", self);
-        Ok(())
+        match *self {
+            OBDError::InvalidResponse => write!(f, "invalid response from ecu."),
+        }
     }
 }
 
@@ -88,20 +89,20 @@ impl OBD {
         loop {
             match port.read(&mut buffer) {
                 Ok(0) => break,
-                Ok(_) => {
-                    let ch = buffer[0] as char;
-                    if ch == '>' {
-                        break;
-                    }
-                    response.push(ch);
+                Ok(bytes) => {
+                    let text = String::from_utf8_lossy(&buffer[..bytes]);
+                    response.push_str(&text);
                 }
                 Err(_) => break,
             }
         }
 
-        // Same post-processing as your original function
+        println!("Raw response from ECU: {}", response);
+
         let ecu_count = response.chars().filter(|c| *c == '\r').count().saturating_sub(2);
         response = response.replace(" ", "").replace("\r", "").replace(">", "");
+        
+        println!("Post-processed response from ECU: {}", response);
 
         if response.len() < 2 {
             return None;
