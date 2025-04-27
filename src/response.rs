@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::obd::OBD;
 
 #[derive(Debug, Copy, Clone)]
@@ -146,10 +144,10 @@ impl Response {
         let bytes = match components.get(value.as_usize()) {
             Some(b) => b,
             None => {
-                println!(
-                    "warning; payload does not have a '{value:?} value' ({})",
-                    value.as_usize()
-                );
+                // println!(
+                //     "warning; payload does not have a '{value:?} value' ({})",
+                //     value.as_usize()
+                // );
                 return 0.0;
             }
         };
@@ -172,8 +170,6 @@ impl Response {
             Some(resp) => resp.to_owned(),
             None => return String::default(),
         };
-
-        println!("extracting payload from response: '{response}'");
 
         let stripped = &response.replace(" ", "");
 
@@ -203,6 +199,6 @@ impl Response {
             pairs += 1;
         }
 
-        OBD::format_response(&payload).unwrap()
+        OBD::format_response(&payload)
     }
 }

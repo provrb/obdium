@@ -1,41 +1,45 @@
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Command {
-    pid_hex: [u8; 2],
-    service_num: [u8; 2],
-    command: [u8; 4],
+    pid_command: [u8; 4],
+    at_command: &'static [u8],
 }
 
 impl Command {
-    pub fn new(command: &[u8; 4]) -> Self {
-        let mut s = Command::default();
-        s.set_command(command);
-
-        s
+    pub fn new_pid(command: &[u8; 4]) -> Self {
+        Command {
+            pid_command: *command,
+            at_command: &[],
+        }
     }
 
-    pub fn set_command(&mut self, command: &[u8; 4]) -> bool {
-        if !self.is_valid_command(&command) {
+    pub fn new_at(at_command: &'static [u8]) -> Self {
+        Command {
+            pid_command: [0u8; 4],
+            at_command: at_command,
+        }
+    }
+
+    pub fn set_at(&mut self, at_command: &'static [u8]) -> bool {
+        if at_command.len() < 3 {
+            println!("at_command to set is invalid. length less than 3.");
             return false;
         }
 
-        self.command = command.to_owned();
-        return true;
+        self.pid_command = [0u8; 4];
+        self.at_command = at_command;
+        true
     }
 
-    pub fn get_command(&self) -> [u8; 4] {
-        self.command
+    pub fn get_at(&self) -> &[u8] {
+        self.at_command
     }
 
-    pub fn is_valid_command(&self, command: &[u8; 4]) -> bool {
-        // let service = self.service_from_command(command);
-        // if !service.starts_with(b"0") {
-        //     return false;
-        // }
-
-        return true;
+    pub fn set_pid(&mut self, command: &[u8; 4]) {
+        self.pid_command = command.to_owned();
+        self.at_command = &[];
     }
 
-    fn service_from_command(&self, command: &[u8; 4]) -> [u8; 2] {
-        [command[0], command[1]]
+    pub fn get_pid(&self) -> [u8; 4] {
+        self.pid_command
     }
 }
