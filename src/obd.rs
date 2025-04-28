@@ -137,10 +137,10 @@ impl OBD {
 
         cmd.push(b'\r');
 
-        match stream.write_all(&cmd) {
-            Ok(_) => Ok(()),
-            Err(_) => Err(OBDError::ELM327WriteError),
+        if stream.write_all(&cmd).is_err() {
+            return Err(OBDError::ELM327WriteError);
         }
+        Ok(())
     }
 
     pub fn get_at_response(&mut self) -> Result<Response, OBDError> {

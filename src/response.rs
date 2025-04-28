@@ -6,6 +6,7 @@ enum PayloadComponent {
     B,
     C,
     D,
+    E,
 }
 
 impl PayloadComponent {
@@ -137,6 +138,10 @@ impl Response {
 
     pub fn d_value(&self) -> f32 {
         self.get_component(PayloadComponent::D)
+    }
+
+    pub fn e_value(&self) -> f32 {
+        self.get_component(PayloadComponent::E)
     }
 
     fn get_component(&self, value: PayloadComponent) -> f32 {
