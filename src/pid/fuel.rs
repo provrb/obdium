@@ -1,6 +1,7 @@
 use crate::cmd::Command;
 use crate::obd::{BankNumber, OBD};
 
+#[derive(Debug)]
 pub enum FuelType {
     Gasoline = 0x01,
     Methanol = 0x02,
@@ -25,7 +26,7 @@ pub enum FuelType {
     HybridElectricEngine = 0x15,
     HybridRegenerative = 0x16,
     BifuelDiesel = 0x17,
-    Unknown = 0x00, 
+    Unknown = 0x00,
 }
 
 impl OBD {
@@ -82,7 +83,7 @@ impl OBD {
 
     pub fn fuel_tank_level(&mut self) -> f32 {
         let response = self.query(Command::new_pid(b"012F")).unwrap_or_default();
-        (100.0/255.0) * response.a_value()
+        (100.0 / 255.0) * response.a_value()
     }
 
     pub fn fuel_rail_pressure(&mut self) -> f32 {

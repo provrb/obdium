@@ -6,7 +6,7 @@ enum PayloadComponent {
     B,
     C,
     D,
-    E
+    E,
 }
 
 impl PayloadComponent {
