@@ -1,14 +1,32 @@
-use obdium::obd::{BankNumber, OBDError, OxygenSensor, OBD};
+use obdium::{
+    obd::{BankNumber, OBDError, OxygenSensor, OBD},
+    pid::diagnostics::MILStatus,
+};
 use std::time::Duration;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    //obd.connect("COM4", 38400)?;
-    obd.connect("/dev/ttyUSB0", 38400)?;
+    obd.connect("CNCB0", 38400)?;
+    //obd.connect("/dev/ttyUSB0", 38400)?;
 
     std::thread::sleep(Duration::from_secs(1));
 
-    println!("DIAGNOSTICS");
+    println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
+    println!(
+        "Check engine light: {}",
+        if obd.get_mil_status() == MILStatus::On {
+            "On"
+        } else {
+            "Off"
+        }
+    );
+    println!("Number of trouble codes: {}", obd.get_num_trouble_codes());
+    
+    let codes = obd.get_trouble_codes();
+    for code in codes {
+        println!("{}\n", code);
+    }
+
     println!("OBD standard: {:?}", obd.obd_standards());
     println!("Auxiliary input status: {:?}", obd.aux_input_status());
     println!(
@@ -38,24 +56,24 @@ fn main() -> Result<(), OBDError> {
     );
 
     let percent_torque_data = obd.engine_percent_torque_data();
-    println!("\nEngine percent torque data:");
+    println!("Engine percent torque data:");
     println!("\tIdle: {}%", percent_torque_data.0);
     println!("\tEngine point 1: {}%", percent_torque_data.1);
     println!("\tEngine point 2: {}%", percent_torque_data.2);
     println!("\tEngine point 3: {}%", percent_torque_data.3);
     println!("\tEngine point 4: {}%", percent_torque_data.4);
 
-    println!("FUEL SYSTEM");
+    println!("\n{} FUEL SYSTEM {}", "=".repeat(24), "=".repeat(24));
 
-    println!("\nShort term fuel trim:");
+    println!("Short term fuel trim:");
     println!("\tBank 1: {}", obd.short_term_fuel_trim(BankNumber::Bank1));
     println!("\tBank 2: {}", obd.short_term_fuel_trim(BankNumber::Bank2));
 
-    println!("\nLong term fuel trim:");
+    println!("Long term fuel trim:");
     println!("\tBank 1: {}", obd.long_term_fuel_trim(BankNumber::Bank1));
     println!("\tBank 2: {}", obd.long_term_fuel_trim(BankNumber::Bank2));
 
-    println!("\nFuel pressure: {}kPa", obd.fuel_pressure());
+    println!("Fuel pressure: {}kPa", obd.fuel_pressure());
     println!("Fuel tank level: {}%", obd.fuel_tank_level());
     println!("Fuel rail pressure: {}kPa", obd.fuel_rail_pressure());
     println!(
@@ -69,7 +87,7 @@ fn main() -> Result<(), OBDError> {
     );
     println!("Fuel injection timing: {}°", obd.fuel_injection_timing());
 
-    println!("SENSOR DATA");
+    println!("\n{} SENSOR DATA {}", "=".repeat(24), "=".repeat(24));
     println!("Vehicle speed: {}km/h", obd.vehicle_speed());
     println!(
         "Timing advance: {}° before top-dead-center",
@@ -98,7 +116,7 @@ fn main() -> Result<(), OBDError> {
 
     for sensor in sensors.iter() {
         let mut sensor_data = obd.read_oxygen_sensor(sensor);
-        println!("\nOxygen sensor {:?}:", sensor);
+        println!("Oxygen sensor {:?}:", sensor);
         println!("\tVoltage: {}v", sensor_data.0);
         println!("\tShort term fuel trim: {}", sensor_data.1);
 
@@ -108,12 +126,12 @@ fn main() -> Result<(), OBDError> {
     }
 
     let maf = obd.read_mass_air_flow_sensor();
-    println!("\nMass air flow sensor:");
+    println!("Mass air flow sensor:");
     println!("\tSensor A: {}g/s", maf.0);
     println!("\tSensor B: {}g/s", maf.1);
 
     let max_values_for = obd.max_values_for();
-    println!("\nMaximum values for:");
+    println!("Maximum values for:");
     println!("\tFuel-air equivalance ratio: {}", max_values_for.0);
     println!("\tOxygen sensor voltage: {}V", max_values_for.1);
     println!("\tOxygen sensor current: {}mA", max_values_for.2);
@@ -123,7 +141,7 @@ fn main() -> Result<(), OBDError> {
     );
 
     println!(
-        "\nRelative throttle position: {}%",
+        "Relative throttle position: {}%",
         obd.relative_throttle_pos()
     );
 

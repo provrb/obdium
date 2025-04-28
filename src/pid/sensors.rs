@@ -1,6 +1,5 @@
 use crate::cmd::Command;
 use crate::obd::{OxygenSensor, OBD};
-use crate::response;
 
 impl OBD {
     pub fn vehicle_speed(&mut self) -> f32 {

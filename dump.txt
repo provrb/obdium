@@ -1,0 +1,101 @@
+ATZ response: ELM327 v1.5
+ATE0 response: ATE0OK
+ATL0 response: OK
+ATH0 response: OK
+ATSP0 response: OK
+
+======================== DIAGNOSTICS ========================
+OBD standard: Standard("No data")
+Auxiliary input status: InUse
+Distance traveled with malfunction indicator lamp: 11km
+Control module voltage: 14.816V
+Time since codes cleared: 0s (NO DATA)
+Engine speed: 699.5RPM
+Engine load: 19.607843%
+Coolant temperature: 61C
+Engine fuel rate: 0L/h (NO DATA)
+Engine runtime: 0s (NO DATA)
+Engine mileage: 0km (NO DATA)
+Engine oil temperature: -40°C (NO DATA)
+Drivers demand engine torque: -125% (NO DATA)
+Actual engine torque: -125% (NO DATA)
+Reference engine torque: 0% (NO DATA)
+Engine percent torque data: (NO DATA)
+        Idle: -125%
+        Engine point 1: -125%
+        Engine point 2: -125%
+        Engine point 3: -125%
+        Engine point 4: -125%
+
+======================== FUEL SYSTEM ======================== 
+Short term fuel trim:
+        Bank 1: -4.6875
+        Bank 2: -100 (NO DATA)
+Long term fuel trim:
+        Bank 1: -1.5625
+        Bank 2: -100 (NO DATA)
+Fuel pressure: 297kPa
+Fuel tank level: 16.470589%
+Fuel rail pressure: 0kPa (NO DATA)
+Fuel rail gauge pressure: 0kPa (NO DATA)
+Fuel type: Gasoline
+Ethanol fuel percentage: 0% (NO DATA)
+Fuel injection timing: -210° (NO DATA)
+
+======================== SENSOR DATA ======================== 
+Vehicle speed: 0km/h
+Timing advance: 0.5° before top-dead-center
+Intake air temperature: 31°C
+Mass air-flow sensor rate: 2.16g/s
+Ambient air temperature: 23°C
+Maximum air-flow rate from mass air-flow sensor: 0g/s (NO DATA)
+Throttle position: 20.784313%
+Oxygen sensor Sensor1:
+        Voltage: 0.765v
+        Short term fuel trim: -4.6875
+        Air-fuel equivalance ratio: 0 (NO DATA)
+        Voltage: 0 (NO DATA)
+Oxygen sensor Sensor2:
+        Voltage: 1.05v
+        Short term fuel trim: 99.21875
+        Air-fuel equivalance ratio: 0 (NO DATA)
+        Voltage: 0 (NO DATA)
+Oxygen sensor Sensor3: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Oxygen sensor Sensor4: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Oxygen sensor Sensor5: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Oxygen sensor Sensor6: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Oxygen sensor Sensor7: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Oxygen sensor Sensor8: (NO DATA)
+        Voltage: 0v
+        Short term fuel trim: -100
+        Air-fuel equivalance ratio: 0
+        Voltage: 0
+Mass air flow sensor: (NO DATA)
+        Sensor A: 0g/s
+        Sensor B: 0g/s
+Maximum values for:
+        Fuel-air equivalance ratio: 0
+        Oxygen sensor voltage: 0V
+        Oxygen sensor current: 0mA
+        Intake manifold absolute pressure: 310kPa
+Relative throttle position: 7.0588236%
