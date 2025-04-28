@@ -1,6 +1,10 @@
 use crate::cmd::Command;
 use crate::obd::OBD;
-use crate::response;
+
+pub enum EngineType {
+    SparkIgnition,
+    CompressionIgnition,
+}
 
 impl OBD {
     pub fn rpm(&mut self) -> f32 {
@@ -85,5 +89,13 @@ impl OBD {
             engine_point_3,
             engine_point_4,
         )
+    }
+
+    pub fn get_engine_type(&mut self) -> EngineType {
+        let response = self.query(Command::new_pid(b"0101")).unwrap_or_default();
+        match response.b_value() as u32 & 0b00001000 {
+            0 => EngineType::SparkIgnition,
+            _ => EngineType::CompressionIgnition,
+        }
     }
 }
