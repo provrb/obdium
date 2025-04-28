@@ -85,9 +85,8 @@ impl OBD {
 
         // By passing "03  " we are bypassing the new_pid requirement for a [u8; 4] when we are only giving a [u8; 2].
         // ELM327 ignores all space characters, so this will be parsed normally as "03" instead of "03  "
-//        let response = self.query(Command::new_pid(b"03  ")).unwrap_or_default();
-        let mut response = Response::default(); 
-        response.raw_response = Some("43 02 34 00".to_string());
+        let response = self.query(Command::new_pid(b"03  ")).unwrap_or_default();   
+        println!("dtc response: {:#?}",response);
         // TODO: FIX
         let mut codes = Vec::new();
         for chunk in response
