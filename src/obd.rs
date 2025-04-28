@@ -4,6 +4,7 @@ use std::io::{Read, Write};
 use std::thread;
 use std::time::Duration;
 
+use crate::cmd::CommandType;
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
@@ -32,6 +33,7 @@ pub enum OBDError {
     InitFailed,
 
     InvalidResponse,
+    InvalidCommand,
     ECUUnavailable,
     ELM327WriteError,
 }
@@ -41,6 +43,10 @@ impl Display for OBDError {
         let _ = write!(f, "obd error; ");
         match *self {
             OBDError::InvalidResponse => writeln!(f, "invalid response from ecu."),
+            OBDError::InvalidCommand => writeln!(
+                f,
+                "an invalid user command was going to be sent to the ecu."
+            ),
             OBDError::NoConnection => writeln!(f, "no serial connection active."),
             OBDError::ECUUnavailable => writeln!(f, "ecu not available."),
             OBDError::ELM327WriteError => writeln!(f, "error writing through serial connection."),
@@ -127,19 +133,19 @@ impl OBD {
 
         let _ = stream.clear(serialport::ClearBuffer::All);
 
-        let mut cmd;
-
-        if req.get_at().len() >= 3 {
-            cmd = req.get_at().to_vec();
-        } else {
-            cmd = req.get_pid().to_vec();
-        }
+        let mut cmd = match req.command_type() {
+            CommandType::PIDCommand => req.get_pid().to_vec(),
+            CommandType::ATCommand => req.get_at().to_vec(),
+            CommandType::ServiceQuery => req.get_svc().to_vec(),
+            _ => return Err(OBDError::InvalidCommand),
+        };
 
         cmd.push(b'\r');
 
         if stream.write_all(&cmd).is_err() {
             return Err(OBDError::ELM327WriteError);
         }
+
         Ok(())
     }
 
