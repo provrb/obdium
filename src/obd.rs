@@ -74,7 +74,7 @@ impl OBD {
         }
 
         self.connection = match serialport::new(port, baud_rate)
-            .timeout(Duration::from_secs(5))
+            .timeout(Duration::from_secs(10))
             .open()
         {
             Ok(port) => Some(port),
@@ -128,6 +128,7 @@ impl OBD {
     pub fn get_supported_pids(&mut self) -> Vec<[u8; 2]> {
         let response = self.query(Command::new_pid(b"0100")).unwrap_or_default();
         println!("resp: {}", response.get_payload().unwrap());
+
         Vec::new()
     }
 
@@ -190,7 +191,10 @@ impl OBD {
             ecu_count = 1;
         }
 
-        response = response.replace(" ", "").replace("\r", "").replace("SEARCHING...", "");
+        response = response
+            .replace(" ", "")
+            .replace("\r", "")
+            .replace("SEARCHING...", "");
 
         if response.len() < 2 {
             println!("'{response}'");
@@ -202,7 +206,7 @@ impl OBD {
         }
 
         let parsed = Self::format_response(&response);
-        let bytes = response.len() / 2;
+        let bytes = response.len();
         let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
@@ -239,13 +243,12 @@ impl OBD {
 
                     response.push(byte as char);
                 }
-                Ok(0) => {
-                    std::thread::sleep(std::time::Duration::from_millis(10))
-                },
+                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
                 Ok(_) => break,
                 Err(_) => break,
             }
         }
+
         Ok(response)
     }
 

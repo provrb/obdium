@@ -40,7 +40,7 @@ impl TroubleCodeCategory {
 
 impl Default for TroubleCodeCategory {
     fn default() -> Self {
-        Self::Unknown    
+        Self::Unknown
     }
 }
 
@@ -102,7 +102,7 @@ impl TroubleCode {
         };
 
         match statement.bind((1, self.dtc.as_str())) {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(err) => {
                 println!("when binding dtc '{}' to query {query}: {err}", self.dtc);
                 return;
@@ -160,29 +160,26 @@ impl OBD {
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
         let n_dtcs = self.get_num_trouble_codes();
-        if n_dtcs <= 0 { // no trouble codes
+        if n_dtcs <= 0 {
+            // no trouble codes
             return Vec::new();
         }
 
         let response = self.query(Command::new_svc(b"03")).unwrap_or_default();
         // println!("dtc response: {:#?}", response);
         let sanitized = response
-        .full_response()
-        .unwrap_or_default()
-        .replace(" ", "")
-        .split("43")
-        .collect::<Vec<_>>()
-        .join("");
-    
+            .full_response()
+            .unwrap_or_default()
+            .replace(" ", "")
+            .split("43")
+            .collect::<Vec<_>>()
+            .join("");
+
         println!("dbg: dtc response from ecu: {sanitized}");
 
         let mut codes = Vec::new();
 
-        for chunk in
-            sanitized
-            .as_bytes()
-            .chunks(4)
-        {
+        for chunk in sanitized.as_bytes().chunks(4) {
             if chunk.len() != 4 {
                 break;
             }
@@ -194,11 +191,11 @@ impl OBD {
             let d = as_string.chars().nth(3).unwrap_or('\0');
             let left = u8::from_str_radix(&format!("{}{}", a, b), 16).unwrap_or_default();
             let right = u8::from_str_radix(&format!("{}{}", c, d), 16).unwrap_or_default();
-            
+
             if left == 0x00 && right == 0x00 || (chunk == b"0000") {
                 break;
             }
-            
+
             //println!("\nchunk: {:?}, {:?}. a: {a}, b: {b}, c: {c}, d: {d}", as_string, chunk);
             let bit_7 = (left & 0b1000_0000) >> 7;
             let bit_6 = (left & 0b0100_0000) >> 6;

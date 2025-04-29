@@ -6,11 +6,12 @@ use std::time::Duration;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    obd.connect("CNCB0", 38400)?;
+    obd.connect("COM4", 38400)?;
     //obd.connect("/dev/ttyUSB0", 38400)?;
 
     std::thread::sleep(Duration::from_secs(1));
-    
+    obd.get_supported_pids();
+
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     println!(
         "Check engine light: {}",
@@ -21,7 +22,7 @@ fn main() -> Result<(), OBDError> {
         }
     );
     println!("Number of trouble codes: {}", obd.get_num_trouble_codes());
-    
+
     let codes = obd.get_trouble_codes();
     for code in codes {
         println!("{}\n", code);
