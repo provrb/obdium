@@ -5,6 +5,7 @@ use std::thread;
 use std::time::Duration;
 
 use crate::cmd::CommandType;
+use crate::response;
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
@@ -74,7 +75,7 @@ impl OBD {
         }
 
         self.connection = match serialport::new(port, baud_rate)
-            .timeout(Duration::from_secs(2))
+            .timeout(Duration::from_secs(5))
             .open()
         {
             Ok(port) => Some(port),
@@ -123,6 +124,12 @@ impl OBD {
         }
 
         Ok(())
+    }
+
+    pub fn get_supported_pids(&mut self) -> Vec<[u8; 2]> {
+        let response = self.query(Command::new_pid(b"0100")).unwrap_or_default();
+        println!("resp: {}", response.get_payload().unwrap());
+        Vec::new()
     }
 
     pub fn send_command(&mut self, req: &Command) -> Result<(), OBDError> {
@@ -184,15 +191,14 @@ impl OBD {
             ecu_count = 1;
         }
 
-        response = response.replace(" ", "").replace("\r", "");
+        response = response.replace(" ", "").replace("\r", "").replace("SEARCHING...", "");
 
         if response.len() < 2 {
             return Err(OBDError::InvalidResponse);
         } else if response.contains("NODATA") {
             println!("obd warning; ecu responded with 'NO DATA' to latest command. command likely invalid.");
+            println!("- response is '{response}'");
             return Ok(Response::default());
-        } else if response.contains("SEARCHING") {
-            return Err(OBDError::ECUUnavailable);
         }
 
         let parsed = Self::format_response(&response);
@@ -233,7 +239,9 @@ impl OBD {
 
                     response.push(byte as char);
                 }
-                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
+                Ok(0) => {
+                    std::thread::sleep(std::time::Duration::from_millis(10))
+                },
                 Ok(_) => break,
                 Err(_) => break,
             }

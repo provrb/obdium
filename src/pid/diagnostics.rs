@@ -144,16 +144,11 @@ impl OBD {
 
     // Resource heavy compared to other methods
     pub fn get_diagnosis_status(&mut self) -> DiagnosisStatus {
-        let mil = self.get_mil_status();
-        let n_dtcs = self.get_num_trouble_codes();
-        let engine_type = self.get_engine_type();
-        let trouble_codes = self.get_trouble_codes();
-
         DiagnosisStatus {
-            mil: mil,
-            num_trouble_codes: n_dtcs,
-            trouble_codes: trouble_codes,
-            engine_type: engine_type,
+            mil: self.get_mil_status(),
+            num_trouble_codes: self.get_num_trouble_codes(),
+            trouble_codes: self.get_trouble_codes(),
+            engine_type: self.get_engine_type(),
         }
     }
 
@@ -169,8 +164,6 @@ impl OBD {
             return Vec::new();
         }
 
-        // By passing "03  " we are bypassing the new_pid requirement for a [u8; 4] when we are only giving a [u8; 2].
-        // ELM327 ignores all space characters, so this will be parsed normally as "03" instead of "03  "
         let response = self.query(Command::new_svc(b"03")).unwrap_or_default();
         // println!("dtc response: {:#?}", response);
         let sanitized = response.full_response().unwrap_or_default().replace(" ", "");

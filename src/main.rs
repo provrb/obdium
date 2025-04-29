@@ -10,7 +10,7 @@ fn main() -> Result<(), OBDError> {
     //obd.connect("/dev/ttyUSB0", 38400)?;
 
     std::thread::sleep(Duration::from_secs(1));
-
+    
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     println!(
         "Check engine light: {}",
