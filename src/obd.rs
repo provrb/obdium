@@ -5,7 +5,6 @@ use std::thread;
 use std::time::Duration;
 
 use crate::cmd::CommandType;
-use crate::response;
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
@@ -194,6 +193,7 @@ impl OBD {
         response = response.replace(" ", "").replace("\r", "").replace("SEARCHING...", "");
 
         if response.len() < 2 {
+            println!("'{response}'");
             return Err(OBDError::InvalidResponse);
         } else if response.contains("NODATA") {
             println!("obd warning; ecu responded with 'NO DATA' to latest command. command likely invalid.");

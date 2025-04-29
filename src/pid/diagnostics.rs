@@ -166,12 +166,21 @@ impl OBD {
 
         let response = self.query(Command::new_svc(b"03")).unwrap_or_default();
         // println!("dtc response: {:#?}", response);
-        let sanitized = response.full_response().unwrap_or_default().replace(" ", "");
+        let sanitized = response
+        .full_response()
+        .unwrap_or_default()
+        .replace(" ", "")
+        .split("43")
+        .collect::<Vec<_>>()
+        .join("");
+    
+        println!("dbg: dtc response from ecu: {sanitized}");
+
         let mut codes = Vec::new();
 
         for chunk in
             sanitized
-            .as_bytes()[2..]
+            .as_bytes()
             .chunks(4)
         {
             if chunk.len() != 4 {
@@ -233,7 +242,6 @@ impl OBD {
             codes.push(TroubleCode::new(category, dtc_code));
         }
 
-        println!("dbg: dtc response from ecu: {sanitized}");
         codes
     }
 
