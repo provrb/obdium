@@ -61,11 +61,19 @@ impl Display for OBDError {
 pub struct OBD {
     // connection: Option<TcpStream>,
     connection: Option<Box<dyn SerialPort>>,
+
+    // ECU name to process data for
+    // When none. Use data from the first ecu that responds
+    // and ecu data is discarded
+    relevant_ecu: Option<String>,
 }
 
 impl OBD {
     pub fn new() -> Self {
-        Self { connection: None }
+        Self {
+            connection: None,
+            relevant_ecu: None,
+        }
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), OBDError> {
@@ -89,7 +97,7 @@ impl OBD {
             Command::new_at(b"ATZ"),
             Command::new_at(b"ATE0"),
             Command::new_at(b"ATL0"),
-            Command::new_at(b"ATH0"),
+            Command::new_at(b"ATH1"),
             Command::new_at(b"ATSP0"),
         ];
 
@@ -125,9 +133,48 @@ impl OBD {
         Ok(())
     }
 
+    pub fn use_default_ecu(&mut self) {
+        self.relevant_ecu = Some("default".to_owned())
+    }
+
+    // If 'ecu_name' isn't found in a response a
+    // warnign message will be printed and the
+    // first ecu will be used for data in that feature.
+    pub fn use_ecu(&mut self, ecu_name: String) {
+        self.relevant_ecu = Some(ecu_name)
+    }
+
+    // todo: inefficient...
     pub fn get_supported_pids(&mut self) -> Vec<[u8; 2]> {
         let response = self.query(Command::new_pid(b"0100")).unwrap_or_default();
-        println!("resp: {}", response.get_payload().unwrap());
+        let binding = response.get_payload().unwrap_or_default().replace(" ", "");
+        let split: Vec<&str> = binding.split("4100").collect();
+        println!("bind: {split:?}");
+        let mut pid = 1;
+        let mut supported_pids: Vec<String> = Vec::new();
+        for response in split {
+            for ch in response.chars() {
+                let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap();
+                let bits = format!("{:04b}", as_num);
+                println!("Bits for {as_num} ({ch}): {bits}");
+                for bit in bits.chars() {
+                    print!("\t{bit} {pid} - ");
+                    if bit == '1' {
+                        // value not found
+                        supported_pids.push(format!("{pid:02X}"));
+                        println!("set")
+                    } else {
+                        println!("not")
+                    }
+                    
+                    pid+=1;
+                }
+            }
+            pid = 1;
+        }
+        supported_pids.sort();
+        supported_pids.dedup();
+        println!("{supported_pids:?}");
 
         Vec::new()
     }
@@ -182,39 +229,61 @@ impl OBD {
             }
         };
 
-        let mut ecu_count = response
-            .chars()
-            .filter(|c| *c == '\r')
-            .count()
-            .saturating_sub(2);
+        response = response.replace("SEARCHING...", "").replace("\r", "\n");
+
+        let mut payload_size: u32 = 0;
+        let ecu_names: Vec<String> = response
+            .lines()
+            .filter_map(|line| {
+                let split: Vec<&str> = line.split_whitespace().collect();
+                if split.len() < 3 {
+                    return None;
+                }
+
+                let ecu_name = split[0].to_string();
+                if ecu_name.len() != 3 {
+                    // can ids are 3 character hex strings
+                    return None;
+                }
+
+                payload_size = u32::from_str_radix(split[1], 16).unwrap_or(0);
+
+                Some(ecu_name)
+            })
+            .collect();
+        let ecu_count = ecu_names.len();
         if ecu_count == 0 {
-            ecu_count = 1;
+            return Ok(Response::default());
         }
 
+        println!("{response}");
         response = response
             .replace(" ", "")
-            .replace("\r", "")
-            .replace("SEARCHING...", "");
+            .replace("\n", "")
+            .replace(format!("{:02X}", payload_size).as_str(), "");
+
+        // remove ecu names
+        for ecu_name in ecu_names.iter() {
+            response = response.replace(ecu_name.as_str(), "")
+        }
+
+        println!("\t{response}, {}", response.len());
+        println!("{ecu_names:?}");
+        println!("{payload_size}");
 
         if response.len() < 2 {
-            println!("'{response}'");
             return Err(OBDError::InvalidResponse);
         } else if response.contains("NODATA") {
-            println!("obd warning; ecu responded with 'NO DATA' to latest command. command likely invalid.");
-            println!("- response is '{response}'");
             return Ok(Response::default());
         }
 
         let parsed = Self::format_response(&response);
-        let bytes = response.len();
-        let payload_size = (bytes - 2) / ecu_count; // subtract 2 for the request. divide by amount of ecus that responded.
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
-
         let mut meta_data = Response::default();
         meta_data.ecu_count = ecu_count;
         meta_data.raw_response = Some(parsed.clone());
-        meta_data.payload_size = payload_size;
+        meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.pid = [as_bytes[2], as_bytes[3]];
         meta_data.payload = Some(meta_data.payload_from_response());
