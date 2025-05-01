@@ -144,41 +144,6 @@ impl OBD {
         self.relevant_ecu = Some(ecu_name)
     }
 
-    // todo: inefficient...
-    pub fn get_supported_pids(&mut self) -> Vec<[u8; 2]> {
-        let response = self.query(Command::new_pid(b"0100")).unwrap_or_default();
-        let binding = response.get_payload().unwrap_or_default().replace(" ", "");
-        let split: Vec<&str> = binding.split("4100").collect();
-        println!("bind: {split:?}");
-        let mut pid = 1;
-        let mut supported_pids: Vec<String> = Vec::new();
-        for response in split {
-            for ch in response.chars() {
-                let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap();
-                let bits = format!("{:04b}", as_num);
-                println!("Bits for {as_num} ({ch}): {bits}");
-                for bit in bits.chars() {
-                    print!("\t{bit} {pid} - ");
-                    if bit == '1' {
-                        // value not found
-                        supported_pids.push(format!("{pid:02X}"));
-                        println!("set")
-                    } else {
-                        println!("not")
-                    }
-                    
-                    pid+=1;
-                }
-            }
-            pid = 1;
-        }
-        supported_pids.sort();
-        supported_pids.dedup();
-        println!("{supported_pids:?}");
-
-        Vec::new()
-    }
-
     pub fn send_command(&mut self, req: &Command) -> Result<(), OBDError> {
         let stream = match &mut self.connection {
             Some(stream) => stream,
@@ -289,6 +254,73 @@ impl OBD {
         meta_data.payload = Some(meta_data.payload_from_response());
 
         Ok(meta_data)
+    }
+
+    pub fn get_supported_pids(&mut self) -> Vec<String> {
+        let mut supported_pids = Vec::new();
+        let request_pids = vec!["00", "20", "40", "60", "80", "A0", "C0"];
+
+        for request_pid in request_pids {
+            let request_pid_bytes = request_pid.as_bytes();
+            let command = [b'0', b'1', request_pid_bytes[0], request_pid_bytes[1]];
+            let response = self.query(Command::new_pid(&command)).unwrap_or_default();
+            supported_pids.append(&mut self.parse_supported_pids(
+                &response,
+                &format!("41{}", request_pid),
+                request_pid.parse().unwrap_or_default(),
+            ));
+        }
+
+        println!("Total supported pids: {supported_pids:?}");
+        supported_pids
+    }
+
+    // todo: inefficient...
+    pub(crate) fn parse_supported_pids(
+        &self,
+        response: &Response,
+        expected_header_split: &str,
+        start_pid: i32,
+    ) -> Vec<String> {
+        let sanitized = response.get_payload().unwrap_or_default().replace(" ", "");
+        let responses: Vec<&str> = sanitized.split(expected_header_split).collect();
+
+        let mut pid = start_pid + 1;
+        let mut supported_pids: Vec<String> = Vec::new();
+
+        // This is a loop because it is possible that
+        // the vehicle returns multiple responses from
+        // different ECUs, telling us what pids EACH ECU supports.
+        for data in responses {
+            // Loop through all characters in 'data'
+            // Get the character as a number from the hex character 'ch'
+            for ch in data.chars() {
+                let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap_or_default();
+                let bits = format!("{:04b}", as_num);
+                println!("Bits for {as_num} ({ch}): {bits}");
+
+                // Iterate through each character in binary representation
+                // If bit is 1, that is a supported pid.
+                for bit in bits.chars() {
+                    print!("\t{bit} {pid} - ");
+                    if bit == '1' {
+                        // value not found
+                        supported_pids.push(format!("{pid:02X}"));
+                        println!("set")
+                    } else {
+                        println!("not")
+                    }
+
+                    pid += 1;
+                }
+            }
+            pid = start_pid + 1;
+        }
+
+        supported_pids.sort();
+        supported_pids.dedup();
+
+        supported_pids
     }
 
     pub(crate) fn read_until(&mut self, until: u8) -> Result<String, OBDError> {
