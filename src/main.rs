@@ -6,13 +6,20 @@ use std::time::Duration;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    obd.connect("COM4", 38400)?;
+    //obd.connect("COM4", 38400)?;
     //obd.connect("/dev/ttyUSB0", 38400)?;
+    obd.connect("/dev/pts/3", 38400)?;
 
-    std::thread::sleep(Duration::from_secs(1));
-    obd.get_supported_pids();
+    std::thread::sleep(Duration::from_secs(1));//obd.connect("/dev/ttyUSB0", 38400)?;
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
+    let supported_pids =  obd.get_supported_pids();
+
+    println!("Supported pids for service 01 [01-E0] ({}):", supported_pids.len());
+    for supported_pid in supported_pids.iter() {
+        println!("\tPID: {supported_pid}");
+    }
+
     println!(
         "Check engine light: {}",
         if obd.get_mil_status() == MILStatus::On {

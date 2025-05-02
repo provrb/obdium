@@ -86,7 +86,10 @@ impl OBD {
             .open()
         {
             Ok(port) => Some(port),
-            Err(_) => return Err(OBDError::ConnectionFailed),
+            Err(con_err) => {
+                println!("connection to elm327 failed with: {con_err}");
+                return Err(OBDError::ConnectionFailed)
+            },
         };
 
         self.init()
@@ -271,7 +274,6 @@ impl OBD {
             ));
         }
 
-        println!("Total supported pids: {supported_pids:?}");
         supported_pids
     }
 
