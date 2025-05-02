@@ -300,7 +300,7 @@ impl OBD {
     }
 
     pub fn aux_input_status(&mut self) -> AuxiliaryInputStatus {
-        let response = self.query(Command::new_pid(b"011C")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"011E")).unwrap_or_default();
         let in_use = (response.a_value() as u32 & 1) != 0;
 
         if in_use {

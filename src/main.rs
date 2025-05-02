@@ -6,8 +6,8 @@ use std::time::Duration;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    obd.connect("COM4", 38400)?;
-    //obd.connect("/dev/ttyUSB0", 38400)?;
+    //obd.connect("COM4", 38400)?;
+    obd.connect("/dev/ttyUSB0", 38400)?;
     //obd.connect("/dev/pts/3", 38400)?;
 
     std::thread::sleep(Duration::from_secs(1)); //obd.connect("/dev/ttyUSB0", 38400)?;
@@ -69,7 +69,7 @@ fn main() -> Result<(), OBDError> {
     );
     println!("Actual engine torque: {}%", obd.actual_engine_torque());
     println!(
-        "Reference engine torque: {}%",
+        "Reference engine torque: {}Nm",
         obd.reference_engine_torque()
     );
 
