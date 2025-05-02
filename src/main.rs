@@ -6,18 +6,28 @@ use std::time::Duration;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    //obd.connect("COM4", 38400)?;
+    obd.connect("COM4", 38400)?;
     //obd.connect("/dev/ttyUSB0", 38400)?;
-    obd.connect("/dev/pts/3", 38400)?;
+    //obd.connect("/dev/pts/3", 38400)?;
 
-    std::thread::sleep(Duration::from_secs(1));//obd.connect("/dev/ttyUSB0", 38400)?;
+    std::thread::sleep(Duration::from_secs(1)); //obd.connect("/dev/ttyUSB0", 38400)?;
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
-    let supported_pids =  obd.get_supported_pids();
+    let supported_pids = obd.get_supported_pids();
 
-    println!("Supported pids for service 01 [01-E0] ({}):", supported_pids.len());
-    for supported_pid in supported_pids.iter() {
-        println!("\tPID: {supported_pid}");
+    println!("Supported pids for ECUs");
+    for (ecu_name, pids) in supported_pids.iter() {
+        print!("ECU {ecu_name}:");
+        for (index, pid) in pids.iter().enumerate() {
+            if index % 10 == 0 {
+                print!("\n\t");
+            }
+
+            print!("{pid} ");
+            if index == pids.len() - 1 {
+                println!()
+            }
+        }
     }
 
     println!(
@@ -35,8 +45,8 @@ fn main() -> Result<(), OBDError> {
         println!("{}\n", code);
     }
 
-    println!("OBD standard: {:?}", obd.obd_standards());
-    println!("Auxiliary input status: {:?}", obd.aux_input_status());
+    println!("OBD standard: {}", obd.obd_standards());
+    println!("Auxiliary input status: {}", obd.aux_input_status());
     println!(
         "Distance traveled with malfunction indicator lamp: {}km",
         obd.distance_traveled_with_mil()
@@ -108,7 +118,12 @@ fn main() -> Result<(), OBDError> {
         "Maximum air-flow rate from mass air-flow sensor: {}g/s",
         obd.max_air_flow_rate_from_maf()
     );
+
     println!("Throttle position: {}%", obd.throttle_position());
+    println!(
+        "Relative throttle position: {}%",
+        obd.relative_throttle_pos()
+    );
 
     // Read oxcygen sensors 1-8
     let sensors = [
@@ -122,15 +137,27 @@ fn main() -> Result<(), OBDError> {
         OxygenSensor::Sensor8,
     ];
 
-    for sensor in sensors.iter() {
-        let mut sensor_data = obd.read_oxygen_sensor(sensor);
-        println!("Oxygen sensor {:?}:", sensor);
-        println!("\tVoltage: {}v", sensor_data.0);
-        println!("\tShort term fuel trim: {}", sensor_data.1);
+    let mut data = Vec::new();
 
-        sensor_data = obd.o2_sensor_air_fuel_ratio(sensor);
-        println!("\tAir-fuel equivalance ratio: {}", sensor_data.0);
-        println!("\tVoltage: {}", sensor_data.1);
+    for (i, sensor) in sensors.iter().enumerate() {
+        let (voltage1, trim) = obd.read_oxygen_sensor(sensor);
+        let (afr, voltage2) = obd.o2_sensor_air_fuel_ratio(sensor);
+        data.push((i + 1, voltage1, trim, afr, voltage2));
+    }
+
+    // Print header
+    println!("Oxygen Sensors:");
+    println!(
+        "{:<7} {:>11} {:>20} {:>20}",
+        "Sensor", "Voltage", "Short Term Trim (%)", "AFR / Voltage"
+    );
+
+    // Print each row
+    for (sensor_id, v1, trim, afr, v2) in data {
+        println!(
+            "{:<7} {:>10.3}v {:>20.2} {:>12.3} / {:<7.3}",
+            sensor_id, v1, trim, afr, v2
+        );
     }
 
     let maf = obd.read_mass_air_flow_sensor();
@@ -146,11 +173,6 @@ fn main() -> Result<(), OBDError> {
     println!(
         "\tIntake manifold absolute pressure: {}kPa",
         max_values_for.3
-    );
-
-    println!(
-        "Relative throttle position: {}%",
-        obd.relative_throttle_pos()
     );
 
     Ok(())

@@ -66,6 +66,8 @@ pub struct Response {
     /* Number of ECUs responded to the request  */
     pub(crate) ecu_count: usize,
 
+    pub(crate) responding_ecus: Vec<String>,
+
     /**
      * How many bytes in the response.
      * Excluding request characters and duplicate ECU responses.
@@ -87,6 +89,7 @@ impl Response {
             pid: [0u8; 2],
             ecu_count: 0,
             payload_size: 0,
+            responding_ecus: Vec::new(),
         }
     }
 

@@ -1,4 +1,5 @@
 use serialport::SerialPort;
+use std::collections::HashMap;
 use std::fmt::Display;
 use std::io::{Read, Write};
 use std::thread;
@@ -88,8 +89,8 @@ impl OBD {
             Ok(port) => Some(port),
             Err(con_err) => {
                 println!("connection to elm327 failed with: {con_err}");
-                return Err(OBDError::ConnectionFailed)
-            },
+                return Err(OBDError::ConnectionFailed);
+            }
         };
 
         self.init()
@@ -219,12 +220,13 @@ impl OBD {
                 Some(ecu_name)
             })
             .collect();
+
         let ecu_count = ecu_names.len();
         if ecu_count == 0 {
             return Ok(Response::default());
         }
 
-        println!("{response}");
+        // println!("{response}");
         response = response
             .replace(" ", "")
             .replace("\n", "")
@@ -235,9 +237,9 @@ impl OBD {
             response = response.replace(ecu_name.as_str(), "")
         }
 
-        println!("\t{response}, {}", response.len());
-        println!("{ecu_names:?}");
-        println!("{payload_size}");
+        // println!("\t{response}, {}", response.len());
+        // println!("{ecu_names:?}");
+        // println!("{payload_size}");
 
         if response.len() < 2 {
             return Err(OBDError::InvalidResponse);
@@ -250,6 +252,7 @@ impl OBD {
         let as_bytes = no_whitespace.as_bytes();
         let mut meta_data = Response::default();
         meta_data.ecu_count = ecu_count;
+        meta_data.responding_ecus = ecu_names;
         meta_data.raw_response = Some(parsed.clone());
         meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
@@ -259,19 +262,30 @@ impl OBD {
         Ok(meta_data)
     }
 
-    pub fn get_supported_pids(&mut self) -> Vec<String> {
-        let mut supported_pids = Vec::new();
+    pub fn get_supported_pids(&mut self) -> HashMap<String, Vec<String>> {
+        let mut supported_pids: HashMap<String, Vec<String>> = HashMap::new();
         let request_pids = vec!["00", "20", "40", "60", "80", "A0", "C0"];
 
         for request_pid in request_pids {
             let request_pid_bytes = request_pid.as_bytes();
             let command = [b'0', b'1', request_pid_bytes[0], request_pid_bytes[1]];
             let response = self.query(Command::new_pid(&command)).unwrap_or_default();
-            supported_pids.append(&mut self.parse_supported_pids(
+            let split = format!("41{}", request_pid);
+
+            let parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
                 &response,
-                &format!("41{}", request_pid),
+                &split,
                 request_pid.parse().unwrap_or_default(),
-            ));
+            );
+
+            // println!("[{request_pid}]: {parsed:?}");
+
+            for (ecu_name, pids) in parsed.into_iter() {
+                supported_pids
+                    .entry(ecu_name)
+                    .and_modify(|existing| existing.extend(pids.clone()))
+                    .or_insert(pids);
+            }
         }
 
         supported_pids
@@ -283,46 +297,60 @@ impl OBD {
         response: &Response,
         expected_header_split: &str,
         start_pid: i32,
-    ) -> Vec<String> {
+    ) -> HashMap<String, Vec<String>> {
         let sanitized = response.get_payload().unwrap_or_default().replace(" ", "");
-        let responses: Vec<&str> = sanitized.split(expected_header_split).collect();
+        let mut responses: Vec<&str> = sanitized.split(expected_header_split).collect();
+        responses = responses
+            .iter()
+            .filter(|x| !x.is_empty())
+            .copied()
+            .collect();
+
+        // println!("{:?}", responses);
+        // println!("split: {expected_header_split}");
 
         let mut pid = start_pid + 1;
-        let mut supported_pids: Vec<String> = Vec::new();
+        let mut respective_pids = HashMap::new();
 
         // This is a loop because it is possible that
         // the vehicle returns multiple responses from
         // different ECUs, telling us what pids EACH ECU supports.
-        for data in responses {
+        for (index, data) in responses.iter().enumerate() {
+            let ecu = match response.responding_ecus.get(index) {
+                Some(ecu_name) => ecu_name.clone(),
+                None => String::default(),
+            };
+            let mut supported_pids: Vec<String> = Vec::new();
+
             // Loop through all characters in 'data'
             // Get the character as a number from the hex character 'ch'
             for ch in data.chars() {
                 let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap_or_default();
                 let bits = format!("{:04b}", as_num);
-                println!("Bits for {as_num} ({ch}): {bits}");
+                // println!("Bits for {as_num} ({ch}): {bits}");
 
                 // Iterate through each character in binary representation
                 // If bit is 1, that is a supported pid.
                 for bit in bits.chars() {
-                    print!("\t{bit} {pid} - ");
+                    // print!("\t{bit} {pid} - ");
                     if bit == '1' {
                         // value not found
                         supported_pids.push(format!("{pid:02X}"));
-                        println!("set")
+                        // println!("set")
                     } else {
-                        println!("not")
+                        // println!("not")
                     }
 
                     pid += 1;
                 }
             }
+
+            respective_pids.insert(ecu, supported_pids);
+
             pid = start_pid + 1;
         }
 
-        supported_pids.sort();
-        supported_pids.dedup();
-
-        supported_pids
+        respective_pids
     }
 
     pub(crate) fn read_until(&mut self, until: u8) -> Result<String, OBDError> {

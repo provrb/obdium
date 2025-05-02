@@ -11,10 +11,27 @@ pub enum OBDStandard {
     Standard(&'static str),
 }
 
+impl fmt::Display for OBDStandard {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            OBDStandard::Standard(value) => write!(f, "{}", value),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum AuxiliaryInputStatus {
     InUse,
     NotInUse,
+}
+
+impl fmt::Display for AuxiliaryInputStatus {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AuxiliaryInputStatus::InUse => write!(f, "Active"),
+            AuxiliaryInputStatus::NotInUse => write!(f, "Inactive"),
+        }
+    }
 }
 
 #[derive(Debug)]
