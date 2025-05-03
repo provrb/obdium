@@ -1,6 +1,7 @@
 use crate::cmd::Command;
 use crate::obd::OBD;
 
+#[derive(PartialEq, Eq)]
 pub enum EngineType {
     SparkIgnition,
     CompressionIgnition,
@@ -28,6 +29,15 @@ impl OBD {
     }
 
     pub fn engine_runtime(&mut self) -> f32 {
+        if self.get_engine_type() == EngineType::CompressionIgnition {
+            return self.engine_runtime_diesel();
+        }
+
+        let response = self.query(Command::new_pid(b"011F")).unwrap_or_default();
+        ( 256.0 * response.a_value() ) + response.b_value()
+    }
+
+    pub fn engine_runtime_diesel(&mut self) -> f32 {
         let response = self.query(Command::new_pid(b"017F")).unwrap_or_default();
         let b = response.b_value();
         let c = response.c_value();

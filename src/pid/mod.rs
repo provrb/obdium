@@ -1,3 +1,4 @@
+pub mod air;
 pub mod diagnostics;
 pub mod emissions;
 pub mod engine;

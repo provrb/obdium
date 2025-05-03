@@ -88,7 +88,7 @@ impl OBD {
         {
             Ok(port) => Some(port),
             Err(con_err) => {
-                println!("connection to elm327 failed with: {con_err}");
+                println!("connection to elm327 on port {port}, baud rate {baud_rate}, failed with: {con_err}");
                 return Err(OBDError::ConnectionFailed);
             }
         };
@@ -106,7 +106,7 @@ impl OBD {
         ];
 
         for command in commands {
-            thread::sleep(Duration::from_millis(10));
+            //            thread::sleep(Duration::from_millis(20));
             match self.send_command(&command) {
                 Ok(()) => {}
                 Err(err) => {

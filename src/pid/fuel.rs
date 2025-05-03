@@ -3,30 +3,56 @@ use crate::obd::{BankNumber, OBD};
 
 #[derive(Debug)]
 pub enum FuelType {
-    Gasoline = 0x01,
-    Methanol = 0x02,
-    Ethanol = 0x03,
-    Diesel = 0x04,
-    LPG = 0x05,
-    CNG = 0x06,
-    Propane = 0x07,
-    Electric = 0x08,
-    BifuelGasoline = 0x09,
-    BifuelMethanol = 0x0A,
-    BifuelEthanol = 0x0B,
-    BifuelLPG = 0x0C,
-    BifuelCNG = 0x0D,
-    BifuelPropane = 0x0E,
-    BifuelElectric = 0x0F,
-    BifuelElectricEngine = 0x10,
-    HybridGasoline = 0x11,
-    HybridEthanol = 0x12,
-    HybridDiesel = 0x13,
-    HybridElectric = 0x14,
-    HybridElectricEngine = 0x15,
-    HybridRegenerative = 0x16,
-    BifuelDiesel = 0x17,
-    Unknown = 0x00,
+    Type(&'static str),
+}
+
+impl FuelType {
+    pub fn from_u8(num: u8) -> Self {
+        match num {
+            0x01 => Self::Type("Gasoline"),
+            0x02 => Self::Type("Methanol"),
+            0x03 => Self::Type("Ethanol"),
+            0x04 => Self::Type("Diesel"),
+            0x05 => Self::Type("LPG"),
+            0x06 => Self::Type("CNG"),
+            0x07 => Self::Type("Propane"),
+            0x08 => Self::Type("Electric"),
+            0x09 => Self::Type("BifuelGasoline"),
+            0x0A => Self::Type("BifuelMethanol"),
+            0x0B => Self::Type("BifuelEthanol"),
+            0x0C => Self::Type("BifuelLPG"),
+            0x0D => Self::Type("BifuelCNG"),
+            0x0E => Self::Type("BifuelPropane"),
+            0x0F => Self::Type("BifuelElectric"),
+            0x10 => Self::Type("BifuelElectricEngine"),
+            0x11 => Self::Type("HybridGasoline"),
+            0x12 => Self::Type("HybridEthanol"),
+            0x13 => Self::Type("HybridDiesel"),
+            0x14 => Self::Type("HybridElectric"),
+            0x15 => Self::Type("HybridElectricEngine"),
+            0x16 => Self::Type("HybridRegenerative"),
+            0x17 => Self::Type("BifuelDiesel"),
+            _ => Self::Type("Unknown"),
+        }
+    }
+}
+
+pub enum FuelSystemStatus {
+    Status(&'static str),
+}
+
+impl FuelSystemStatus {
+    pub fn from_u8(num: u8) -> Self {
+        match num {
+            0u8 => Self::Status("Motor is off"),
+            1u8 => Self::Status("Open loop due to insufficient engine temperature"),
+            2u8 => Self::Status("Closed loop, using O2 sensor feedback for fuel mix"),
+            4u8 => Self::Status("Open loop due to engine load, or fuel cut due to deceleration"),
+            8u8 => Self::Status("Open loop due to system failure"),
+            16u8 => Self::Status("Closed loop. Feedback system fault. Using atleast one O2 sensor"),
+            _ => Self::Status("Unknown fuel system status"),
+        }
+    }
 }
 
 impl OBD {
@@ -76,6 +102,15 @@ impl OBD {
         (response.a_value() / 1.28) - 100.0
     }
 
+    pub fn fuel_system_status(&mut self) -> (FuelSystemStatus, FuelSystemStatus) {
+        let response = self.query(Command::new_pid(b"0103")).unwrap_or_default();
+
+        (
+            FuelSystemStatus::from_u8(response.a_value() as u8),
+            FuelSystemStatus::from_u8(response.b_value() as u8),
+        )
+    }
+
     pub fn fuel_pressure(&mut self) -> f32 {
         let response = self.query(Command::new_pid(b"010A")).unwrap_or_default();
         response.a_value() * 3.0
@@ -98,35 +133,8 @@ impl OBD {
 
     pub fn fuel_type(&mut self) -> FuelType {
         let response = self.query(Command::new_pid(b"0151")).unwrap_or_default();
-        let fuel_index = response.a_value();
 
-        match fuel_index {
-            0f32 => FuelType::Unknown,
-            1f32 => FuelType::Gasoline,
-            2f32 => FuelType::Methanol,
-            3f32 => FuelType::Ethanol,
-            4f32 => FuelType::Diesel,
-            5f32 => FuelType::LPG,
-            6f32 => FuelType::CNG,
-            7f32 => FuelType::Propane,
-            8f32 => FuelType::Electric,
-            9f32 => FuelType::BifuelGasoline,
-            10f32 => FuelType::BifuelMethanol,
-            11f32 => FuelType::BifuelEthanol,
-            12f32 => FuelType::BifuelLPG,
-            13f32 => FuelType::BifuelCNG,
-            14f32 => FuelType::BifuelPropane,
-            15f32 => FuelType::BifuelElectric,
-            16f32 => FuelType::BifuelElectricEngine,
-            17f32 => FuelType::HybridGasoline,
-            18f32 => FuelType::HybridEthanol,
-            19f32 => FuelType::HybridDiesel,
-            20f32 => FuelType::HybridElectric,
-            21f32 => FuelType::HybridElectricEngine,
-            22f32 => FuelType::HybridRegenerative,
-            23f32 => FuelType::BifuelDiesel,
-            _ => FuelType::Unknown,
-        }
+        FuelType::from_u8(response.a_value() as u8)
     }
 
     pub fn ethanol_fuel_percentage(&mut self) -> f32 {
@@ -137,5 +145,15 @@ impl OBD {
     pub fn fuel_injection_timing(&mut self) -> f32 {
         let response = self.query(Command::new_pid(b"015D")).unwrap_or_default();
         (((256.0 * response.a_value()) + response.b_value()) / 128.0) - 210.0
+    }
+
+    pub fn commanded_evap_purge(&mut self) -> f32 {
+        let response = self.query(Command::new_pid(b"012E")).unwrap_or_default();
+        (100.0 / 255.0) * response.a_value()
+    }
+
+    pub fn evap_system_vapor_pressure(&mut self) -> f32 {
+        let response = self.query(Command::new_pid(b"0132")).unwrap_or_default();
+        ( (256.0 * response.a_value()) + response.b_value() ) / 4.0
     }
 }
