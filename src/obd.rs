@@ -136,6 +136,39 @@ impl OBD {
         Ok(())
     }
 
+    pub fn read_from_user_input(&mut self) {
+        let stdin = std::io::stdin();
+        let mut stdout = std::io::stdout();
+        loop {
+            let mut input = String::new();
+            
+            let _ = stdout.write(b"\n> ");
+            let _ = stdout.flush();
+            let _ = stdin.read_line(&mut input);
+
+            let message = input.replace("\n", "").replace("\r", "");
+            if message == "exit" {
+                break;
+            }
+
+            if self.send_command(&Command::new_arb(&message)).is_err() {
+                println!("< error sending message {message}");
+                continue;
+            }
+
+            if let Ok(response) = self.read_until(b'>') {
+                if response.is_empty() {
+                    continue;
+                }
+
+                let printable_raw = response.escape_default();
+                println!("< '{printable_raw}'");
+            } else {
+                println!("< error receiving response for {message}");
+            }
+        }
+    }
+
     pub fn use_default_ecu(&mut self) {
         self.relevant_ecu = Some("default".to_owned())
     }
@@ -159,6 +192,7 @@ impl OBD {
             CommandType::PIDCommand => req.get_pid().to_vec(),
             CommandType::ATCommand => req.get_at().to_vec(),
             CommandType::ServiceQuery => req.get_svc().to_vec(),
+            CommandType::Arbitrary => req.get_msg().as_bytes().to_vec(),
             _ => return Err(OBDError::InvalidCommand),
         };
 

@@ -3,6 +3,7 @@ pub enum CommandType {
     PIDCommand,
     ATCommand,
     ServiceQuery,
+    Arbitrary,
     Default,
     Unknown,
 }
@@ -19,6 +20,7 @@ pub struct Command {
     pid_command: [u8; 4],
     at_command: &'static [u8],
     svc_command: [u8; 2],
+    arbitrary_message: String,
 }
 
 impl Command {
@@ -28,6 +30,7 @@ impl Command {
             pid_command: *command,
             at_command: &[],
             svc_command: [0u8; 2],
+            arbitrary_message: String::default()
         }
     }
 
@@ -46,6 +49,17 @@ impl Command {
             pid_command: [0u8; 4],
             at_command: &[],
             svc_command: *svc_command,
+            arbitrary_message: String::default()
+        }
+    }
+
+    pub(crate) fn new_arb(arbitrary_msg: &String) -> Self {
+        Command {
+            command_type: CommandType::Arbitrary,
+            pid_command: [0u8; 4],
+            at_command: &[],
+            svc_command: [0u8; 2],
+            arbitrary_message: arbitrary_msg.to_owned()
         }
     }
 
@@ -106,5 +120,9 @@ impl Command {
 
     pub fn get_svc(&self) -> [u8; 2] {
         self.svc_command
+    }
+
+    pub fn get_msg(&self) -> String {
+        self.arbitrary_message.clone()
     }
 }

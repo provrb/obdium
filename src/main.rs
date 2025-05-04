@@ -1,13 +1,16 @@
+use std::process::Stdio;
+
 use obdium::{
-    obd::{BankNumber, OBDError, SensorNumber, OBD},
-    pid::diagnostics::MILStatus,
+    cmd::Command, obd::{BankNumber, OBDError, SensorNumber, OBD}, pid::diagnostics::MILStatus
 };
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    //obd.connect("COM4", 38400)?;
+    obd.connect("COM4", 38400)?;
     //obd.connect("/dev/ttyUSB0", 38400)?
-    obd.connect("/dev/tnt1", 38400)?;
+    //obd.connect("/dev/tnt1", 38400)?;
+
+    obd.read_from_user_input();
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_supported_pids();
@@ -200,6 +203,6 @@ fn main() -> Result<(), OBDError> {
     );
 
     println!("Secondary air status: {:?}", obd.secondary_air_status());
-    println!("Absolute barometric pressure: {}kPa", obd.abs_barometric_pressure());
+    println!("Absolute barometric pressure: {}kPa", obd.abs_barometric_pressure());    
     Ok(())
 }
