@@ -1,0 +1,20 @@
+| PID (Hex) | Description                      | Command Format | Notes                                                                 |
+| --------- | -------------------------------- | -------------- | --------------------------------------------------------------------- |
+| 221470    | Engine Oil Pressure              | 22 14 70       | Provides engine oil pressure data.                                    |
+| 221154    | Engine Oil Temperature           | 22 11 54       | Returns the temperature of the engine oil.                            |
+| 221940    | Transmission Fluid Temperature   | 22 19 40       | Indicates the temperature of the transmission fluid.                  |
+| 2222AC    | Motor Power Input (kW)           | 22 22 AC       | Represents the motor's power input in kilowatts.                      |
+| 2222AB    | Battery Pack Voltage             | 22 22 AB       | Measures the voltage across the battery pack.                         |
+| 2225A5    | Motor RPM                        | 22 25 A5       | Reports the revolutions per minute of the motor.                      |
+| 2225A2    | Motor Temperature (°C)           | 22 25 A2       | Provides the motor's temperature in degrees Celsius.                  |
+| 2225AF    | State of Charge (SOC) Percentage | 22 25 AF       | Indicates the battery's state of charge as a percentage.              |
+| 2225AE    | Vehicle Odometer                 | 22 25 AE       | Returns the total distance traveled by the vehicle.                   |
+| 2225A4    | Vehicle Speed                    | 22 25 A4       | Provides the current speed of the vehicle.                            |
+| 2225B0    | Throttle Command Percentage      | 22 25 B0       | Represents the driver's throttle input as a percentage.               |
+| 2225B1    | Mapped Throttle Percentage       | 22 25 B1       | Indicates the mapped throttle position percentage.                    |
+| 2225B4    | Mapped Brake Percentage          | 22 25 B4       | Shows the mapped brake input as a percentage.                         |
+| 2225A8    | RMS Current                      | 22 25 A8       | Reports the root mean square current value.                           |
+| 2225A9    | Main State                       | 22 25 A9       | Indicates the main operational state of the vehicle's control system. |
+| 2226A2    | Manufacture Date                 | 22 26 A2       | Provides the vehicle's manufacture date.                              |
+| 2226A1    | Serial Number                    | 22 26 A1       | Returns the vehicle's serial number.                                  |
+| 2226A3    | Operating System Version         | 22 26 A3       | Indicates the version of the vehicle's operating system.              |
