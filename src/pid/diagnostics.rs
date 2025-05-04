@@ -191,7 +191,7 @@ pub struct DiagnosisStatus {
 
 impl OBD {
     pub fn get_mil_status(&mut self) -> MILStatus {
-        let response = self.query(Command::new_pid(b"0101")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0101"));
         match response.a_value() as u32 & 0x80 {
             0 => MILStatus::Off,
             _ => MILStatus::On,
@@ -209,17 +209,17 @@ impl OBD {
     }
 
     pub fn warm_ups_since_codes_cleared(&mut self) -> u8 {
-        let response = self.query(Command::new_pid(b"0130")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0130"));
         response.a_value() as u8
     }
 
     pub fn distance_traveled_since_codes_cleared(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0131")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0131"));
         (256.0 * response.a_value()) + response.b_value()
     }
 
     pub fn get_num_trouble_codes(&mut self) -> u32 {
-        let response = self.query(Command::new_pid(b"0101")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0101"));
         response.a_value() as u32 & 0x7F
     }
 
@@ -231,7 +231,7 @@ impl OBD {
             return Vec::new();
         }
 
-        let response = self.query(Command::new_svc(b"03")).unwrap_or_default();
+        let response = self.query(Command::new_svc(b"03"));
         // println!("dtc response: {:#?}", response);
         let sanitized = response
             .full_response()
@@ -309,12 +309,12 @@ impl OBD {
     }
 
     pub fn obd_standards(&mut self) -> OBDStandard {
-        let response = self.query(Command::new_pid(b"011C")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"011C"));
         OBDStandard::from_u8(response.a_value() as u8)
     }
 
     pub fn aux_input_status(&mut self) -> AuxiliaryInputStatus {
-        let response = self.query(Command::new_pid(b"011E")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"011E"));
         let in_use = (response.a_value() as u32 & 1) != 0;
 
         if in_use {
@@ -325,17 +325,22 @@ impl OBD {
     }
 
     pub fn distance_traveled_with_mil(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0121")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0121"));
+        (256.0 * response.a_value()) + response.b_value()
+    }
+
+    pub fn time_run_with_mil(&mut self) -> f32 {
+        let response = self.query(Command::new_pid(b"014D"));
         (256.0 * response.a_value()) + response.b_value()
     }
 
     pub fn control_module_voltage(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0142")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0142"));
         ((256.0 * response.a_value()) + response.b_value()) / 1000.0
     }
 
     pub fn time_since_codes_cleared(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"014E")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"014E"));
         (256.0 * response.a_value()) + response.b_value()
     }
 }

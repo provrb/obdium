@@ -2,7 +2,6 @@ use serialport::SerialPort;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::io::{Read, Write};
-use std::thread;
 use std::time::Duration;
 
 use crate::cmd::CommandType;
@@ -14,8 +13,8 @@ pub enum BankNumber {
     Bank2,
 }
 
-#[derive(Debug)]
-pub enum OxygenSensor {
+#[derive(Debug, PartialEq, Eq)]
+pub enum SensorNumber {
     Sensor1,
     Sensor2,
     Sensor3,
@@ -106,7 +105,7 @@ impl OBD {
         ];
 
         for command in commands {
-            //            thread::sleep(Duration::from_millis(20));
+            //std::thread::sleep(Duration::from_millis(10));
             match self.send_command(&command) {
                 Ok(()) => {}
                 Err(err) => {
@@ -269,7 +268,7 @@ impl OBD {
         for request_pid in request_pids {
             let request_pid_bytes = request_pid.as_bytes();
             let command = [b'0', b'1', request_pid_bytes[0], request_pid_bytes[1]];
-            let response = self.query(Command::new_pid(&command)).unwrap_or_default();
+            let response = self.query(Command::new_pid(&command));
             let split = format!("41{}", request_pid);
 
             let parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
@@ -345,6 +344,8 @@ impl OBD {
                 }
             }
 
+            supported_pids.sort();
+            supported_pids.dedup();
             respective_pids.insert(ecu, supported_pids);
 
             pid = start_pid + 1;
@@ -394,7 +395,7 @@ impl OBD {
         as_string
     }
 
-    pub(crate) fn query(&mut self, request: Command) -> Option<Response> {
+    pub(crate) fn query(&mut self, request: Command) -> Response {
         match self.send_command(&request) {
             Ok(_) => {}
             Err(err) => {
@@ -404,12 +405,12 @@ impl OBD {
                     String::from_utf8_lossy(request.get_at()),
                     String::from_utf8(request.get_pid().to_vec()).unwrap_or_default()
                 );
-                return None;
+                return Response::default();
             }
         };
 
         match self.get_pid_response() {
-            Ok(response) => Some(response),
+            Ok(response) => response,
             Err(err) => {
                 println!(
                     "{}\tAT: '{}' - PID: '{}' ",
@@ -417,7 +418,7 @@ impl OBD {
                     String::from_utf8_lossy(request.get_at()),
                     String::from_utf8(request.get_pid().to_vec()).unwrap_or_default()
                 );
-                return None;
+                return Response::default();
             }
         }
     }

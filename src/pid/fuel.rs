@@ -37,6 +37,7 @@ impl FuelType {
     }
 }
 
+#[derive(Debug)]
 pub enum FuelSystemStatus {
     Status(&'static str),
 }
@@ -68,13 +69,7 @@ impl OBD {
             }
         }
 
-        let response = match self.query(command) {
-            Some(data) => data,
-            None => {
-                println!("failed to get short term fuel trim. bank: {bank:?}. response is 'None'");
-                return 0.0;
-            }
-        };
+        let response = self.query(command);
 
         (response.a_value() / 1.28) - 100.0
     }
@@ -91,19 +86,13 @@ impl OBD {
             }
         }
 
-        let response = match self.query(command) {
-            Some(data) => data,
-            None => {
-                println!("failed to get long term fuel trim. bank: {bank:?}. response is 'None'");
-                return 0.0;
-            }
-        };
+        let response = self.query(command);
 
         (response.a_value() / 1.28) - 100.0
     }
 
     pub fn fuel_system_status(&mut self) -> (FuelSystemStatus, FuelSystemStatus) {
-        let response = self.query(Command::new_pid(b"0103")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0103"));
 
         (
             FuelSystemStatus::from_u8(response.a_value() as u8),
@@ -112,48 +101,53 @@ impl OBD {
     }
 
     pub fn fuel_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"010A")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"010A"));
         response.a_value() * 3.0
     }
 
     pub fn fuel_tank_level(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"012F")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"012F"));
         (100.0 / 255.0) * response.a_value()
     }
 
     pub fn fuel_rail_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0122")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0122"));
         0.079 * ((256.0 * response.a_value()) + response.b_value())
     }
 
     pub fn fuel_rail_guage_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0123")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0123"));
         10.0 * ((256.0 * response.a_value()) + response.b_value())
     }
 
     pub fn fuel_type(&mut self) -> FuelType {
-        let response = self.query(Command::new_pid(b"0151")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0151"));
 
         FuelType::from_u8(response.a_value() as u8)
     }
 
     pub fn ethanol_fuel_percentage(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0152")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"0152"));
         (100.0 / 255.0) * response.a_value()
     }
 
     pub fn fuel_injection_timing(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"015D")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"015D"));
         (((256.0 * response.a_value()) + response.b_value()) / 128.0) - 210.0
     }
 
     pub fn commanded_evap_purge(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"012E")).unwrap_or_default();
+        let response = self.query(Command::new_pid(b"012E"));
         (100.0 / 255.0) * response.a_value()
     }
 
     pub fn evap_system_vapor_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0132")).unwrap_or_default();
-        ( (256.0 * response.a_value()) + response.b_value() ) / 4.0
+        let response = self.query(Command::new_pid(b"0132"));
+        ((256.0 * response.a_value()) + response.b_value()) / 4.0
+    }
+
+    pub fn cylinder_fuel_rate(&mut self) -> f32 {
+        let response = self.query(Command::new_pid(b"01A2"));
+        ((256.0 * response.a_value()) + response.b_value()) / 32.0
     }
 }
