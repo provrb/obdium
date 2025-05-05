@@ -1,37 +1,104 @@
-ATZ response: ATZELM327 v1.5
-ATE0 response: ATE0OK
-ATL0 response: OK
-ATH1 response: OK
-ATSP0 response: OK
-
 ======================== DIAGNOSTICS ========================
 Supported pids for ECUs
-ECU 7E8: 
+ECU 7EB:
+        01 0A 20 2A 
+ECU 7EA:
+        34 
+ECU 7E8:
         01 03 04 05 06 07 0A 0B 0C 0D 
         0E 0F 10 11 13 14 15 1C 1F 20 
         15 22 23 24 25 26 27 30 34 29 
         2A 2B 2C 2D 2E 2F 31 32 34 37 
         39 48 44 
-ECU 7EB:
-        01 0A 20 34 2A 
-
 Check engine light: Off
-Number of trouble codes: 0
+Number of trouble codes: 3
+dbg: dtc response from ecu: 10080303350340020002000365AAAAAAAAAA
+Showing details for trouble code P1008:
+Trouble code: P1008
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P1008 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P0303:
+Trouble code: P0303
+System letter: P
+Location: Powertrain
+Description: Cylinder 2 Misfire Detected
+Overview: P0303 is an issue related to Cylinder 2 Misfire Detected. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P3503:
+Trouble code: P3503
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P3503 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C0002:
+Trouble code: C0002
+System letter: C
+Location: Chassis
+Description: none
+Overview: C0002 is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code P0002:
+Trouble code: P0002
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P0002 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P0003:
+Trouble code: P0003
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P0003 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C25AA:
+Trouble code: C25AA
+System letter: C
+Location: Chassis
+Description: none
+Overview: C25AA is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
 OBD standard: JOBD and OBD-II
-Auxiliary input status: Active
+Auxiliary input status: Inactive
+Control module voltage: 14.841V
 Distance traveled with malfunction indicator lamp: 11km
-Control module voltage: 13.82V
+TIme run with malfunction indicator lamp: 0s
 Time since codes cleared: 0s
-Engine speed: 700.25RPM
-Engine load: 15.294118%
-Coolant temperature: 98C
+Warm-ups since codes cleared: 19
+
+======================== ENGINE ========================
+Engine type: Internal Combustion Engine
+Engine speed: 705.75RPM
+Engine load: 19.607843%
+Coolant temperature: 71°C
+Coolant temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
 Engine fuel rate: 0L/h
-Engine runtime: 0s
+Engine runtime: 24s
+Engine runtime (diesel): 0s
 Engine mileage: 0km
 Engine oil temperature: -40°C
+Engine oil temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
 Drivers demand engine torque: -125%
 Actual engine torque: -125%
-Reference engine torque: 0%
+Reference engine torque: 0Nm
 Engine percent torque data:
         Idle: -125%
         Engine point 1: -125%
@@ -41,32 +108,52 @@ Engine percent torque data:
 
 ======================== FUEL SYSTEM ========================
 Short term fuel trim:
-        Bank 1: -3.90625
+        Bank 1: -0.78125
         Bank 2: -100
 Long term fuel trim:
-        Bank 1: 6.25
+        Bank 1: 3.125
+invalid response payload: ''
         Bank 2: -100
-Fuel pressure: 297kPa
-Fuel tank level: 28.62745%
+Fuel system status:
+Fuel system 1: Status("Closed loop, using O2 sensor feedback for fuel mix")
+Fuel system 2: Status("Motor is off")
+invalid response payload: ''
+Fuel pressure: 0kPa
+Fuel tank level: 21.960785%
+invalid response payload: ''
+invalid response payload: ''
 Fuel rail pressure: 0kPa
 Fuel rail gauge pressure: 0kPa
-Fuel type: Gasoline
+Fuel type: Type("Gasoline")
 Ethanol fuel percentage: 0%
 Fuel injection timing: -210°
+Commanded EVAP purge: 0%
+EVAP system vapor pressure: 3.25Pa
+Cylinder fuel rate: 0mg/stroke
 
 ======================== SENSOR DATA ========================
 Vehicle speed: 0km/h
-Timing advance: 7° before top-dead-center
-Intake air temperature: 24°C
-Mass air-flow sensor rate: 1.7g/s
-Ambient air temperature: 19°C
-Maximum air-flow rate from mass air-flow sensor: 0g/s
-Throttle position: 19.215687%
-Relative throttle position: 5.490196%
+invalid response payload: ''
+Timing advance: -64° before top-dead-center
+Throttle position: 20.784313%
+invalid response payload: ''
+Relative throttle position: 0%
+Absolute throttle position B: 20.392157%
+invalid response payload: ''
+Absolute throttle position C: 0%
+Accelerator pedal position D: 19.607843%
+Accelerator pedal position E: 9.803922%
+Accelerator pedal position F: 0%
+invalid response payload: ''
+invalid response payload: ''
+invalid response payload: ''
+invalid response payload: ''
+
+======================== AIR DATA ========================
 Oxygen Sensors:
 Sensor      Voltage  Short Term Trim (%)        AFR / Voltage
-1            0.100v                 3.12        0.000 / 0.000  
-2            0.685v                99.22        0.000 / 0.000  
+1            0.350v                 0.00        0.000 / 0.000  
+2            0.115v                99.22        0.000 / 0.000  
 3            0.000v              -100.00        0.000 / 0.000  
 4            0.000v              -100.00        0.000 / 0.000  
 5            0.000v              -100.00        0.000 / 0.000  
@@ -81,3 +168,236 @@ Maximum values for:
         Oxygen sensor voltage: 0V
         Oxygen sensor current: 0mA
         Intake manifold absolute pressure: 310kPa
+Intake air temperature: 29°C
+Mass air-flow sensor rate: 2.17g/s
+Ambient air temperature: 6°C
+Maximum air-flow rate from mass air-flow sensor: 0g/s
+Secondary air status: Status("Unknown secondary air status")
+Absolute barometric pressure: 98kPa
+
+> 221470
+< '7E8 04 62 14 70 00 \r\r'
+
+> 221154
+< '7E8 04 62 11 54 6C \r\r'
+
+> 221940
+< '7E8 04 62 19 40 4C \r7EA 04 62 19 40 4D \r\r'
+
+> 2222AC
+< 'NO DATA\r\r'
+
+> 2222AB
+< 'NO DATA\r\r'
+
+> 2225A5
+< 'NO DATA\r\r'
+
+> 2225A2
+< 'NO DATA\r\r'
+
+> 2225AF
+< 'NO DATA\r\r'
+
+> 2225AE
+< 'NO DATA\r\r'
+
+> 2225B0
+< 'NO DATA\r\r'
+
+> 2226A1
+< 'NO DATA\r\r'
+
+> 2226A3
+< 'NO DATA\r\r'
+
+> 221470
+< '7E8 04 62 14 70 00 \r\r'
+
+> 221154
+< '7E8 04 62 11 54 6F \r\r'
+
+> 221940
+< '7EA 04 62 19 40 4D \r7E8 04 62 19 40 4D \r\r'
+
+> 2225A5
+< 'NO DATA\r\r'
+
+> exit
+
+==== SESSION 2 ====
+
+ATZ response: ELM327 v1.5
+ATE0 response: ATE0OK
+ATL0 response: OK
+ATH1 response: OK
+ATSP0 response: OK
+
+======================== DIAGNOSTICS ========================
+Supported pids for ECUs
+ECU 7E8:
+        01 03 04 05 06 07 0A 0B 0C 0D 
+        0E 0F 10 11 13 14 15 1C 1F 20 
+        15 22 23 24 25 26 27 30 34 29 
+        2A 2B 2C 2D 2E 2F 31 32 34 37 
+        39 48 44 
+ECU 7EB:
+        01 0A 20 34 2A 
+Check engine light: Off
+Number of trouble codes: 0
+dbg: dtc response from ecu: 02001008030335034002000365AAAAAAAAAA
+Showing details for trouble code P0200:
+Trouble code: P0200
+System letter: P
+Location: Powertrain
+Description: Engine Oil Temperature Sensor Intermittent
+Overview: P0200 is an issue related to Engine Oil Temperature Sensor Intermittent. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P1008:
+Trouble code: P1008
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P1008 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P0303:
+Trouble code: P0303
+System letter: P
+Location: Powertrain
+Description: Cylinder 2 Misfire Detected
+Overview: P0303 is an issue related to Cylinder 2 Misfire Detected. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P3503:
+Trouble code: P3503
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P3503 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C0002:
+Trouble code: C0002
+System letter: C
+Location: Chassis
+Description: none
+Overview: C0002 is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code P0003:
+Trouble code: P0003
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P0003 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C25AA:
+Trouble code: C25AA
+System letter: C
+Location: Chassis
+Description: none
+Overview: C25AA is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
+OBD standard: JOBD and OBD-II
+Auxiliary input status: Inactive
+Control module voltage: 14.366V
+Distance traveled with malfunction indicator lamp: 11km
+TIme run with malfunction indicator lamp: 0s
+Time since codes cleared: 0s
+Warm-ups since codes cleared: 19
+
+======================== ENGINE ========================
+Engine type: Internal Combustion Engine
+Engine speed: 703.5RPM
+Engine load: 14.901961%
+Coolant temperature: 81°C
+Coolant temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
+Engine fuel rate: 0L/h
+Engine runtime: 191s
+Engine runtime (diesel): 0s
+Engine mileage: 0km
+Engine oil temperature: -40°C
+Engine oil temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
+Drivers demand engine torque: -125%
+Actual engine torque: -125%
+Reference engine torque: 0Nm
+Engine percent torque data:
+        Idle: -125%
+        Engine point 1: -125%
+        Engine point 2: -125%
+        Engine point 3: -125%
+        Engine point 4: -125%
+
+======================== FUEL SYSTEM ========================
+Short term fuel trim:
+        Bank 1: 3.90625
+        Bank 2: -100
+Long term fuel trim:
+        Bank 1: 9.375
+        Bank 2: -100
+Fuel system status:
+Fuel system 1: Status("Closed loop, using O2 sensor feedback for fuel mix")
+Fuel system 2: Status("Motor is off")
+Fuel pressure: 294kPa
+Fuel tank level: 21.960785%
+Fuel rail pressure: 0kPa
+Fuel rail gauge pressure: 0kPa
+Fuel type: Type("Gasoline")
+Ethanol fuel percentage: 0%
+Fuel injection timing: -210°
+Commanded EVAP purge: 16.078432%
+EVAP system vapor pressure: 16300.25Pa
+Cylinder fuel rate: 0mg/stroke
+
+======================== SENSOR DATA ========================
+Vehicle speed: 0km/h
+Timing advance: 5° before top-dead-center
+Throttle position: 18.82353%
+Relative throttle position: 5.098039%
+Absolute throttle position B: 18.431374%
+Absolute throttle position C: 0%
+Accelerator pedal position D: 19.607843%
+Accelerator pedal position E: 9.803922%
+Accelerator pedal position F: 0%
+
+======================== AIR DATA ========================
+Oxygen Sensors:
+Sensor      Voltage  Short Term Trim (%)        AFR / Voltage
+1            0.730v                 3.12        0.000 / 0.000  
+2            0.625v                99.22        0.000 / 0.000  
+3            0.000v              -100.00        0.000 / 0.000  
+4            0.000v              -100.00        0.000 / 0.000  
+5            0.000v              -100.00        0.000 / 0.000  
+6            0.000v              -100.00        0.000 / 0.000  
+7            0.000v              -100.00        0.000 / 0.000  
+8            0.000v              -100.00        0.000 / 0.000  
+Mass air flow sensor:
+        Sensor A: 0g/s
+        Sensor B: 0g/s
+Maximum values for:
+        Fuel-air equivalance ratio: 0
+        Oxygen sensor voltage: 0V
+        Oxygen sensor current: 0mA
+        Intake manifold absolute pressure: 310kPa
+Intake air temperature: 29°C
+Mass air-flow sensor rate: 1.68g/s
+Ambient air temperature: 6°C
+Maximum air-flow rate from mass air-flow sensor: 0g/s
+Secondary air status: Status("Unknown secondary air status")
+Absolute barometric pressure: 98kPa
+
+> 2225A5                 
+< 'NO DATA\r\r'
+
+> exit
