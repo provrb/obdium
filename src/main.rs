@@ -63,8 +63,6 @@ fn main() -> Result<(), OBDError> {
         obd.warm_ups_since_codes_cleared()
     );
 
-    return Ok(());
-
     println!("\n{} ENGINE {}", "=".repeat(24), "=".repeat(24));
     println!("Engine type: {}", obd.get_engine_type());
     println!("Engine speed: {}RPM", obd.rpm());
