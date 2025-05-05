@@ -139,7 +139,7 @@ impl TroubleCode {
         self.description = "none".to_string(); // default
 
         // connect to trouble code data base
-        let con = match sqlite::Connection::open("./code-descriptions.db") {
+        let con = match sqlite::Connection::open("./ref/code-descriptions.db") {
             Ok(con) => con,
             Err(err) => {
                 println!("when connecting to codes database: {err}");
