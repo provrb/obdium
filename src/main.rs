@@ -1,7 +1,6 @@
-use std::process::Stdio;
-
 use obdium::{
-    cmd::Command, obd::{BankNumber, OBDError, SensorNumber, OBD}, pid::diagnostics::MILStatus
+    obd::{BankNumber, OBDError, SensorNumber, OBD},
+    pid::diagnostics::MILStatus,
 };
 
 fn main() -> Result<(), OBDError> {
@@ -9,8 +8,7 @@ fn main() -> Result<(), OBDError> {
     obd.connect("COM4", 38400)?;
     //obd.connect("/dev/ttyUSB0", 38400)?
     //obd.connect("/dev/tnt1", 38400)?;
-
-    obd.read_from_user_input();
+    //obd.read_from_user_input();
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_supported_pids();
@@ -52,29 +50,43 @@ fn main() -> Result<(), OBDError> {
         "Distance traveled with malfunction indicator lamp: {}km",
         obd.distance_traveled_with_mil()
     );
-    println!("TIme run with malfunction indicator lamp: {}s", obd.time_run_with_mil());
+    println!(
+        "TIme run with malfunction indicator lamp: {}s",
+        obd.time_run_with_mil()
+    );
     println!(
         "Time since codes cleared: {}s",
         obd.time_since_codes_cleared()
     );
-    println!("Warm-ups since codes cleared: {}", obd.warm_ups_since_codes_cleared());
+    println!(
+        "Warm-ups since codes cleared: {}",
+        obd.warm_ups_since_codes_cleared()
+    );
+
+    return Ok(());
 
     println!("\n{} ENGINE {}", "=".repeat(24), "=".repeat(24));
     println!("Engine type: {}", obd.get_engine_type());
     println!("Engine speed: {}RPM", obd.rpm());
     println!("Engine load: {}%", obd.engine_load());
-    
+
     let coolant_temp = obd.coolant_temp_sensors();
     println!("Coolant temperature: {}°C", obd.coolant_temp());
-    println!("Coolant temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ", coolant_temp.0, coolant_temp.1);
+    println!(
+        "Coolant temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
+        coolant_temp.0, coolant_temp.1
+    );
     println!("Engine fuel rate: {}L/h", obd.engine_fuel_rate());
     println!("Engine runtime: {}s", obd.engine_runtime());
     println!("Engine runtime (diesel): {}s", obd.engine_runtime_diesel());
     println!("Engine mileage: {}km", obd.engine_mileage());
-    
+
     let oil_temp = obd.engine_oil_temp_sensors();
     println!("Engine oil temperature: {}°C", obd.engine_oil_temp());
-    println!("Engine oil temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ", oil_temp.0, oil_temp.1);
+    println!(
+        "Engine oil temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
+        oil_temp.0, oil_temp.1
+    );
 
     println!(
         "Drivers demand engine torque: {}%",
@@ -103,7 +115,7 @@ fn main() -> Result<(), OBDError> {
     println!("Long term fuel trim:");
     println!("\tBank 1: {}", obd.long_term_fuel_trim(BankNumber::Bank1));
     println!("\tBank 2: {}", obd.long_term_fuel_trim(BankNumber::Bank2));
-    
+
     let fuel_system_status = obd.fuel_system_status();
     println!("Fuel system status:");
     println!("Fuel system 1: {:?}", fuel_system_status.0);
@@ -123,7 +135,10 @@ fn main() -> Result<(), OBDError> {
     );
     println!("Fuel injection timing: {}°", obd.fuel_injection_timing());
     println!("Commanded EVAP purge: {}%", obd.commanded_evap_purge());
-    println!("EVAP system vapor pressure: {}Pa", obd.evap_system_vapor_pressure());
+    println!(
+        "EVAP system vapor pressure: {}Pa",
+        obd.evap_system_vapor_pressure()
+    );
     println!("Cylinder fuel rate: {}mg/stroke", obd.cylinder_fuel_rate());
 
     println!("\n{} SENSOR DATA {}", "=".repeat(24), "=".repeat(24));
@@ -138,11 +153,26 @@ fn main() -> Result<(), OBDError> {
         "Relative throttle position: {}%",
         obd.relative_throttle_pos()
     );
-    println!("Absolute throttle position B: {}%", obd.abs_throttle_position_b());
-    println!("Absolute throttle position C: {}%", obd.abs_throttle_position_c());
-    println!("Accelerator pedal position D: {}%", obd.acc_pedal_position_d());
-    println!("Accelerator pedal position E: {}%", obd.acc_pedal_position_e());
-    println!("Accelerator pedal position F: {}%", obd.acc_pedal_position_f());
+    println!(
+        "Absolute throttle position B: {}%",
+        obd.abs_throttle_position_b()
+    );
+    println!(
+        "Absolute throttle position C: {}%",
+        obd.abs_throttle_position_c()
+    );
+    println!(
+        "Accelerator pedal position D: {}%",
+        obd.acc_pedal_position_d()
+    );
+    println!(
+        "Accelerator pedal position E: {}%",
+        obd.acc_pedal_position_e()
+    );
+    println!(
+        "Accelerator pedal position F: {}%",
+        obd.acc_pedal_position_f()
+    );
 
     // Read oxcygen sensors 1-8
     let sensors = [
@@ -203,6 +233,9 @@ fn main() -> Result<(), OBDError> {
     );
 
     println!("Secondary air status: {:?}", obd.secondary_air_status());
-    println!("Absolute barometric pressure: {}kPa", obd.abs_barometric_pressure());    
+    println!(
+        "Absolute barometric pressure: {}kPa",
+        obd.abs_barometric_pressure()
+    );
     Ok(())
 }

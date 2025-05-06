@@ -109,14 +109,45 @@ impl Response {
     pub fn get_payload_components(&self) -> Vec<Vec<u8>> {
         let clean = match self.get_payload() {
             Some(resp) => {
-                if resp.len() < 6 {
-                    println!("invalid response payload: '{resp}'");
+                // Check what type of response this is based on the prefix
+                //
+                // In a mode 22 response
+                // (e.g, 62 F4 0D 2B)
+                // 62 F4 0D is the reply, 2B is the payload byte
+                // which starts 8 characters into the string.
+                //
+                // In a service 01 response
+                // (e.g 41 0C 1A F8)
+                // 41 0C is the reply, 1A F8 are the payload bytes
+                // which starts 6 characters into the string.
+                //
+                // Due to the difference in structures, to get the payload bytes
+                // for mode 22 responses, we have to start 8 characters in the string
+                // instead of 6 for a 01 service response
+                if resp.starts_with("22") { 
+                    // Mode 22 response
+                    if resp.len() < 8 {
+                        println!("invalid response payload: '{resp}'");
+                        return Vec::new();
+                    }
+
+                    resp[8..].to_string()
+                } else if resp.starts_with("41") {
+                    // Service 01 response
+                    if resp.len() < 6 {
+                        println!("invalid response payload: '{resp}'");
+                        return Vec::new();
+                    }
+
+                    resp[6..].to_string()
+                } else {
+                    println!("unexpected response prefix: '{resp}'");
                     return Vec::new();
                 }
-                resp[6..].to_string()
             }
             None => return Vec::new(),
         };
+        println!("Payload: {clean}");
 
         let hex: Vec<Vec<u8>> = clean
             .as_bytes()

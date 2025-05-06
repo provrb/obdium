@@ -13,7 +13,7 @@ impl fmt::Display for EngineType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             EngineType::SparkIgnition => write!(f, "Internal Combustion Engine"),
-            EngineType::CompressionIgnition => write!(f, "Compression Ignition Engine")
+            EngineType::CompressionIgnition => write!(f, "Compression Ignition Engine"),
         }
     }
 }
@@ -94,6 +94,11 @@ impl OBD {
     pub fn engine_oil_temp(&mut self) -> f32 {
         let response = self.query(Command::new_pid(b"015C"));
         response.a_value() - 40.0
+    }
+
+    pub fn engine_oil_pressure(&mut self) -> f32 {
+        let response = self.query(Command::new_arb("221470"));
+        response.a_value() * 3.985 // kPa
     }
 
     pub fn engine_oil_temp_sensors(&mut self) -> (f32, f32) {

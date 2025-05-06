@@ -176,7 +176,7 @@ Secondary air status: Status("Unknown secondary air status")
 Absolute barometric pressure: 98kPa
 
 > 221470
-< '7E8 04 62 14 70 00 \r\r'
+< '62 14 70 00 \r\r'
 
 > 221154
 < '7E8 04 62 11 54 6C \r\r'

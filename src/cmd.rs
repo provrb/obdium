@@ -30,7 +30,7 @@ impl Command {
             pid_command: *command,
             at_command: &[],
             svc_command: [0u8; 2],
-            arbitrary_message: String::default()
+            arbitrary_message: String::default(),
         }
     }
 
@@ -49,17 +49,17 @@ impl Command {
             pid_command: [0u8; 4],
             at_command: &[],
             svc_command: *svc_command,
-            arbitrary_message: String::default()
+            arbitrary_message: String::default(),
         }
     }
 
-    pub(crate) fn new_arb(arbitrary_msg: &String) -> Self {
+    pub(crate) fn new_arb(arbitrary_msg: &str) -> Self {
         Command {
             command_type: CommandType::Arbitrary,
             pid_command: [0u8; 4],
             at_command: &[],
             svc_command: [0u8; 2],
-            arbitrary_message: arbitrary_msg.to_owned()
+            arbitrary_message: arbitrary_msg.to_owned(),
         }
     }
 

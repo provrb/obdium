@@ -141,7 +141,7 @@ impl OBD {
         let mut stdout = std::io::stdout();
         loop {
             let mut input = String::new();
-            
+
             let _ = stdout.write(b"\n> ");
             let _ = stdout.flush();
             let _ = stdin.read_line(&mut input);
@@ -291,6 +291,9 @@ impl OBD {
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.pid = [as_bytes[2], as_bytes[3]];
         meta_data.payload = Some(meta_data.payload_from_response());
+
+        println!(">--- 1: {:?}", meta_data.payload);
+        println!(">--- 2: {:?}", meta_data.raw_response);
 
         Ok(meta_data)
     }
