@@ -298,32 +298,59 @@ impl OBD {
         Ok(meta_data)
     }
 
-    pub fn get_supported_pids(&mut self) -> HashMap<String, Vec<String>> {
-        let mut supported_pids: HashMap<String, Vec<String>> = HashMap::new();
-        let request_pids = vec!["00", "20", "40", "60", "80", "A0", "C0"];
+    pub fn get_service_supported_pids(&mut self, service: &str) -> HashMap<String, Vec<String>> {
+        // Service must be 2 characters long
+        // An example of a service would be
+        // '01' '05' or '09'
+        if service.len() != 2 {
+            println!("get_service_supported_pids; service ({service}) must be 2 characters long.");
+            return HashMap::new();
+        }
 
-        for request_pid in request_pids {
+        let service_as_bytes = service.as_bytes();
+
+        // A hashmap of supported pids for different ECUs
+        // Key -> ECU Name
+        // Value -> List of supported pids as strings
+        let mut supported_pids: HashMap<String, Vec<String>> = HashMap::new();
+
+        // The pids to request service 'service' to get a list of
+        // supported pids by the car for that service
+        let mut requests = Vec::new();
+
+        if service == "01" {
+            requests = vec!["00", "20", "40", "60", "80", "A0", "C0"];
+        } else if service == "05" || service == "09" {
+            // the request to send to service 05 and 09 to get supported pids from 01-20
+            requests = vec!["00"];
+        }
+
+        for request_pid in requests {
             let request_pid_bytes = request_pid.as_bytes();
-            let command = [b'0', b'1', request_pid_bytes[0], request_pid_bytes[1]];
+            let command = [
+                service_as_bytes[0],
+                service_as_bytes[1],
+                request_pid_bytes[0],
+                request_pid_bytes[1],
+            ];
             let response = self.query(Command::new_pid(&command));
             let split = format!("41{}", request_pid);
 
-            let parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
+            println!("request pid: {request_pid}");
+            let mut parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
                 &response,
                 &split,
-                request_pid.parse().unwrap_or_default(),
+                i32::from_str_radix(request_pid, 16).unwrap_or_default(),
             );
 
-            // println!("[{request_pid}]: {parsed:?}");
-
-            for (ecu_name, pids) in parsed.into_iter() {
+            for (ecu_name, pids) in parsed.iter_mut() {
+                println!("ECU: {ecu_name} PIDS: {pids:?}");
                 supported_pids
-                    .entry(ecu_name)
+                    .entry(ecu_name.to_string())
                     .and_modify(|existing| existing.extend(pids.clone()))
-                    .or_insert(pids);
+                    .or_insert(pids.to_vec());
             }
         }
-
         supported_pids
     }
 
@@ -358,6 +385,8 @@ impl OBD {
             };
             let mut supported_pids: Vec<String> = Vec::new();
 
+            println!("ECU: {ecu}");
+
             // Loop through all characters in 'data'
             // Get the character as a number from the hex character 'ch'
             for ch in data.chars() {
@@ -369,10 +398,12 @@ impl OBD {
                 // If bit is 1, that is a supported pid.
                 for bit in bits.chars() {
                     // print!("\t{bit} {pid} - ");
+                    println!("pid: {pid}, {pid:02x}");
+                    
                     if bit == '1' {
                         // value not found
                         supported_pids.push(format!("{pid:02X}"));
-                        // println!("set")
+                        println!("- set")
                     } else {
                         // println!("not")
                     }
@@ -381,8 +412,6 @@ impl OBD {
                 }
             }
 
-            supported_pids.sort();
-            supported_pids.dedup();
             respective_pids.insert(ecu, supported_pids);
 
             pid = start_pid + 1;
@@ -458,7 +487,5 @@ impl OBD {
                 return Response::default();
             }
         }
-
-        
     }
 }

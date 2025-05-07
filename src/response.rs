@@ -131,7 +131,7 @@ impl Response {
                 // for mode 22 responses, we have to start 8 characters in the string
                 // instead of 6 for a 01 service response
                 println!("resp: {resp}");
-                if resp.starts_with("62") { 
+                if resp.starts_with("62") {
                     // Mode 22 response
                     if resp.len() < 9 {
                         println!("invalid response payload: '{resp}'");

@@ -13,7 +13,7 @@ fn main() -> Result<(), OBDError> {
     println!("{}kpa", obd.engine_oil_pressure());
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
-    let supported_pids = obd.get_supported_pids();
+    let supported_pids = obd.get_service_supported_pids("01");
 
     println!("Supported pids for ECUs");
     for (ecu_name, pids) in supported_pids.iter() {
