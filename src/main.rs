@@ -12,8 +12,6 @@ fn main() -> Result<(), OBDError> {
 
     println!("{}kpa", obd.engine_oil_pressure());
 
-    return Ok(());
-
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_supported_pids();
 

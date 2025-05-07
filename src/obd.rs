@@ -223,15 +223,13 @@ impl OBD {
     }
 
     pub fn get_pid_response(&mut self) -> Result<Response, OBDError> {
-        // let mut response: String = match self.read_until(b'>') {
-        //     Ok(response) => response,
-        //     Err(err) => {
-        //         println!("when reading pid response - {} ", err);
-        //         return Err(err);
-        //     }
-        // };
-
-        let mut response = "7E8 04 62 14 70 10".to_string();
+        let mut response: String = match self.read_until(b'>') {
+            Ok(response) => response,
+            Err(err) => {
+                println!("when reading pid response - {} ", err);
+                return Err(err);
+            }
+        };
 
         response = response.replace("SEARCHING...", "").replace("\r", "\n");
 
