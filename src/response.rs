@@ -99,6 +99,7 @@ impl Response {
 
     pub fn get_payload(&self) -> Option<String> {
         if self.payload.is_none() && self.raw_response.is_some() {
+            println!("from response");
             // self.payload likely has not been updated. Update it now.
             return Some(self.payload_from_response());
         }
@@ -109,29 +110,34 @@ impl Response {
     pub fn get_payload_components(&self) -> Vec<Vec<u8>> {
         let clean = match self.get_payload() {
             Some(resp) => {
+                println!("P: {resp}");
                 // Check what type of response this is based on the prefix
                 //
                 // In a mode 22 response
                 // (e.g, 62 F4 0D 2B)
+                //       0123456789A
+                //                ^ start here
                 // 62 F4 0D is the reply, 2B is the payload byte
-                // which starts 8 characters into the string.
+                // which starts 9 characters into the string.
                 //
                 // In a service 01 response
                 // (e.g 41 0C 1A F8)
+                //      0123456789A
+                //            ^ start here
                 // 41 0C is the reply, 1A F8 are the payload bytes
                 // which starts 6 characters into the string.
                 //
                 // Due to the difference in structures, to get the payload bytes
                 // for mode 22 responses, we have to start 8 characters in the string
                 // instead of 6 for a 01 service response
-                if resp.starts_with("22") { 
+                println!("resp: {resp}");
+                if resp.starts_with("62") { 
                     // Mode 22 response
-                    if resp.len() < 8 {
+                    if resp.len() < 9 {
                         println!("invalid response payload: '{resp}'");
                         return Vec::new();
                     }
-
-                    resp[8..].to_string()
+                    resp[9..].to_string()
                 } else if resp.starts_with("41") {
                     // Service 01 response
                     if resp.len() < 6 {
@@ -147,7 +153,7 @@ impl Response {
             }
             None => return Vec::new(),
         };
-        println!("Payload: {clean}");
+        println!("Payload: '{clean}'");
 
         let hex: Vec<Vec<u8>> = clean
             .as_bytes()
@@ -183,10 +189,6 @@ impl Response {
         let bytes = match components.get(value.as_usize()) {
             Some(b) => b,
             None => {
-                // println!(
-                //     "warning; payload does not have a '{value:?} value' ({})",
-                //     value.as_usize()
-                // );
                 return 0.0;
             }
         };
@@ -222,7 +224,7 @@ impl Response {
                 continue;
             }
 
-            if pair[0] == b'4' && pair[1] == self.service[1] {
+            if (pair[0] == b'4' || pair[0] == b'6') && pair[1] == self.service[1] {
                 if first_response_found && pairs > self.payload_size {
                     break;
                 }
@@ -237,7 +239,6 @@ impl Response {
             }
             pairs += 1;
         }
-
         OBD::format_response(&payload)
     }
 }

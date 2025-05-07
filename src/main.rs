@@ -10,6 +10,10 @@ fn main() -> Result<(), OBDError> {
     //obd.connect("/dev/tnt1", 38400)?;
     //obd.read_from_user_input();
 
+    println!("{}kpa", obd.engine_oil_pressure());
+
+    return Ok(());
+
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_supported_pids();
 
@@ -85,6 +89,7 @@ fn main() -> Result<(), OBDError> {
         "Engine oil temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
         oil_temp.0, oil_temp.1
     );
+    println!("Engine oil pressure: {}kPa", obd.engine_oil_pressure()); // Mode 22 PID
 
     println!(
         "Drivers demand engine torque: {}%",
