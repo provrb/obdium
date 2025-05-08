@@ -401,3 +401,706 @@ Absolute barometric pressure: 98kPa
 < 'NO DATA\r\r'
 
 > exit
+
+SESSION 3
+
+ATZ response: ELM327 v1.5
+ATE0 response: ATE0OK
+ATL0 response: OK
+ATH1 response: OK
+ATSP0 response: OK
+>--- 1: Some("62 14 70 00")
+>--- 2: Some("62 14 70 00")
+P: 62 14 70 00
+resp: 62 14 70 00
+Payload: '00'
+0kpa
+
+======================== DIAGNOSTICS ========================
+>--- 1: Some("41 00 BE 7F B8 13 41 00 80 00 00 01")
+>--- 2: Some("41 00 BE 7F B8 13 41 00 80 00 00 01 41 00 80 40 00 01")
+request pid: 00
+ECU: 7E8
+pid: 1, 01
+- set
+pid: 2, 02
+pid: 3, 03
+- set
+pid: 4, 04
+- set
+pid: 5, 05
+- set
+pid: 6, 06
+- set
+pid: 7, 07
+- set
+pid: 8, 08
+pid: 9, 09
+pid: 10, 0a
+- set
+pid: 11, 0b
+- set
+pid: 12, 0c
+- set
+pid: 13, 0d
+- set
+pid: 14, 0e
+- set
+pid: 15, 0f
+- set
+pid: 16, 10
+- set
+pid: 17, 11
+- set
+pid: 18, 12
+pid: 19, 13
+- set
+pid: 20, 14
+- set
+pid: 21, 15
+- set
+pid: 22, 16
+pid: 23, 17
+pid: 24, 18
+pid: 25, 19
+pid: 26, 1a
+pid: 27, 1b
+pid: 28, 1c
+- set
+pid: 29, 1d
+pid: 30, 1e
+pid: 31, 1f
+- set
+pid: 32, 20
+- set
+ECU: 7EA
+pid: 1, 01
+- set
+pid: 2, 02
+pid: 3, 03
+pid: 4, 04
+pid: 5, 05
+pid: 6, 06
+pid: 7, 07
+pid: 8, 08
+pid: 9, 09
+pid: 10, 0a
+pid: 11, 0b
+pid: 12, 0c
+pid: 13, 0d
+pid: 14, 0e
+pid: 15, 0f
+pid: 16, 10
+pid: 17, 11
+pid: 18, 12
+pid: 19, 13
+pid: 20, 14
+pid: 21, 15
+pid: 22, 16
+pid: 23, 17
+pid: 24, 18
+pid: 25, 19
+pid: 26, 1a
+pid: 27, 1b
+pid: 28, 1c
+pid: 29, 1d
+pid: 30, 1e
+pid: 31, 1f
+pid: 32, 20
+- set
+ECU: 7EA PIDS: ["01", "20"]
+ECU: 7E8 PIDS: ["01", "03", "04", "05", "06", "07", "0A", "0B", "0C", "0D", "0E", "0F", "10", "11", "13", "14", "15", "1C", "1F", "20"]
+>--- 1: Some("41 20 80 07 E0 11 41 20 00 00 00 01")
+>--- 2: Some("41 20 80 07 E0 11 41 20 00 00 00 01 41 20 00 00 00 01")
+request pid: 20
+ECU: 7E8
+pid: 33, 21
+- set
+pid: 34, 22
+pid: 35, 23
+pid: 36, 24
+pid: 37, 25
+pid: 38, 26
+pid: 39, 27
+pid: 40, 28
+pid: 41, 29
+pid: 42, 2a
+pid: 43, 2b
+pid: 44, 2c
+pid: 45, 2d
+pid: 46, 2e
+- set
+pid: 47, 2f
+- set
+pid: 48, 30
+- set
+pid: 49, 31
+- set
+pid: 50, 32
+- set
+pid: 51, 33
+- set
+pid: 52, 34
+pid: 53, 35
+pid: 54, 36
+pid: 55, 37
+pid: 56, 38
+pid: 57, 39
+pid: 58, 3a
+pid: 59, 3b
+pid: 60, 3c
+- set
+pid: 61, 3d
+pid: 62, 3e
+pid: 63, 3f
+pid: 64, 40
+- set
+ECU: 7EA
+pid: 33, 21
+pid: 34, 22
+pid: 35, 23
+pid: 36, 24
+pid: 37, 25
+pid: 38, 26
+pid: 39, 27
+pid: 40, 28
+pid: 41, 29
+pid: 42, 2a
+pid: 43, 2b
+pid: 44, 2c
+pid: 45, 2d
+pid: 46, 2e
+pid: 47, 2f
+pid: 48, 30
+pid: 49, 31
+pid: 50, 32
+pid: 51, 33
+pid: 52, 34
+pid: 53, 35
+pid: 54, 36
+pid: 55, 37
+pid: 56, 38
+pid: 57, 39
+pid: 58, 3a
+pid: 59, 3b
+pid: 60, 3c
+pid: 61, 3d
+pid: 62, 3e
+pid: 63, 3f
+pid: 64, 40
+- set
+ECU: 7E8 PIDS: ["21", "2E", "2F", "30", "31", "32", "33", "3C", "40"]
+ECU: 7EA PIDS: ["40"]
+>--- 1: Some("41 40 FE D2 80 01 41 40 40 00 00 00")
+>--- 2: Some("41 40 FE D2 80 01 41 40 40 00 00 00 41 40 40 00 00 00")
+request pid: 40
+ECU: 7E8
+pid: 65, 41
+- set
+pid: 66, 42
+- set
+pid: 67, 43
+- set
+pid: 68, 44
+- set
+pid: 69, 45
+- set
+pid: 70, 46
+- set
+pid: 71, 47
+- set
+pid: 72, 48
+pid: 73, 49
+- set
+pid: 74, 4a
+- set
+pid: 75, 4b
+pid: 76, 4c
+- set
+pid: 77, 4d
+pid: 78, 4e
+pid: 79, 4f
+- set
+pid: 80, 50
+pid: 81, 51
+- set
+pid: 82, 52
+pid: 83, 53
+pid: 84, 54
+pid: 85, 55
+pid: 86, 56
+pid: 87, 57
+pid: 88, 58
+pid: 89, 59
+pid: 90, 5a
+pid: 91, 5b
+pid: 92, 5c
+pid: 93, 5d
+pid: 94, 5e
+pid: 95, 5f
+pid: 96, 60
+- set
+ECU: 7EA
+pid: 65, 41
+pid: 66, 42
+- set
+pid: 67, 43
+pid: 68, 44
+pid: 69, 45
+pid: 70, 46
+pid: 71, 47
+pid: 72, 48
+pid: 73, 49
+pid: 74, 4a
+pid: 75, 4b
+pid: 76, 4c
+pid: 77, 4d
+pid: 78, 4e
+pid: 79, 4f
+pid: 80, 50
+pid: 81, 51
+pid: 82, 52
+pid: 83, 53
+pid: 84, 54
+pid: 85, 55
+pid: 86, 56
+pid: 87, 57
+pid: 88, 58
+pid: 89, 59
+pid: 90, 5a
+pid: 91, 5b
+pid: 92, 5c
+pid: 93, 5d
+pid: 94, 5e
+pid: 95, 5f
+pid: 96, 60
+ECU: 7E8 PIDS: ["41", "42", "43", "44", "45", "46", "47", "49", "4A", "4C", "4F", "51", "60"]
+ECU: 7EA PIDS: ["42"]
+>--- 1: Some("41 60 01 00 00 00")
+>--- 2: Some("41 60 01 00 00 00")
+request pid: 60
+ECU: 7E8
+pid: 97, 61
+pid: 98, 62
+pid: 99, 63
+pid: 100, 64
+pid: 101, 65
+pid: 102, 66
+pid: 103, 67
+pid: 104, 68
+- set
+pid: 105, 69
+pid: 106, 6a
+pid: 107, 6b
+pid: 108, 6c
+pid: 109, 6d
+pid: 110, 6e
+pid: 111, 6f
+pid: 112, 70
+pid: 113, 71
+pid: 114, 72
+pid: 115, 73
+pid: 116, 74
+pid: 117, 75
+pid: 118, 76
+pid: 119, 77
+pid: 120, 78
+pid: 121, 79
+pid: 122, 7a
+pid: 123, 7b
+pid: 124, 7c
+pid: 125, 7d
+pid: 126, 7e
+pid: 127, 7f
+pid: 128, 80
+ECU: 7E8 PIDS: ["68"]
+request pid: 80
+request pid: A0
+request pid: C0
+Supported pids for ECUs
+ECU 7EA:
+        01 20 40 42 
+ECU 7E8:
+        01 03 04 05 06 07 0A 0B 0C 0D 
+        0E 0F 10 11 13 14 15 1C 1F 20 
+        21 2E 2F 30 31 32 33 3C 40 41 
+        42 43 44 45 46 47 49 4A 4C 4F 
+        51 60 68 
+>--- 1: Some("41 01 00 04 00 00 41 01 03 07 E5 00")
+>--- 2: Some("41 01 00 04 00 00 41 01 03 07 E5 00 41 01 00 04 00 00")
+P: 41 01 00 04 00 00 41 01 03 07 E5 00
+resp: 41 01 00 04 00 00 41 01 03 07 E5 00
+Payload: '00 04 00 00 41 01 03 07 E5 00'
+Check engine light: Off
+>--- 1: Some("41 01 00 04 00 00 41 01 03 07 E5 00")
+>--- 2: Some("41 01 00 04 00 00 41 01 03 07 E5 00 41 01 00 04 00 00")
+P: 41 01 00 04 00 00 41 01 03 07 E5 00
+resp: 41 01 00 04 00 00 41 01 03 07 E5 00
+Payload: '00 04 00 00 41 01 03 07 E5 00'
+Number of trouble codes: 0
+>--- 1: Some("41 01 03 07 E5 00 41 01 00 04 00 00")
+>--- 2: Some("41 01 03 07 E5 00 41 01 00 04 00 00 41 01 00 04 00 00")
+P: 41 01 03 07 E5 00 41 01 00 04 00 00
+resp: 41 01 03 07 E5 00 41 01 00 04 00 00
+Payload: '03 07 E5 00 41 01 00 04 00 00'
+>--- 1: Some("40 02 43 00 02 43 00 03 65 AA AA AA AA AA")
+>--- 2: Some("10 08 43 03 03 35 03 40 02 43 00 02 43 00 03 65 AA AA AA AA AA")
+dbg: dtc response from ecu: 10080303350340020002000365AAAAAAAAAA
+Showing details for trouble code P1008:
+Trouble code: P1008
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P1008 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P0303:
+Trouble code: P0303
+System letter: P
+Location: Powertrain
+Description: Cylinder 2 Misfire Detected
+Overview: P0303 is an issue related to Cylinder 2 Misfire Detected. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P3503:
+Trouble code: P3503
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P3503 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C0002:
+Trouble code: C0002
+System letter: C
+Location: Chassis
+Description: none
+Overview: C0002 is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code P0002:
+Trouble code: P0002
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P0002 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code P0003:
+Trouble code: P0003
+System letter: P
+Location: Powertrain
+Description: none
+Overview: P0003 is an issue related to none. This code is from the Powertrain component of the vehicle.
+
+Showing details for trouble code C25AA:
+Trouble code: C25AA
+System letter: C
+Location: Chassis
+Description: none
+Overview: C25AA is an issue related to none. This code is from the Chassis component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
+Showing details for trouble code B2AAA:
+Trouble code: B2AAA
+System letter: B
+Location: Body
+Description: none
+Overview: B2AAA is an issue related to none. This code is from the Body component of the vehicle.
+
+>--- 1: Some("41 1C 0B")
+>--- 2: Some("41 1C 0B")
+P: 41 1C 0B
+resp: 41 1C 0B
+Payload: '0B'
+OBD standard: JOBD and OBD-II
+Auxiliary input status: Inactive
+>--- 1: Some("41 42 37 EE 41 42 38 12")
+>--- 2: Some("41 42 37 EE 41 42 38 12 41 42 36 FF")
+P: 41 42 37 EE 41 42 38 12
+resp: 41 42 37 EE 41 42 38 12
+Payload: '37 EE 41 42 38 12'
+P: 41 42 37 EE 41 42 38 12
+resp: 41 42 37 EE 41 42 38 12
+Payload: '37 EE 41 42 38 12'
+Control module voltage: 14.318V
+>--- 1: Some("41 21 00 0B")
+>--- 2: Some("41 21 00 0B")
+P: 41 21 00 0B
+resp: 41 21 00 0B
+Payload: '00 0B'
+P: 41 21 00 0B
+resp: 41 21 00 0B
+Payload: '00 0B'
+Distance traveled with malfunction indicator lamp: 11km
+TIme run with malfunction indicator lamp: 0s
+Time since codes cleared: 0s
+>--- 1: Some("41 30 15")
+>--- 2: Some("41 30 15")
+P: 41 30 15
+resp: 41 30 15
+Payload: '15'
+Warm-ups since codes cleared: 21
+
+======================== ENGINE ========================
+>--- 1: Some("41 01 00 04 00 00 41 01 03 07 E5 00")
+>--- 2: Some("41 01 00 04 00 00 41 01 03 07 E5 00 41 01 00 04 00 00")
+P: 41 01 00 04 00 00 41 01 03 07 E5 00
+resp: 41 01 00 04 00 00 41 01 03 07 E5 00
+Payload: '00 04 00 00 41 01 03 07 E5 00'
+Engine type: Internal Combustion Engine
+>--- 1: Some("41 0C 0B 17")
+>--- 2: Some("41 0C 0B 17")
+P: 41 0C 0B 17
+resp: 41 0C 0B 17
+Payload: '0B 17'
+P: 41 0C 0B 17
+resp: 41 0C 0B 17
+Payload: '0B 17'
+Engine speed: 709.75RPM
+>--- 1: Some("41 04 32")
+>--- 2: Some("41 04 32")
+P: 41 04 32
+resp: 41 04 32
+Payload: '32'
+Engine load: 19.607843%
+>--- 1: Some("41 05 7F")
+>--- 2: Some("41 05 7F")
+P: 41 05 7F
+resp: 41 05 7F
+Payload: '7F'
+Coolant temperature: 87°C
+Coolant temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
+Engine fuel rate: 0L/h
+>--- 1: Some("41 01 03 07 E5 00 41 01 00 04 00 00")
+>--- 2: Some("41 01 03 07 E5 00 41 01 00 04 00 00 41 01 00 04 00 00")
+P: 41 01 03 07 E5 00 41 01 00 04 00 00
+resp: 41 01 03 07 E5 00 41 01 00 04 00 00
+Payload: '03 07 E5 00 41 01 00 04 00 00'
+>--- 1: Some("41 1F 00 17")
+>--- 2: Some("41 1F 00 17")
+P: 41 1F 00 17
+resp: 41 1F 00 17
+Payload: '00 17'
+P: 41 1F 00 17
+resp: 41 1F 00 17
+Payload: '00 17'
+Engine runtime: 23s
+Engine runtime (diesel): 0s
+Engine mileage: 0km
+Engine oil temperature: -40°C
+Engine oil temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
+>--- 1: Some("62 14 70 00")
+>--- 2: Some("62 14 70 00")
+P: 62 14 70 00
+resp: 62 14 70 00
+Payload: '00'
+Engine oil pressure: 0kPa
+Drivers demand engine torque: -125%
+Actual engine torque: -125%
+Reference engine torque: 0Nm
+Engine percent torque data:
+        Idle: -125%
+        Engine point 1: -125%
+        Engine point 2: -125%
+        Engine point 3: -125%
+        Engine point 4: -125%
+
+======================== FUEL SYSTEM ========================
+Short term fuel trim:
+>--- 1: Some("41 06 7C")
+>--- 2: Some("41 06 7C")
+P: 41 06 7C
+resp: 41 06 7C
+Payload: '7C'
+        Bank 1: -3.125
+        Bank 2: -100
+Long term fuel trim:
+>--- 1: Some("41 07 80")
+>--- 2: Some("41 07 80")
+P: 41 07 80
+resp: 41 07 80
+Payload: '80'
+        Bank 1: 0
+        Bank 2: -100
+>--- 1: Some("41 03 02 00")
+>--- 2: Some("41 03 02 00")
+P: 41 03 02 00
+resp: 41 03 02 00
+Payload: '02 00'
+P: 41 03 02 00
+resp: 41 03 02 00
+Payload: '02 00'
+Fuel system status:
+Fuel system 1: Status("Closed loop, using O2 sensor feedback for fuel mix")
+Fuel system 2: Status("Motor is off")
+>--- 1: Some("41 0A 65 41 0A 67")
+>--- 2: Some("41 0A 65 41 0A 67")
+P: 41 0A 65 41 0A 67
+resp: 41 0A 65 41 0A 67
+Payload: '65 41 0A 67'
+Fuel pressure: 303kPa
+>--- 1: Some("41 2F 67")
+>--- 2: Some("41 2F 67")
+P: 41 2F 67
+resp: 41 2F 67
+Payload: '67'
+Fuel tank level: 40.39216%
+Fuel rail pressure: 0kPa
+Fuel rail gauge pressure: 0kPa
+>--- 1: Some("41 51 01")
+>--- 2: Some("41 51 01")
+P: 41 51 01
+resp: 41 51 01
+Payload: '01'
+Fuel type: Type("Gasoline")
+Ethanol fuel percentage: 0%
+Fuel injection timing: -210°
+>--- 1: Some("41 2E 00")
+>--- 2: Some("41 2E 00")
+P: 41 2E 00
+resp: 41 2E 00
+Payload: '00'
+Commanded EVAP purge: 0%
+>--- 1: Some("41 32 00 12")
+>--- 2: Some("41 32 00 12")
+P: 41 32 00 12
+resp: 41 32 00 12
+Payload: '00 12'
+P: 41 32 00 12
+resp: 41 32 00 12
+Payload: '00 12'
+EVAP system vapor pressure: 4.5Pa
+Cylinder fuel rate: 0mg/stroke
+
+======================== SENSOR DATA ========================
+>--- 1: Some("41 0D 00")
+>--- 2: Some("41 0D 00")
+P: 41 0D 00
+resp: 41 0D 00
+Payload: '00'
+Vehicle speed: 0km/h
+>--- 1: Some("41 0E 88")
+>--- 2: Some("41 0E 88")
+P: 41 0E 88
+resp: 41 0E 88
+Payload: '88'
+Timing advance: 4° before top-dead-center
+>--- 1: Some("41 11 35")
+>--- 2: Some("41 11 35")
+P: 41 11 35
+resp: 41 11 35
+Payload: '35'
+Throttle position: 20.784313%
+>--- 1: Some("41 45 12")
+>--- 2: Some("41 45 12")
+P: 41 45 12
+resp: 41 45 12
+Payload: '12'
+Relative throttle position: 7.0588236%
+>--- 1: Some("41 47 34")
+>--- 2: Some("41 47 34")
+P: 41 47 34
+resp: 41 47 34
+Payload: '34'
+Absolute throttle position B: 20.392157%
+Absolute throttle position C: 0%
+>--- 1: Some("41 49 32")
+>--- 2: Some("41 49 32")
+P: 41 49 32
+resp: 41 49 32
+Payload: '32'
+Accelerator pedal position D: 19.607843%
+>--- 1: Some("41 4A 19")
+>--- 2: Some("41 4A 19")
+P: 41 4A 19
+resp: 41 4A 19
+Payload: '19'
+Accelerator pedal position E: 9.803922%
+Accelerator pedal position F: 0%
+>--- 1: Some("41 14 0D 84")
+>--- 2: Some("41 14 0D 84")
+P: 41 14 0D 84
+resp: 41 14 0D 84
+Payload: '0D 84'
+P: 41 14 0D 84
+resp: 41 14 0D 84
+Payload: '0D 84'
+>--- 1: Some("41 15 15 FF")
+>--- 2: Some("41 15 15 FF")
+P: 41 15 15 FF
+resp: 41 15 15 FF
+Payload: '15 FF'
+P: 41 15 15 FF
+resp: 41 15 15 FF
+Payload: '15 FF'
+
+======================== AIR DATA ========================
+Oxygen Sensors:
+Sensor      Voltage  Short Term Trim (%)        AFR / Voltage
+1            0.065v                 3.12        0.000 / 0.000  
+2            0.105v                99.22        0.000 / 0.000  
+3            0.000v              -100.00        0.000 / 0.000  
+4            0.000v              -100.00        0.000 / 0.000  
+5            0.000v              -100.00        0.000 / 0.000  
+6            0.000v              -100.00        0.000 / 0.000  
+7            0.000v              -100.00        0.000 / 0.000  
+8            0.000v              -100.00        0.000 / 0.000  
+Mass air flow sensor:
+        Sensor A: 0g/s
+        Sensor B: 0g/s
+>--- 1: Some("41 4F 00 00 00 1F")
+>--- 2: Some("41 4F 00 00 00 1F")
+P: 41 4F 00 00 00 1F
+resp: 41 4F 00 00 00 1F
+Payload: '00 00 00 1F'
+P: 41 4F 00 00 00 1F
+resp: 41 4F 00 00 00 1F
+Payload: '00 00 00 1F'
+P: 41 4F 00 00 00 1F
+resp: 41 4F 00 00 00 1F
+Payload: '00 00 00 1F'
+P: 41 4F 00 00 00 1F
+resp: 41 4F 00 00 00 1F
+Payload: '00 00 00 1F'
+Maximum values for:
+        Fuel-air equivalance ratio: 0
+        Oxygen sensor voltage: 0V
+        Oxygen sensor current: 0mA
+        Intake manifold absolute pressure: 310kPa
+>--- 1: Some("41 0F 4E")
+>--- 2: Some("41 0F 4E")
+P: 41 0F 4E
+resp: 41 0F 4E
+Payload: '4E'
+Intake air temperature: 38°C
+>--- 1: Some("41 10 00 D2")
+>--- 2: Some("41 10 00 D2")
+P: 41 10 00 D2
+resp: 41 10 00 D2
+Payload: '00 D2'
+P: 41 10 00 D2
+resp: 41 10 00 D2
+Payload: '00 D2'
+Mass air-flow sensor rate: 2.1g/s
+>--- 1: Some("41 46 44")
+>--- 2: Some("41 46 44")
+P: 41 46 44
+resp: 41 46 44
+Payload: '44'
+Ambient air temperature: 28°C
+Maximum air-flow rate from mass air-flow sensor: 0g/s
+Secondary air status: Status("Unknown secondary air status")
+>--- 1: Some("41 33 62")
+>--- 2: Some("41 33 62")
+P: 41 33 62
+resp: 41 33 62
+Payload: '62'
+Absolute barometric pressure: 98kPa
+
+> 221470
+< '7E8 04 62 14 70 00 \r\r'
+
+> exit
+[ethan@archlinux obdium]$ 
