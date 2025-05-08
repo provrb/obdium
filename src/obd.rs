@@ -58,6 +58,11 @@ impl Display for OBDError {
     }
 }
 
+pub enum Service {
+    Mode01,
+    Mode22,
+}
+
 pub struct OBD {
     // connection: Option<TcpStream>,
     connection: Option<Box<dyn SerialPort>>,

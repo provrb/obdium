@@ -1,5 +1,6 @@
 use crate::cmd::Command;
 use crate::obd::SensorNumber;
+use crate::obd::Service;
 use crate::obd::OBD;
 use std::fmt;
 
@@ -91,30 +92,35 @@ impl OBD {
         ((a * a_power) + (b * b_power) + (c * c_power) + d) / 40.0
     }
 
-    pub fn engine_oil_temp(&mut self) -> f32 {
+    pub fn engine_oil_temp(&mut self, mode: Service) -> f32 {
+        let command = match mode {
+            Service::Mode01 => Command::new_pid(b"015C"),
+            Service::Mode22 => Command::new_arb("221154"),
+        };
+
         let response = self.query(Command::new_pid(b"015C"));
         response.a_value() - 40.0
-    }
-
-    pub fn engine_oil_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_arb("221470"));
-        response.a_value() * 3.985 // kPa
     }
 
     pub fn engine_oil_temp_sensors(&mut self) -> (f32, f32) {
         let response = self.query(Command::new_pid(b"0167"));
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
         let mut oil_temp = (0f32, 0f32);
-
+        
         if sensors_supported.contains(&SensorNumber::Sensor1) {
             oil_temp.0 = response.b_value() - 40.0;
         }
-
+        
         if sensors_supported.contains(&SensorNumber::Sensor2) {
             oil_temp.1 = response.c_value() - 40.0;
         }
-
+        
         oil_temp
+    }
+    
+    pub fn engine_oil_pressure(&mut self) -> f32 {
+        let response = self.query(Command::new_arb("221470"));
+        response.a_value() * 3.985 // kPa
     }
 
     pub fn drivers_demand_engine_torque(&mut self) -> f32 {

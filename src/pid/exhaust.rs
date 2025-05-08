@@ -14,7 +14,7 @@ impl OBD {
         ((100.0 / 128.0) * response.a_value()) - 100.0
     }
 
-    pub fn catalyst_temperature(&mut self, bank: BankNumber, sensor: SensorNumber) -> f32 {
+    pub fn catalyst_temp(&mut self, bank: BankNumber, sensor: SensorNumber) -> f32 {
         let command;
         match (bank, sensor) {
             (BankNumber::Bank1, SensorNumber::Sensor1) => command = Command::new_pid(b"013C"),
