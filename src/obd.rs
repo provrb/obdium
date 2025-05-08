@@ -2,6 +2,8 @@ use serialport::SerialPort;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::io::{Read, Write};
+use std::process::exit;
+use std::str;
 use std::time::Duration;
 
 use crate::cmd::CommandType;
@@ -64,21 +66,12 @@ pub enum Service {
 }
 
 pub struct OBD {
-    // connection: Option<TcpStream>,
     connection: Option<Box<dyn SerialPort>>,
-
-    // ECU name to process data for
-    // When none. Use data from the first ecu that responds
-    // and ecu data is discarded
-    relevant_ecu: Option<String>,
 }
 
 impl OBD {
     pub fn new() -> Self {
-        Self {
-            connection: None,
-            relevant_ecu: None,
-        }
+        Self { connection: None }
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), OBDError> {
@@ -174,17 +167,6 @@ impl OBD {
         }
     }
 
-    pub fn use_default_ecu(&mut self) {
-        self.relevant_ecu = Some("default".to_owned())
-    }
-
-    // If 'ecu_name' isn't found in a response a
-    // warnign message will be printed and the
-    // first ecu will be used for data in that feature.
-    pub fn use_ecu(&mut self, ecu_name: String) {
-        self.relevant_ecu = Some(ecu_name)
-    }
-
     pub fn send_command(&mut self, req: &Command) -> Result<(), OBDError> {
         let stream = match &mut self.connection {
             Some(stream) => stream,
@@ -238,46 +220,20 @@ impl OBD {
 
         response = response.replace("SEARCHING...", "").replace("\r", "\n");
 
-        let mut payload_size: u32 = 0;
-        let ecu_names: Vec<String> = response
-            .lines()
-            .filter_map(|line| {
-                let split: Vec<&str> = line.split_whitespace().collect();
-                if split.len() < 3 {
-                    return None;
-                }
-
-                let ecu_name = split[0].to_string();
-                if ecu_name.len() != 3 {
-                    // can ids are 3 character hex strings
-                    return None;
-                }
-
-                payload_size = u32::from_str_radix(split[1], 16).unwrap_or(0);
-
-                Some(ecu_name)
-            })
-            .collect();
+        let payload_size = self.extract_payload_size(&response);
+        let ecu_names = self.extract_ecu_names(&response);
 
         let ecu_count = ecu_names.len();
         if ecu_count == 0 {
             return Ok(Response::default());
         }
 
-        // println!("{response}");
         response = response
             .replace(" ", "")
             .replace("\n", "")
             .replace(format!("{:02X}", payload_size).as_str(), "");
 
-        // remove ecu names
-        for ecu_name in ecu_names.iter() {
-            response = response.replace(ecu_name.as_str(), "")
-        }
-
-        // println!("\t{response}, {}", response.len());
-        // println!("{ecu_names:?}");
-        // println!("{payload_size}");
+        self.strip_ecu_names(&mut response, ecu_names.as_slice());
 
         if response.len() < 2 {
             return Err(OBDError::InvalidResponse);
@@ -404,7 +360,7 @@ impl OBD {
                 for bit in bits.chars() {
                     // print!("\t{bit} {pid} - ");
                     println!("pid: {pid}, {pid:02x}");
-                    
+
                     if bit == '1' {
                         // value not found
                         supported_pids.push(format!("{pid:02X}"));
@@ -423,6 +379,40 @@ impl OBD {
         }
 
         respective_pids
+    }
+
+    pub(crate) fn extract_ecu_names(&self, response: &str) -> Vec<String> {
+        response
+            .lines()
+            .filter_map(|line| {
+                let split: Vec<&str> = line.split_whitespace().collect();
+                if split.len() < 3 {
+                    return None;
+                }
+
+                let ecu_name = split[0].to_string();
+                if ecu_name.len() != 3 {
+                    // can ids are 3 character hex strings
+                    return None;
+                }
+
+                Some(ecu_name)
+            })
+            .collect()
+    }
+
+    pub(crate) fn extract_payload_size(&self, response: &str) -> u32 {
+        response
+            .split_whitespace()
+            .nth(1)
+            .and_then(|s| u32::from_str_radix(s, 16).ok())
+            .unwrap_or(0)
+    }
+
+    pub(crate) fn strip_ecu_names(&self, response: &mut String, ecu_names: &[String]) {
+        for ecu_name in ecu_names.iter() {
+            *response = response.replace(ecu_name, "")
+        }
     }
 
     pub(crate) fn read_until(&mut self, until: u8) -> Result<String, OBDError> {
@@ -453,6 +443,57 @@ impl OBD {
         }
 
         Ok(response)
+    }
+
+    pub fn get_vin(&mut self) -> String {
+        let sent = match self.send_command(&Command::new_pid(b"0902")) {
+            Ok(_) => {}
+            Err(err) => {
+                println!("error when sending command for vin. {err}");
+                return String::default();
+            }
+        };
+
+        let mut response = self.read_until(b'>').unwrap_or_default();
+        let ecu_names = self.extract_ecu_names(&response);
+        self.strip_ecu_names(&mut response, ecu_names.as_slice());
+        println!("{}", response.escape_default());
+        let mut stack_frames: Vec<&str> = response.split("\r").collect();
+        
+        for (frame_index, frame) in stack_frames.iter_mut().enumerate() {
+            if let Some(stripped) = frame.strip_prefix(" ") {
+                *frame = stripped;
+            }
+
+            let chunks: Vec<&[u8]> = frame.as_bytes().chunks(2).collect();
+            for (index, chunk) in chunks.iter().enumerate() {
+                if index == 0 {
+                    if chunk == b"10" {
+                        // first frame indicator
+
+                    } else if frame_index < 
+                }
+            }
+
+            println!("{:?}", chunks);
+        }
+
+        // e.g
+        // 7E8 10 14 49 02 01 4D 41 54
+        // 7E8 21 34 30 33 30 39 36 42
+        // 7E8 22 4E 4C 30 30 30 30 30
+        //
+        // 10 - First frame indicator ISO-TP
+        // 14 - Total number of data bytes (20)
+        // 49 - 4 + 09
+        // 02 - response to 02 pid
+        // 01 - record 01. pretty much useless since
+        //      VIN always returns a single record.
+        // 4D 41 54 - payload starts
+        // 21 - 1st consecutive frame
+        // 22 - 2nd consecutive frame
+
+        String::new()
     }
 
     pub(crate) fn format_response(response: &str) -> String {

@@ -1,5 +1,5 @@
 use obdium::{
-    obd::{BankNumber, OBDError, SensorNumber, OBD, Service},
+    obd::{BankNumber, OBDError, SensorNumber, Service, OBD},
     pid::diagnostics::MILStatus,
 };
 
@@ -9,6 +9,8 @@ fn main() -> Result<(), OBDError> {
     //obd.connect("/dev/ttyUSB0", 38400)?
     //obd.connect("/dev/tnt1", 38400)?;
     //obd.read_from_user_input();
+
+    obd.get_vin();
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");
@@ -80,8 +82,14 @@ fn main() -> Result<(), OBDError> {
     println!("Engine mileage: {}km", obd.engine_mileage());
 
     let oil_temp = obd.engine_oil_temp_sensors();
-    println!("Engine oil temperature (Mode 1): {}°C", obd.engine_oil_temp(Service::Mode01));
-    println!("Engine oil temperature (Mode 22): {}°C", obd.engine_oil_temp(Service::Mode22));
+    println!(
+        "Engine oil temperature (Mode 1): {}°C",
+        obd.engine_oil_temp(Service::Mode01)
+    );
+    println!(
+        "Engine oil temperature (Mode 22): {}°C",
+        obd.engine_oil_temp(Service::Mode22)
+    );
     println!(
         "Engine oil temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
         oil_temp.0, oil_temp.1

@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 serialport = "4.7.1"
 sqlite = "0.37.0"
+vin-info = "0.1.2"

@@ -98,7 +98,7 @@ impl OBD {
             Service::Mode22 => Command::new_arb("221154"),
         };
 
-        let response = self.query(Command::new_pid(b"015C"));
+        let response = self.query(command);
         response.a_value() - 40.0
     }
 
@@ -106,18 +106,18 @@ impl OBD {
         let response = self.query(Command::new_pid(b"0167"));
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
         let mut oil_temp = (0f32, 0f32);
-        
+
         if sensors_supported.contains(&SensorNumber::Sensor1) {
             oil_temp.0 = response.b_value() - 40.0;
         }
-        
+
         if sensors_supported.contains(&SensorNumber::Sensor2) {
             oil_temp.1 = response.c_value() - 40.0;
         }
-        
+
         oil_temp
     }
-    
+
     pub fn engine_oil_pressure(&mut self) -> f32 {
         let response = self.query(Command::new_arb("221470"));
         response.a_value() * 3.985 // kPa
