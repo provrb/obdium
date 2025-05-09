@@ -61,12 +61,8 @@ impl OBD {
         let mut command = Command::default();
 
         match bank {
-            BankNumber::Bank1 => {
-                command.set_pid(b"0106");
-            }
-            BankNumber::Bank2 => {
-                command.set_pid(b"0108");
-            }
+            BankNumber::Bank1 => command.set_pid(b"0106"),
+            BankNumber::Bank2 => command.set_pid(b"0108"),
         }
 
         let response = self.query(command);
@@ -75,19 +71,12 @@ impl OBD {
     }
 
     pub fn long_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
-        let mut command = Command::default();
-
-        match bank {
-            BankNumber::Bank1 => {
-                command.set_pid(b"0107");
-            }
-            BankNumber::Bank2 => {
-                command.set_pid(b"0109");
-            }
-        }
+        let command = match bank {
+            BankNumber::Bank1 => Command::new_pid(b"0107"),
+            BankNumber::Bank2 => Command::new_pid(b"0109"),
+        };
 
         let response = self.query(command);
-
         (response.a_value() / 1.28) - 100.0
     }
 

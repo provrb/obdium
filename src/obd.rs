@@ -38,6 +38,7 @@ pub enum OBDError {
     InvalidCommand,
     ECUUnavailable,
     ELM327WriteError,
+    ELM327ReadError,
 }
 
 impl OBDError {
@@ -48,6 +49,7 @@ impl OBDError {
             OBDError::NoConnection => "no serial connection active.",
             OBDError::ECUUnavailable => "ecu not available.",
             OBDError::ELM327WriteError => "error writing through serial connection.",
+            OBDError::ELM327ReadError => "error reading through serial connection.",
             OBDError::ConnectionFailed => "failed to establish connection with elm327.",
             OBDError::InitFailed => "failed to initialize obd with ecu.",
         }
@@ -69,6 +71,7 @@ pub enum Service {
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
     vin: Option<String>,
+    elm_version: Option<String>,
 }
 
 impl OBD {
@@ -81,55 +84,46 @@ impl OBD {
             return Ok(());
         }
 
-        self.connection = match serialport::new(port, baud_rate)
+        self.connection = serialport::new(port, baud_rate)
             .timeout(Duration::from_secs(10))
             .open()
-        {
-            Ok(port) => Some(port),
-            Err(con_err) => {
-                println!("connection to elm327 on port {port}, baud rate {baud_rate}, failed with: {con_err}");
-                return Err(OBDError::ConnectionFailed);
-            }
-        };
+            .ok();
 
         self.init()
     }
 
     pub fn init(&mut self) -> Result<(), OBDError> {
+        // Initialization commands to send before
+        // full communication can be established.
+        // Without these, requests will always time out,
+        // and the ECU wont understand what we're asking for.
+        // Furthermore, causes unexpected behaviour when parsing the response.
         let commands = vec![
-            Command::new_at(b"ATZ"),
-            Command::new_at(b"ATE0"),
-            Command::new_at(b"ATL0"),
-            Command::new_at(b"ATH1"),
-            Command::new_at(b"ATSP0"),
+            Command::new_at(b"ATZ"),   // Reset all
+            Command::new_at(b"ATE0"),  // Echo off
+            Command::new_at(b"ATL0"),  // Linefeeds off
+            Command::new_at(b"ATH1"),  // Headers on
+            Command::new_at(b"ATSP0"), // Automatic protocol
         ];
 
         for command in commands {
-            //std::thread::sleep(Duration::from_millis(10));
-            match self.send_command(&command) {
-                Ok(()) => {}
-                Err(err) => {
-                    println!(
-                        "when sending AT command: {} - {}",
-                        err,
-                        String::from_utf8_lossy(command.get_at())
-                    );
-                    return Err(err);
-                }
-            }
+            // Cannot proceed with the initialization.
+            // Refer to above. Furthermore, if we don't send a command
+            // and read the buffer and then get junk values,
+            // the program will be messed up.
+            // Ensure the intiialization is 100% valid.
+            self.send_command(&command)
+                .map_err(|_| OBDError::InitFailed)?;
 
-            match self.get_at_response() {
-                Ok(response) => {
-                    println!(
-                        "{} response: {}",
-                        String::from_utf8_lossy(command.get_at()),
-                        response.raw_response.unwrap_or_default()
-                    );
+            let response = self.get_at_response().map_err(|_| OBDError::InitFailed)?;
+
+            match (command.get_at(), response.raw_response.as_deref()) {
+                (b"ATZ", Some(data)) => {
+                    self.elm_version = Some(data.to_owned());
                 }
-                Err(err) => {
-                    println!("when receiving AT command: {}", err,);
-                    return Err(err);
-                }
+                (b"ATE0", Some(data)) if data.contains("OK") => {}
+                (_, Some("OK")) => {}
+                _ => return Err(OBDError::InitFailed),
             }
         }
 
@@ -177,32 +171,21 @@ impl OBD {
 
         let _ = stream.clear(serialport::ClearBuffer::All);
 
-        let mut cmd = match req.command_type() {
-            CommandType::PIDCommand => req.get_pid().to_vec(),
-            CommandType::ATCommand => req.get_at().to_vec(),
-            CommandType::ServiceQuery => req.get_svc().to_vec(),
-            CommandType::Arbitrary => req.get_msg().as_bytes().to_vec(),
-            _ => return Err(OBDError::InvalidCommand),
-        };
+        let mut cmd = req.as_bytes();
+        if cmd.is_empty() {
+            return Ok(());
+        }
 
         cmd.push(b'\r');
-
-        if stream.write_all(&cmd).is_err() {
-            return Err(OBDError::ELM327WriteError);
-        }
+        stream
+            .write_all(&cmd)
+            .map_err(|_| OBDError::ELM327WriteError)?;
 
         Ok(())
     }
 
     pub fn get_at_response(&mut self) -> Result<Response, OBDError> {
-        let mut response: String = match self.read_until(b'>') {
-            Ok(response) => response,
-            Err(err) => {
-                println!("when reading AT response - {} ", err);
-                return Err(err);
-            }
-        };
-
+        let mut response = self.read_until(b'>')?;
         response = response.replace("\r", "");
 
         let meta_data = Response {
@@ -214,14 +197,7 @@ impl OBD {
     }
 
     pub fn get_pid_response(&mut self) -> Result<Response, OBDError> {
-        let mut response: String = match self.read_until(b'>') {
-            Ok(response) => response,
-            Err(err) => {
-                println!("when reading pid response - {} ", err);
-                return Err(err);
-            }
-        };
-
+        let mut response = self.read_until(b'>')?;
         response = response.replace("SEARCHING...", "").replace("\r", "\n");
 
         let payload_size = self.extract_payload_size(&response);
@@ -256,9 +232,6 @@ impl OBD {
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.pid = [as_bytes[2], as_bytes[3]];
         meta_data.payload = Some(meta_data.payload_from_response());
-
-        println!(">--- 1: {:?}", meta_data.payload);
-        println!(">--- 2: {:?}", meta_data.raw_response);
 
         Ok(meta_data)
     }
@@ -355,20 +328,13 @@ impl OBD {
             for ch in data.chars() {
                 let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap_or_default();
                 let bits = format!("{:04b}", as_num);
-                // println!("Bits for {as_num} ({ch}): {bits}");
 
                 // Iterate through each character in binary representation
                 // If bit is 1, that is a supported pid.
                 for bit in bits.chars() {
-                    // print!("\t{bit} {pid} - ");
-                    println!("pid: {pid}, {pid:02x}");
-
                     if bit == '1' {
                         // value not found
                         supported_pids.push(format!("{pid:02X}"));
-                        println!("- set")
-                    } else {
-                        // println!("not")
                     }
 
                     pid += 1;
@@ -376,7 +342,6 @@ impl OBD {
             }
 
             respective_pids.insert(ecu, supported_pids);
-
             pid = start_pid + 1;
         }
 
@@ -423,7 +388,8 @@ impl OBD {
             None => return Err(OBDError::NoConnection),
         };
 
-        let _ = port.clear(serialport::ClearBuffer::All);
+        port.clear(serialport::ClearBuffer::All)
+            .map_err(|_| OBDError::ELM327ReadError)?;
 
         let mut buffer = [0u8; 1];
         let mut response = String::new();
@@ -472,6 +438,7 @@ impl OBD {
         let mut response = self.read_until(b'>').unwrap_or_default();
         let ecu_names = self.extract_ecu_names(&response);
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
+
         let stack_frames: Vec<&str> = response
             .split('\r')
             .filter(|l| !l.trim().is_empty())

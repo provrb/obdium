@@ -1,11 +1,10 @@
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
-pub enum CommandType {
+pub(crate) enum CommandType {
     PIDCommand,
     ATCommand,
     ServiceQuery,
     Arbitrary,
     Default,
-    Unknown,
 }
 
 impl Default for CommandType {
@@ -62,10 +61,6 @@ impl Command {
             svc_command: [0u8; 2],
             arbitrary_message: arbitrary_msg.to_owned(),
         }
-    }
-
-    pub fn command_type(&self) -> CommandType {
-        self.command_type
     }
 
     pub fn set_pid(&mut self, command: &[u8; 4]) {
@@ -125,5 +120,21 @@ impl Command {
 
     pub fn get_msg(&self) -> String {
         self.arbitrary_message.clone()
+    }
+
+    /// Get the command as a Vector of bytes.
+    /// e.g: if at_command is in use, return it as Vec<u8>
+    pub fn as_bytes(&self) -> Vec<u8> {
+        match self.command_type() {
+            CommandType::PIDCommand => self.get_pid().to_vec(),
+            CommandType::ATCommand => self.get_at().to_vec(),
+            CommandType::ServiceQuery => self.get_svc().to_vec(),
+            CommandType::Arbitrary => self.get_msg().as_bytes().to_vec(),
+            _ => Vec::new(),
+        }
+    }
+
+    pub(crate) fn command_type(&self) -> CommandType {
+        self.command_type
     }
 }

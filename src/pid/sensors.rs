@@ -74,8 +74,8 @@ impl OBD {
         let s7_supported = (byte & 0b0100_0000) != 0;
         let s8_supported = (byte & 0b1000_0000) != 0;
 
+        // FIXME: Refactor this terrible code
         let mut sensors_supported = Vec::new();
-
         if s1_supported {
             sensors_supported.push(SensorNumber::Sensor1);
         }
