@@ -2,9 +2,9 @@ use serialport::SerialPort;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::io::{Read, Write};
-use std::process::exit;
 use std::str;
 use std::time::Duration;
+use vin_info::Vin;
 
 use crate::cmd::CommandType;
 use crate::{cmd::Command, response::Response};
@@ -65,13 +65,15 @@ pub enum Service {
     Mode22,
 }
 
+#[derive(Default)]
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
+    vin: Option<String>,
 }
 
 impl OBD {
     pub fn new() -> Self {
-        Self { connection: None }
+        Self::default()
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), OBDError> {
@@ -203,8 +205,10 @@ impl OBD {
 
         response = response.replace("\r", "");
 
-        let mut meta_data = Response::default();
-        meta_data.raw_response = Some(response);
+        let meta_data = Response {
+            raw_response: Some(response),
+            ..Default::default()
+        };
 
         Ok(meta_data)
     }
@@ -297,7 +301,6 @@ impl OBD {
             let response = self.query(Command::new_pid(&command));
             let split = format!("41{}", request_pid);
 
-            println!("request pid: {request_pid}");
             let mut parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
                 &response,
                 &split,
@@ -305,7 +308,6 @@ impl OBD {
             );
 
             for (ecu_name, pids) in parsed.iter_mut() {
-                println!("ECU: {ecu_name} PIDS: {pids:?}");
                 supported_pids
                     .entry(ecu_name.to_string())
                     .and_modify(|existing| existing.extend(pids.clone()))
@@ -445,55 +447,91 @@ impl OBD {
         Ok(response)
     }
 
-    pub fn get_vin(&mut self) -> String {
-        let sent = match self.send_command(&Command::new_pid(b"0902")) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("error when sending command for vin. {err}");
-                return String::default();
-            }
-        };
-
-        let mut response = self.read_until(b'>').unwrap_or_default();
-        let ecu_names = self.extract_ecu_names(&response);
-        self.strip_ecu_names(&mut response, ecu_names.as_slice());
-        println!("{}", response.escape_default());
-        let mut stack_frames: Vec<&str> = response.split("\r").collect();
-        
-        for (frame_index, frame) in stack_frames.iter_mut().enumerate() {
-            if let Some(stripped) = frame.strip_prefix(" ") {
-                *frame = stripped;
-            }
-
-            let chunks: Vec<&[u8]> = frame.as_bytes().chunks(2).collect();
-            for (index, chunk) in chunks.iter().enumerate() {
-                if index == 0 {
-                    if chunk == b"10" {
-                        // first frame indicator
-
-                    } else if frame_index < 
-                }
-            }
-
-            println!("{:?}", chunks);
-        }
-
-        // e.g
-        // 7E8 10 14 49 02 01 4D 41 54
-        // 7E8 21 34 30 33 30 39 36 42
-        // 7E8 22 4E 4C 30 30 30 30 30
+    pub(crate) fn read_iso_tp_response(&mut self) -> Vec<String> {
+        // Reference table.
+        // Example response that may have multiple frames:
+        // (PID 0902 response):
+        // 7E8 10 14 49 02 01 4D 41 54 - Frame 1
+        // 7E8 21 34 30 33 30 39 36 42 - Frame 2
+        // 7E8 22 4E 4C 30 30 30 30 30 - Frame 3
         //
         // 10 - First frame indicator ISO-TP
         // 14 - Total number of data bytes (20)
         // 49 - 4 + 09
         // 02 - response to 02 pid
-        // 01 - record 01. pretty much useless since
-        //      VIN always returns a single record.
+        // 01 - record 01.
         // 4D 41 54 - payload starts
         // 21 - 1st consecutive frame
         // 22 - 2nd consecutive frame
 
-        String::new()
+        // Payload. Array of hex characters
+        // (e.g ["4D", "41" ...])
+        let mut payload = Vec::new();
+
+        // Parsing
+        let mut response = self.read_until(b'>').unwrap_or_default();
+        let ecu_names = self.extract_ecu_names(&response);
+        self.strip_ecu_names(&mut response, ecu_names.as_slice());
+        let stack_frames: Vec<&str> = response
+            .split('\r')
+            .filter(|l| !l.trim().is_empty())
+            .collect();
+
+        // Parse each stack frame
+        for frame in stack_frames {
+            let clean = frame.trim_start();
+            let bytes: Vec<&str> = clean.split_whitespace().collect();
+            if bytes.len() < 2 {
+                continue;
+            }
+
+            for byte in bytes.iter() {
+                match byte {
+                    &"10" => {
+                        // First frame
+                        payload.extend(bytes[5..].iter().map(|&s| s.to_string()));
+                    }
+                    &"21" | &"22" | &"23" | &"24" => {
+                        // ["22", "4E", "4C", "30", "30", "30", "30", "30"]
+                        // We insert:
+                        // ["4E", "4C", "30", "30", "30", "30", "30"]
+                        payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
+                    }
+                    _ => {
+                        // unhandled or one frame
+                    }
+                }
+            }
+        }
+
+        payload
+    }
+
+    pub fn get_vin(&mut self) -> Option<Vin<'_>> {
+        match self.send_command(&Command::new_pid(b"0902")) {
+            Ok(_) => {}
+            Err(err) => {
+                println!("error when sending command for vin. {err}");
+                return None;
+            }
+        };
+
+        // Convert hex payload to ASCII string
+        let mut vin = String::new();
+        for byte in self.read_iso_tp_response() {
+            vin.push(
+                u8::from_str_radix(&byte, 16)
+                    .map(|s| s as char)
+                    .expect("call to u8::from_str_radix failed on str '{byte}'"),
+            );
+        }
+
+        self.vin = Some(vin);
+
+        // Attempt to create a new Vin object.
+        Vin::try_new(self.vin.as_ref().unwrap())
+            .map_err(|err| println!("error: {err}"))
+            .ok()
     }
 
     pub(crate) fn format_response(response: &str) -> String {
@@ -502,9 +540,8 @@ impl OBD {
             .chunks(2)
             .map(|pair| std::str::from_utf8(pair).unwrap_or(""))
             .collect::<Vec<&str>>();
-        let as_string = chunks.join(" ");
 
-        as_string
+        chunks.join(" ")
     }
 
     pub(crate) fn query(&mut self, request: Command) -> Response {
@@ -530,7 +567,7 @@ impl OBD {
                     String::from_utf8_lossy(request.get_at()),
                     String::from_utf8(request.get_pid().to_vec()).unwrap_or_default()
                 );
-                return Response::default();
+                Response::default()
             }
         }
     }

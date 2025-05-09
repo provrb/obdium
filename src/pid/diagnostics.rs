@@ -127,12 +127,14 @@ pub struct TroubleCode {
 
 impl TroubleCode {
     pub fn new(category: TroubleCodeCategory, dtc: String) -> Self {
-        let mut s = Self::default();
-        s.category = category;
-        s.dtc = dtc;
-        s.set_description();
+        let mut code = Self {
+            category,
+            dtc,
+            description: String::default(),
+        };
 
-        s
+        code.set_description();
+        code
     }
 
     pub fn set_description(&mut self) {
@@ -226,7 +228,7 @@ impl OBD {
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
         let n_dtcs = self.get_num_trouble_codes();
-        if n_dtcs <= 0 {
+        if n_dtcs == 0 {
             // no trouble codes
             return Vec::new();
         }

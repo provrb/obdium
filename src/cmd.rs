@@ -25,7 +25,7 @@ pub struct Command {
 
 impl Command {
     pub fn new_pid(command: &[u8; 4]) -> Self {
-        Command {
+        Self {
             command_type: CommandType::PIDCommand,
             pid_command: *command,
             at_command: &[],
@@ -35,16 +35,17 @@ impl Command {
     }
 
     pub fn new_at(at_command: &'static [u8]) -> Self {
-        let mut s = Self::default();
-        s.command_type = CommandType::ATCommand;
-        if s.set_at(at_command) {
-            return s;
+        Self {
+            command_type: CommandType::ATCommand,
+            pid_command: [0u8; 4],
+            at_command,
+            svc_command: [0u8; 2],
+            arbitrary_message: String::default(),
         }
-        Command::default()
     }
 
     pub fn new_svc(svc_command: &[u8; 2]) -> Self {
-        Command {
+        Self {
             command_type: CommandType::ServiceQuery,
             pid_command: [0u8; 4],
             at_command: &[],
@@ -54,7 +55,7 @@ impl Command {
     }
 
     pub(crate) fn new_arb(arbitrary_msg: &str) -> Self {
-        Command {
+        Self {
             command_type: CommandType::Arbitrary,
             pid_command: [0u8; 4],
             at_command: &[],

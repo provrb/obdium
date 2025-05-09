@@ -193,7 +193,7 @@ impl Response {
             }
         };
 
-        let utf8 = std::str::from_utf8(&bytes).unwrap_or_else(|err| {
+        let utf8 = std::str::from_utf8(bytes).unwrap_or_else(|err| {
             panic!("error; converting value {bytes:?} to utf-8. {err}");
         });
 
@@ -214,12 +214,12 @@ impl Response {
 
         let stripped = &response.replace(" ", "");
 
-        let mut chunks = stripped.as_bytes().chunks(2).peekable();
+        let chunks = stripped.as_bytes().chunks(2).peekable();
         let mut first_response_found = false;
         let mut payload = String::new();
         let mut pairs = 0;
 
-        while let Some(pair) = chunks.next() {
+        for pair in chunks {
             if pair.len() != 2 {
                 continue;
             }

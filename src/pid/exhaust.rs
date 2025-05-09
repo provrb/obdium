@@ -15,17 +15,16 @@ impl OBD {
     }
 
     pub fn catalyst_temp(&mut self, bank: BankNumber, sensor: SensorNumber) -> f32 {
-        let command;
-        match (bank, sensor) {
-            (BankNumber::Bank1, SensorNumber::Sensor1) => command = Command::new_pid(b"013C"),
-            (BankNumber::Bank2, SensorNumber::Sensor1) => command = Command::new_pid(b"013D"),
-            (BankNumber::Bank1, SensorNumber::Sensor2) => command = Command::new_pid(b"013E"),
-            (BankNumber::Bank2, SensorNumber::Sensor2) => command = Command::new_pid(b"013F"),
+        let command = match (bank, sensor) {
+            (BankNumber::Bank1, SensorNumber::Sensor1) => Command::new_pid(b"013C"),
+            (BankNumber::Bank2, SensorNumber::Sensor1) => Command::new_pid(b"013D"),
+            (BankNumber::Bank1, SensorNumber::Sensor2) => Command::new_pid(b"013E"),
+            (BankNumber::Bank2, SensorNumber::Sensor2) => Command::new_pid(b"013F"),
             _ => {
                 println!("catalyst temperature only supports bank 1, bank 2, sensor 1, and sensor 2 queries.");
                 return -1f32;
             }
-        }
+        };
 
         let response = self.query(command);
         (((256.0 * response.a_value()) + response.b_value()) / 10.0) - 40.0

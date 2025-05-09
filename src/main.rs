@@ -6,11 +6,17 @@ use obdium::{
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
-    //obd.connect("/dev/ttyUSB0", 38400)?
-    //obd.connect("/dev/tnt1", 38400)?;
-    //obd.read_from_user_input();
 
-    obd.get_vin();
+    if let Some(vin) = obd.get_vin() {
+        println!("\n{} VEHICLE MODEL INFO {}", "=".repeat(24), "=".repeat(24));
+        println!("Manufacturer Country: {}", vin.manufacturer_country());
+        println!("Manufacturer Name: {}", vin.manufacturer_name());
+        if let Some(region) = vin.manufacturer_region() {
+            println!("Manufacturer Region: {}", region);
+        }
+
+        println!("Valid checksum: {}", if vin.is_checksum_valid() {"Yes"} else {"No"})
+    }
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");

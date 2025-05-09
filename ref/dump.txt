@@ -12,7 +12,7 @@ ECU 7E8:
         39 48 44 
 Check engine light: Off
 Number of trouble codes: 3
-dbg: dtc response from ecu: 10080303350340020002000365AAAAAAAAAA
+dbg: dtc response from ecu: 10 08 03 03 35 03 40 02 00 02 00 03 65 AA AA AA AA AA
 Showing details for trouble code P1008:
 Trouble code: P1008
 System letter: P

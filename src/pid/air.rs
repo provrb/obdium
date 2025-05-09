@@ -45,17 +45,16 @@ impl OBD {
     }
 
     pub fn read_oxygen_sensor(&mut self, sensor: &SensorNumber) -> (f32, f32) {
-        let command;
-        match sensor {
-            SensorNumber::Sensor1 => command = Command::new_pid(b"0114"),
-            SensorNumber::Sensor2 => command = Command::new_pid(b"0115"),
-            SensorNumber::Sensor3 => command = Command::new_pid(b"0116"),
-            SensorNumber::Sensor4 => command = Command::new_pid(b"0117"),
-            SensorNumber::Sensor5 => command = Command::new_pid(b"0118"),
-            SensorNumber::Sensor6 => command = Command::new_pid(b"0119"),
-            SensorNumber::Sensor7 => command = Command::new_pid(b"011A"),
-            SensorNumber::Sensor8 => command = Command::new_pid(b"011B"),
-        }
+        let command = match sensor {
+            SensorNumber::Sensor1 => Command::new_pid(b"0114"),
+            SensorNumber::Sensor2 => Command::new_pid(b"0115"),
+            SensorNumber::Sensor3 => Command::new_pid(b"0116"),
+            SensorNumber::Sensor4 => Command::new_pid(b"0117"),
+            SensorNumber::Sensor5 => Command::new_pid(b"0118"),
+            SensorNumber::Sensor6 => Command::new_pid(b"0119"),
+            SensorNumber::Sensor7 => Command::new_pid(b"011A"),
+            SensorNumber::Sensor8 => Command::new_pid(b"011B"),
+        };
 
         let response = self.query(command);
 
@@ -66,17 +65,16 @@ impl OBD {
     }
 
     pub fn o2_sensor_air_fuel_ratio(&mut self, sensor: &SensorNumber) -> (f32, f32) {
-        let command;
-        match sensor {
-            SensorNumber::Sensor1 => command = Command::new_pid(b"0124"),
-            SensorNumber::Sensor2 => command = Command::new_pid(b"0125"),
-            SensorNumber::Sensor3 => command = Command::new_pid(b"0126"),
-            SensorNumber::Sensor4 => command = Command::new_pid(b"0127"),
-            SensorNumber::Sensor5 => command = Command::new_pid(b"0128"),
-            SensorNumber::Sensor6 => command = Command::new_pid(b"0129"),
-            SensorNumber::Sensor7 => command = Command::new_pid(b"012A"),
-            SensorNumber::Sensor8 => command = Command::new_pid(b"012B"),
-        }
+        let command = match sensor {
+            SensorNumber::Sensor1 => Command::new_pid(b"0124"),
+            SensorNumber::Sensor2 => Command::new_pid(b"0125"),
+            SensorNumber::Sensor3 => Command::new_pid(b"0126"),
+            SensorNumber::Sensor4 => Command::new_pid(b"0127"),
+            SensorNumber::Sensor5 => Command::new_pid(b"0128"),
+            SensorNumber::Sensor6 => Command::new_pid(b"0129"),
+            SensorNumber::Sensor7 => Command::new_pid(b"012A"),
+            SensorNumber::Sensor8 => Command::new_pid(b"012B"),
+        };
 
         let response = self.query(command);
         let ratio = (2.0 / 65536.0) * ((256.0 * response.a_value()) + response.b_value());
