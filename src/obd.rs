@@ -6,7 +6,6 @@ use std::str;
 use std::time::Duration;
 use vin_info::Vin;
 
-use crate::cmd::CommandType;
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
