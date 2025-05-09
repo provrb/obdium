@@ -1,6 +1,5 @@
-use std::{default, fmt};
+use std::fmt;
 
-use crate::pid::engine::EngineType;
 use crate::{cmd::Command, obd::OBD};
 use sqlite::State;
 
@@ -122,12 +121,6 @@ impl fmt::Display for TroubleCodeCategory {
     }
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub enum MILStatus {
-    On,
-    Off,
-}
-
 #[derive(Debug, Default)]
 pub struct TroubleCode {
     category: TroubleCodeCategory,
@@ -194,30 +187,10 @@ impl fmt::Display for TroubleCode {
     }
 }
 
-pub struct DiagnosisStatus {
-    mil: MILStatus,
-    num_trouble_codes: u32,
-    trouble_codes: Vec<TroubleCode>,
-    engine_type: EngineType,
-}
-
 impl OBD {
-    pub fn get_mil_status(&mut self) -> MILStatus {
+    pub fn check_engine_light(&mut self) -> bool {
         let response = self.query(Command::new_pid(b"0101"));
-        match response.a_value() as u32 & 0x80 {
-            0 => MILStatus::Off,
-            _ => MILStatus::On,
-        }
-    }
-
-    // Resource heavy compared to other methods
-    pub fn get_diagnosis_status(&mut self) -> DiagnosisStatus {
-        DiagnosisStatus {
-            mil: self.get_mil_status(),
-            num_trouble_codes: self.get_num_trouble_codes(),
-            trouble_codes: self.get_trouble_codes(),
-            engine_type: self.get_engine_type(),
-        }
+        (response.a_value() as u32 & 0x80) != 0
     }
 
     pub fn warm_ups_since_codes_cleared(&mut self) -> u8 {

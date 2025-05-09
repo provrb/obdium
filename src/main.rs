@@ -1,7 +1,6 @@
-use obdium::{
-    obd::{BankNumber, OBDError, SensorNumber, Service, OBD},
-    pid::diagnostics::MILStatus,
-};
+use obdium::
+    obd::{BankNumber, OBDError, SensorNumber, Service, OBD}
+;
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
@@ -40,12 +39,7 @@ fn main() -> Result<(), OBDError> {
     }
 
     println!(
-        "Check engine light: {}",
-        if obd.get_mil_status() == MILStatus::On {
-            "On"
-        } else {
-            "Off"
-        }
+        "Check engine light: {}", obd.check_engine_light()
     );
     println!("Number of trouble codes: {}", obd.get_num_trouble_codes());
 
