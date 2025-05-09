@@ -101,8 +101,8 @@ impl TroubleCodeCategory {
 
     pub fn as_str(&self) -> &str {
         match self {
-            TroubleCodeCategory::Powertrain =>  "Powertrain",
-            TroubleCodeCategory::Chassis =>  "Chassis",
+            TroubleCodeCategory::Powertrain => "Powertrain",
+            TroubleCodeCategory::Chassis => "Chassis",
             TroubleCodeCategory::Body => "Body",
             TroubleCodeCategory::Network => "Network",
             TroubleCodeCategory::Unknown => "Unknown",

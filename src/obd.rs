@@ -1,9 +1,9 @@
 use serialport::SerialPort;
 use std::collections::HashMap;
+use std::fmt;
 use std::io::{Read, Write};
 use std::str;
 use std::time::Duration;
-use std::fmt;
 use vin_info::Vin;
 
 use crate::cmd::CommandType;

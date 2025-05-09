@@ -15,7 +15,10 @@ fn main() -> Result<(), OBDError> {
             println!("Manufacturer Region: {}", region);
         }
 
-        println!("Valid checksum: {}", if vin.is_checksum_valid() {"Yes"} else {"No"})
+        println!(
+            "Valid checksum: {}",
+            if vin.is_checksum_valid() { "Yes" } else { "No" }
+        )
     }
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
