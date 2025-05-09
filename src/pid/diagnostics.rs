@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{default, fmt};
 
 use crate::pid::engine::EngineType;
 use crate::{cmd::Command, obd::OBD};
@@ -64,12 +64,18 @@ pub enum AuxiliaryInputStatus {
     NotInUse,
 }
 
+impl AuxiliaryInputStatus {
+    pub fn as_str(&self) -> &str {
+        match self {
+            AuxiliaryInputStatus::InUse => "Active",
+            AuxiliaryInputStatus::NotInUse => "Inactive",
+        }
+    }
+}
+
 impl fmt::Display for AuxiliaryInputStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            AuxiliaryInputStatus::InUse => write!(f, "Active"),
-            AuxiliaryInputStatus::NotInUse => write!(f, "Inactive"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }
 
@@ -92,6 +98,16 @@ impl TroubleCodeCategory {
             TroubleCodeCategory::Unknown => '?',
         }
     }
+
+    pub fn as_str(&self) -> &str {
+        match self {
+            TroubleCodeCategory::Powertrain =>  "Powertrain",
+            TroubleCodeCategory::Chassis =>  "Chassis",
+            TroubleCodeCategory::Body => "Body",
+            TroubleCodeCategory::Network => "Network",
+            TroubleCodeCategory::Unknown => "Unknown",
+        }
+    }
 }
 
 impl Default for TroubleCodeCategory {
@@ -102,13 +118,7 @@ impl Default for TroubleCodeCategory {
 
 impl fmt::Display for TroubleCodeCategory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            TroubleCodeCategory::Powertrain => write!(f, "Powertrain"),
-            TroubleCodeCategory::Chassis => write!(f, "Chassis"),
-            TroubleCodeCategory::Body => write!(f, "Body"),
-            TroubleCodeCategory::Network => write!(f, "Network"),
-            TroubleCodeCategory::Unknown => write!(f, "Unknown"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }
 

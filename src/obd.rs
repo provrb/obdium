@@ -1,9 +1,9 @@
 use serialport::SerialPort;
 use std::collections::HashMap;
-use std::fmt::Display;
 use std::io::{Read, Write};
 use std::str;
 use std::time::Duration;
+use std::fmt;
 use vin_info::Vin;
 
 use crate::cmd::CommandType;
@@ -40,23 +40,23 @@ pub enum OBDError {
     ELM327WriteError,
 }
 
-impl Display for OBDError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let _ = write!(f, "obd error; ");
-        match *self {
-            OBDError::InvalidResponse => writeln!(f, "invalid response from ecu."),
-            OBDError::InvalidCommand => writeln!(
-                f,
-                "an invalid user command was going to be sent to the ecu."
-            ),
-            OBDError::NoConnection => writeln!(f, "no serial connection active."),
-            OBDError::ECUUnavailable => writeln!(f, "ecu not available."),
-            OBDError::ELM327WriteError => writeln!(f, "error writing through serial connection."),
-            OBDError::ConnectionFailed => {
-                writeln!(f, "failed to establish connection with elm327.")
-            }
-            OBDError::InitFailed => writeln!(f, "failed to initialize obd with ecu."),
+impl OBDError {
+    pub fn as_str(&self) -> &str {
+        match self {
+            OBDError::InvalidResponse => "invalid response from ecu.",
+            OBDError::InvalidCommand => "an invalid user command was going to be sent to the ecu.",
+            OBDError::NoConnection => "no serial connection active.",
+            OBDError::ECUUnavailable => "ecu not available.",
+            OBDError::ELM327WriteError => "error writing through serial connection.",
+            OBDError::ConnectionFailed => "failed to establish connection with elm327.",
+            OBDError::InitFailed => "failed to initialize obd with ecu.",
         }
+    }
+}
+
+impl fmt::Display for OBDError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "obd error; {}", self.as_str())
     }
 }
 
