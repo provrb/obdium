@@ -1,4 +1,4 @@
-use chrono::{self, Datelike};
+use chrono::Datelike;
 use regex::Regex;
 use sqlite::{Connection, State};
 

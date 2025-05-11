@@ -4,8 +4,8 @@ use std::fmt;
 use std::io::{Read, Write};
 use std::str;
 use std::time::Duration;
-use vin_info::Vin;
 
+use crate::vin::parser::{VinError, VIN};
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
@@ -73,7 +73,7 @@ pub enum Service {
 #[derive(Default)]
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
-    vin: Option<String>,
+    vin: VIN,
     elm_version: Option<String>,
 }
 
@@ -473,14 +473,8 @@ impl OBD {
         payload
     }
 
-    pub fn get_vin(&mut self) -> Option<Vin<'_>> {
-        match self.send_command(&Command::new_pid(b"0902")) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("error when sending command for vin. {err}");
-                return None;
-            }
-        };
+    pub fn get_vin(&mut self) -> Result<&VIN, OBDError> {
+        self.send_command(&Command::new_pid(b"0902"))?;
 
         // Convert hex payload to ASCII string
         let mut vin = String::new();
@@ -492,12 +486,8 @@ impl OBD {
             );
         }
 
-        self.vin = Some(vin);
-
-        // Attempt to create a new Vin object.
-        Vin::try_new(self.vin.as_ref().unwrap())
-            .map_err(|err| println!("error: {err}"))
-            .ok()
+        self.vin = VIN::new(vin);
+        Ok(&self.vin)
     }
 
     pub(crate) fn format_response(response: &str) -> String {
