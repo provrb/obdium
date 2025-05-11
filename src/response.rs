@@ -60,12 +60,6 @@ pub struct Response {
     /* Original service num in request  */
     pub(crate) service: [u8; 2],
 
-    /* Original PID in request */
-    pub(crate) pid: [u8; 2],
-
-    /* Number of ECUs responded to the request  */
-    pub(crate) ecu_count: usize,
-
     pub(crate) responding_ecus: Vec<String>,
 
     /**
@@ -86,8 +80,6 @@ impl Response {
             raw_response: Some(raw),
             payload: None,
             service: [0u8; 2],
-            pid: [0u8; 2],
-            ecu_count: 0,
             payload_size: 0,
             responding_ecus: Vec::new(),
         }

@@ -35,6 +35,8 @@ pub enum OBDError {
 
     InvalidResponse,
     InvalidCommand,
+    NoData,
+
     ECUUnavailable,
     ELM327WriteError,
     ELM327ReadError,
@@ -46,6 +48,7 @@ impl OBDError {
             OBDError::InvalidResponse => "invalid response from ecu.",
             OBDError::InvalidCommand => "an invalid user command was going to be sent to the ecu.",
             OBDError::NoConnection => "no serial connection active.",
+            OBDError::NoData => "'NO DATA' received from ECU.",
             OBDError::ECUUnavailable => "ecu not available.",
             OBDError::ELM327WriteError => "error writing through serial connection.",
             OBDError::ELM327ReadError => "error reading through serial connection.",
@@ -202,11 +205,6 @@ impl OBD {
         let payload_size = self.extract_payload_size(&response);
         let ecu_names = self.extract_ecu_names(&response);
 
-        let ecu_count = ecu_names.len();
-        if ecu_count == 0 {
-            return Ok(Response::default());
-        }
-
         response = response
             .replace(" ", "")
             .replace("\n", "")
@@ -217,19 +215,20 @@ impl OBD {
         if response.len() < 2 {
             return Err(OBDError::InvalidResponse);
         } else if response.contains("NODATA") {
-            return Ok(Response::default());
+            return Err(OBDError::NoData);
         }
 
         let parsed = Self::format_response(&response);
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
-        let mut meta_data = Response::default();
-        meta_data.ecu_count = ecu_count;
-        meta_data.responding_ecus = ecu_names;
-        meta_data.raw_response = Some(parsed.clone());
-        meta_data.payload_size = payload_size as usize;
-        meta_data.service = [as_bytes[0], as_bytes[1]];
-        meta_data.pid = [as_bytes[2], as_bytes[3]];
+        let mut meta_data = Response {
+            responding_ecus: ecu_names,
+            raw_response: Some(parsed.clone()),
+            payload_size: payload_size as usize,
+            service: [as_bytes[0], as_bytes[1]],
+            ..Default::default()
+        };
+
         meta_data.payload = Some(meta_data.payload_from_response());
 
         Ok(meta_data)
