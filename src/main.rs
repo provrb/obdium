@@ -1,8 +1,17 @@
-use obdium::
-    obd::{BankNumber, OBDError, SensorNumber, Service, OBD}
-;
+use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
+use obdium::vin::parser::VIN;
 
 fn main() -> Result<(), OBDError> {
+    let vin = VIN::new("KL4CJASB6JB660929".to_string());
+    let wmi = vin.get_wmi().unwrap();
+    let key = vin.as_key();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap();
+    println!("Model year: {:?}", model_year);
+    println!("WMI: {:?}", wmi);
+    println!("WMI ID: {:?}", wmi_id);
+    println!("Key: {:?}", key);
+
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
 
@@ -38,9 +47,7 @@ fn main() -> Result<(), OBDError> {
         }
     }
 
-    println!(
-        "Check engine light: {}", obd.check_engine_light()
-    );
+    println!("Check engine light: {}", obd.check_engine_light());
     println!("Number of trouble codes: {}", obd.get_num_trouble_codes());
 
     let codes = obd.get_trouble_codes();
