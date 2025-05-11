@@ -1,0 +1,100 @@
+use obdium::vin::parser::VIN;
+
+// This shouldn't be changed.
+// All test outputs rely on accurate and reliabled tested outcomes for
+// this specific VIN.
+// Changing this will result in tests failing.
+const VIN_STRING: &'static str = "KL4CJASB6JB660929";
+
+#[test]
+fn database_connect() {
+    let vin = VIN::new(VIN_STRING.to_string());
+
+    assert!(
+        vin.test_database_connection(),
+        "database_connect: couldn't connect to database"
+    )
+}
+
+#[test]
+fn wmi_prefix() {
+    let vin = VIN::new(VIN_STRING.to_string());
+
+    assert_eq!(
+        vin.get_wmi().unwrap(),
+        "KL4",
+        "get_wmi: provided incorrect wmi for vin: {VIN_STRING}. expected KL4"
+    )
+}
+
+#[test]
+fn wmi_id() {
+    let vin = VIN::new(VIN_STRING.to_string());
+    let wmi = vin.get_wmi().unwrap();
+
+    assert_eq!(
+        vin.get_wmi_id(&wmi).unwrap(),
+        2069,
+        "get_wmi_id: provided incorrect wmi id for wmi: {wmi}. expected 2069"
+    )
+}
+
+#[test]
+fn truck_type_id() {
+    let vin = VIN::new(VIN_STRING.to_string());
+    let wmi = vin.get_wmi().unwrap();
+
+    assert_eq!(
+        vin.get_truck_type_id(&wmi).unwrap(),
+        0,
+        "get_truck_type_id: provided incorrect truck type id for wmi: {wmi}. expected 0"
+    )
+}
+
+#[test]
+fn vehicle_type_id() {
+    let vin = VIN::new(VIN_STRING.to_string());
+    let wmi = vin.get_wmi().unwrap();
+
+    assert_eq!(
+        vin.get_vehicle_type_id(&wmi).unwrap(),
+        7,
+        "get_vehicle_type_id: provided incorrect vehicle type id for wmi: {wmi}. expected 7"
+    )
+}
+
+#[test]
+fn model_year() {
+    let vin = VIN::new(VIN_STRING.to_string());
+
+    assert_eq!(
+        vin.get_model_year().unwrap(),
+        2018,
+        "get_model_year: provided incorrect model year for vin: {VIN_STRING}. expected 2018"
+    )
+}
+
+#[test]
+fn vin_key() {
+    let vin = VIN::new(VIN_STRING.to_string());
+
+    assert_eq!(
+        vin.as_key(),
+        "CJASB|JB660929",
+        "as_key: provided incorrect key for vin: {VIN_STRING}. expected CJASB|JB660929"
+    )
+}
+
+#[test]
+fn schema_id() {
+    let vin = VIN::new(VIN_STRING.to_string());
+    let wmi = vin.get_wmi().unwrap();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+
+    assert_eq!(
+        vin.get_schema_id(wmi_id, model_year).unwrap(),
+        15103,
+        "get_schema_id: provided incorrect id. wmi_id: {wmi_id}, wmi: {wmi}, vin: {VIN_STRING}. expected 15103."
+    )
+}

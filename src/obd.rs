@@ -59,6 +59,7 @@ impl OBDError {
 }
 
 impl fmt::Display for OBDError {
+    #[inline(always)]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "obd error; {}", self.as_str())
     }

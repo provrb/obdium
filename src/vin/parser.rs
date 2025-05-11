@@ -2,6 +2,8 @@ use chrono::{self, Datelike};
 use regex::Regex;
 use sqlite::{Connection, State};
 
+use crate::pid::{engine::ValveTrainDesign, fuel::FuelType};
+
 const VPIC_DB_PATH: &'static str = "./data/vpic.sqlite";
 
 #[derive(Debug)]
@@ -15,6 +17,7 @@ pub enum VinError {
     ModelYearError,
 
     BadKey,
+    NoResultsFound,
 }
 
 pub struct VIN {
@@ -22,11 +25,30 @@ pub struct VIN {
     vin: String,
 }
 
+impl Default for VIN {
+    fn default() -> Self {
+        Self {
+            vpic_db_con: None,
+            vin: String::new(),
+        }
+    }
+}
+
+impl PartialEq for VIN {
+    fn eq(&self, other: &Self) -> bool {
+        self.vin == other.vin
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.vin != other.vin
+    }
+}
+
 impl VIN {
     pub fn new(vin: String) -> Self {
         let mut _vin = Self {
             vin,
-            vpic_db_con: None,
+            ..Default::default()
         };
 
         if _vin.connect_to_vpic_db().is_err() {
@@ -34,6 +56,10 @@ impl VIN {
         }
 
         _vin
+    }
+
+    pub fn test_database_connection(&self) -> bool {
+        self.vpic_db_con.is_some()
     }
 
     fn connect_to_vpic_db(&mut self) -> Result<&Connection, VinError> {
@@ -46,43 +72,66 @@ impl VIN {
         self.vpic_db_con.as_ref().ok_or(VinError::VPICConnectFailed)
     }
 
-    // This code is not mine.
-    // fn pattern_to_regex(pattern: &str) -> Result<Regex, regex::Error> {
-    //     let mut regex = String::with_capacity(pattern.len() + 3); // Pre-allocate enough space
-    //     regex.push('^'); // Start of regex
+    pub fn matches_vin_pattern(pattern: &str, input: &str) -> bool {
+        // Convert our custom pattern to proper regex
+        let regex_pattern = VIN::convert_to_regex(pattern);
+        println!("Converted regex: {}", regex_pattern);
 
-    //     let mut chars = pattern.chars().peekable();
+        // Create regex (case insensitive)
+        match Regex::new(&regex_pattern) {
+            Ok(re) => {
+                let result = re.is_match(input);
+                println!(
+                    "Matching '{}' against '{}' => {}",
+                    input, regex_pattern, result
+                );
+                result
+            }
+            Err(e) => {
+                println!("Regex error: {}", e);
+                false
+            }
+        }
+    }
 
-    //     while let Some(ch) = chars.next() {
-    //         match ch {
-    //             '*' => regex.push('.'), // '*' becomes '.'
-    //             '[' => {
-    //                 regex.push('['); // Start of character class
-    //                 while let Some(inner_ch) = chars.next() {
-    //                     regex.push(inner_ch);
-    //                     if inner_ch == ']' {
-    //                         break; // End of character class
-    //                     }
-    //                 }
-    //             }
-    //             '.' | '+' | '(' | ')' | '|' | '^' | '$' | '{' | '}' | '\\' => {
-    //                 regex.push('\\'); // Escape special characters
-    //                 regex.push(ch);
-    //             }
-    //             _ => regex.push(ch), // Non-special characters
-    //         }
-    //     }
+    pub fn convert_to_regex(pattern: &str) -> String {
+        let mut regex = String::new();
+        regex.push_str(r"(?i)^"); // Case insensitive, start of string
 
-    //     regex.push_str(".*$"); // End of regex
-    //     Regex::new(&regex)
-    // }
+        let mut in_char_class = false;
+        let mut char_class = String::new();
 
-    // pub fn pattern_matches(input: &str, pattern: &str) -> bool {
-    //     match Self::pattern_to_regex(pattern) {
-    //         Ok(regex) => regex.is_match(input),
-    //         Err(_) => false,
-    //     }
-    // }
+        for c in pattern.chars() {
+            if in_char_class {
+                char_class.push(c);
+                if c == ']' {
+                    // Handle character classes like [A-H1-3]
+                    regex.push_str(&char_class);
+                    in_char_class = false;
+                    char_class.clear();
+                }
+            } else {
+                match c {
+                    '*' => regex.push_str(".*"),
+                    '?' => regex.push('.'),
+                    '[' => {
+                        in_char_class = true;
+                        char_class.push(c);
+                    }
+                    _ => {
+                        // Escape special regex characters
+                        if ".\\+*?^$()[]{}|".contains(c) {
+                            regex.push('\\');
+                        }
+                        regex.push(c);
+                    }
+                }
+            }
+        }
+
+        regex.push('$'); // End of string
+        regex
+    }
 
     pub fn get_wmi(&self) -> Result<String, VinError> {
         if self.vin.len() < 3 {
@@ -171,7 +220,7 @@ impl VIN {
                 .map_err(|_| VinError::VPICQueryError)?);
         }
 
-        return Err(VinError::VPICQueryError);
+        return Ok(-1);
     }
 
     // Based off of NHTSA's ModelYear2 MS SQL Server procedure.
@@ -258,7 +307,66 @@ impl VIN {
         return Err(VinError::VPICQueryError);
     }
 
-    pub fn get_schema_id(&self, wmi_id: i64, model_year: i32) -> Result<i64, VinError> {
+    fn match_pattern(key: &str, pattern: &str) -> bool {
+        let mut key_chars = key.chars().peekable();
+        let mut pat_chars = pattern.chars().peekable();
+
+        while let Some(pc) = pat_chars.next() {
+            match pc {
+                '_' => {
+                    if key_chars.next().is_none() {
+                        return false;
+                    }
+                }
+                '%' => {
+                    return true;
+                }
+                '[' => {
+                    let mut class = Vec::new();
+                    let mut negated = false;
+                    if let Some(&'^') = pat_chars.peek() {
+                        pat_chars.next(); // consume ^
+                        negated = true;
+                    }
+
+                    while let Some(c) = pat_chars.next() {
+                        if c == ']' {
+                            break;
+                        }
+
+                        if let Some(&'-') = pat_chars.peek() {
+                            pat_chars.next(); // consume '-'
+                            if let Some(end) = pat_chars.next() {
+                                for ch in c..=end {
+                                    class.push(ch);
+                                }
+                            }
+                        } else {
+                            class.push(c);
+                        }
+                    }
+
+                    match key_chars.next() {
+                        Some(kc) => {
+                            let contains = class.contains(&kc);
+                            if (contains && negated) || (!contains && !negated) {
+                                return false;
+                            }
+                        }
+                        None => return false,
+                    }
+                }
+                c => match key_chars.next() {
+                    Some(kc) if kc == c => {}
+                    _ => return false,
+                },
+            }
+        }
+
+        key_chars.next().is_none()
+    }
+
+    pub fn get_schema_id(&self, wmi_id: i64, model_year: i64) -> Result<i64, VinError> {
         let key = self.as_key();
         if key.is_empty() {
             return Err(VinError::BadKey);
@@ -272,20 +380,203 @@ impl VIN {
         //          - Ensure model year is in range 'YearFrom' - 'YearTo'
         //          - Ensure WmiId == wmi_id
         //          If these conditions are met, this is the VinSchemaId
-        todo!()
+
+        let con = match &self.vpic_db_con {
+            Some(con) => con,
+            None => {
+                println!("get_schema_id(): no database connection established. quitting.");
+                return Err(VinError::VPICNoConnection);
+            }
+        };
+
+        let query = "SELECT * FROM Pattern WHERE ElementId = 18";
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return Err(VinError::VPICQueryError);
+            }
+        };
+
+        let mut matched_schema_ids = Vec::new();
+
+        while let Ok(State::Row) = statement.next() {
+            // this is where you would check the pattern from Pattern matches the key.
+            let pattern = statement
+                .read::<String, _>("Keys")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            let pattern_sql_like = pattern.replace("*", "_") + "%"; // simulate MSSQL logic
+
+            if VIN::match_pattern(&key, &pattern_sql_like) {
+                matched_schema_ids.push(
+                    statement
+                        .read::<i64, _>("VinSchemaId")
+                        .map_err(|_| VinError::VPICQueryError)?,
+                );
+            }
+        }
+
+        let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and ? BETWEEN YearFrom and IFNULL(YearTo, 2999)";
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return Err(VinError::VPICQueryError);
+            }
+        };
+
+        statement
+            .bind((1, wmi_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+        statement
+            .bind((2, model_year))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        while let Ok(State::Row) = statement.next() {
+            let schema_id = statement
+                .read::<i64, _>("VinSchemaId")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            if matched_schema_ids.contains(&schema_id) {
+                return Ok(schema_id);
+            }
+        }
+
+        Err(VinError::NoResultsFound)
     }
 
+    /// Returns a row from Pattern table
+    /// that matches conditions:
+    /// 1. Schema ID
+    /// 2. Element Id
+    /// 3. Key matches pattern 'Keys'
+    fn query_pattern(
+        &self,
+        schema_id: i64,
+        element_id: i64,
+        key: &str,
+    ) -> Result<(i64, i64, String, i64, String), VinError> {
+        let con = match &self.vpic_db_con {
+            Some(con) => con,
+            None => {
+                println!("get_attribute_id(): no database connection established. quitting.");
+                return Err(VinError::VPICNoConnection);
+            }
+        };
+
+        let query = "SELECT * FROM Pattern WHERE VinSchemaId = ? and ElementId = ?";
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return Err(VinError::VPICQueryError);
+            }
+        };
+
+        statement
+            .bind((1, schema_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((2, element_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        while let Ok(State::Row) = statement.next() {
+            let pattern = statement
+                .read::<String, _>("Keys")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            let pattern_sql_like = pattern.replace("*", "_") + "%"; // simulate MSSQL logic
+
+            if VIN::match_pattern(&key, &pattern_sql_like) {
+                let pattern_id = statement
+                    .read::<i64, _>("Id")
+                    .map_err(|_| VinError::VPICQueryError)?;
+
+                let attribute_id = statement
+                    .read::<String, _>("AttributeId")
+                    .map_err(|_| VinError::VPICQueryError)?;
+
+                return Ok((pattern_id, schema_id, pattern, element_id, attribute_id));
+            }
+        }
+
+        return Err(VinError::NoResultsFound);
+    }
+
+    pub fn get_engine_model(&self, schema_id: i64) -> Result<String, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, 18, &key)?;
+
+        Ok(data.4)
+    }
+
+    pub fn get_cylinder_count(&self, schema_id: i64) -> Result<i64, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, 9, &key)?;
+
+        data.4.parse().map_err(|_| VinError::VPICQueryError)
+    }
+
+    pub fn get_engine_displacement(&self, schema_id: i64) -> Result<f64, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, 13, &key)?;
+
+        data.4.parse().map_err(|_| VinError::VPICQueryError)
+    }
+
+    pub fn get_fuel_type(&self, schema_id: i64) -> Result<FuelType, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, 24, &key)?;
+        let fuel_type: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+
+        // NHTSA fuel type bindings is different
+        // than the OBD fuel type bindings so we cannot
+        // do FuelType::from_u8
+        match fuel_type {
+            1 => Ok(FuelType::Type("Diesel")),
+            2 => Ok(FuelType::Type("Electric")),
+            4 => Ok(FuelType::Type("Gasoline")),
+            6 => Ok(FuelType::Type("Compressed Natural Gas")),
+            7 => Ok(FuelType::Type("Liquefied Natural Gas")),
+            8 => Ok(FuelType::Type("Compressed Hydrogen/Hydrogen")),
+            9 => Ok(FuelType::Type("Liquefied Petroleum Gas")),
+            10 => Ok(FuelType::Type("Ethanol")),
+            11 => Ok(FuelType::Type("Neat Ethanol")),
+            13 => Ok(FuelType::Type("Methanol")),
+            14 => Ok(FuelType::Type("Neat Methanol")),
+            15 => Ok(FuelType::Type("Flexible Fuel Vehicle")),
+            17 => Ok(FuelType::Type("Natural Gas")),
+            18 => Ok(FuelType::Type("Fuel Cell")),
+            _ => Err(VinError::NoResultsFound),
+        }
+    }
+
+    /*
+       declare
+       @descriptor varchar(17) = dbo.fVinDescriptor(@vin)
+
+       if LEN(@vin) > 3
+       Begin
+           set @keys = SUBSTRING(@vin, 4, 5)
+           if LEN(@vin) > 9
+               set @keys  = @keys + '|' + SUBSTRING(@vin, 10, 8)
+       end
+    */
     pub fn as_key(&self) -> String {
-        if self.vin.len() < 17 {
+        let vin_clone = self.vin.clone();
+        if self.vin.len() < 4 {
             return String::new();
         }
 
-        let mut vin_clone = self.vin.clone()[3..].to_string(); // without wmi
-        let mut vin_bytes = vin_clone.into_bytes();
-        vin_bytes[5] = b'|';
+        let mut key;
+        key = vin_clone[3..8].to_string();
 
-        vin_clone = String::from_utf8(vin_bytes).unwrap_or_default();
+        if self.vin.len() > 9 {
+            key = key + "|" + &vin_clone[9..17].to_string();
+        }
 
-        vin_clone
+        key
     }
 }

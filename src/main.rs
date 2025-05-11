@@ -6,11 +6,22 @@ fn main() -> Result<(), OBDError> {
     let wmi = vin.get_wmi().unwrap();
     let key = vin.as_key();
     let wmi_id = vin.get_wmi_id(&wmi).unwrap();
-    let model_year = vin.get_model_year().unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     println!("Model year: {:?}", model_year);
     println!("WMI: {:?}", wmi);
     println!("WMI ID: {:?}", wmi_id);
     println!("Key: {:?}", key);
+    println!("Truck type id: {:?}", vin.get_truck_type_id(&wmi));
+    println!("Vehicle type id: {:?}", vin.get_vehicle_type_id(&wmi));
+    println!("Schema ID: {:?}", vin.get_schema_id(wmi_id, model_year));
+    println!("Engine model: {:?}", vin.get_engine_model(schema_id));
+    println!("Cylinder count: {:?}", vin.get_cylinder_count(schema_id));
+    println!(
+        "Engine displacement (L): {:?}",
+        vin.get_engine_displacement(schema_id)
+    );
+    println!("Fuel type: {}", vin.get_fuel_type(schema_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

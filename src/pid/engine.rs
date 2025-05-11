@@ -4,6 +4,24 @@ use crate::obd::Service;
 use crate::obd::OBD;
 use std::fmt;
 
+pub enum ValveTrainDesign {
+    CamlessValveActuation = 1,
+    DualOverheadCam,
+    OverheadValve,
+    SingleOverheadCam
+}
+
+impl ValveTrainDesign {
+    pub fn as_str(&self) -> &str {
+        match self {
+            ValveTrainDesign::CamlessValveActuation => "Camless Valve Actuation (CVA)",
+            ValveTrainDesign::DualOverheadCam => "Dual Overhead Cam (DOHC)",
+            ValveTrainDesign::OverheadValve => "Overhead Valve (OHV)",
+            ValveTrainDesign::SingleOverheadCam => "Single Overhead Cam (SOHC)",
+        }
+    }
+}
+
 #[derive(PartialEq, Eq)]
 pub enum EngineType {
     SparkIgnition,
@@ -20,6 +38,7 @@ impl EngineType {
 }
 
 impl fmt::Display for EngineType {
+    #[inline(always)]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.as_str())
     }
