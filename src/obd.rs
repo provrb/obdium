@@ -5,7 +5,7 @@ use std::io::{Read, Write};
 use std::str;
 use std::time::Duration;
 
-use crate::vin::parser::{VinError, VIN};
+use crate::vin::parser::VIN;
 use crate::{cmd::Command, response::Response};
 
 #[derive(Debug)]
