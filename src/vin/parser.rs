@@ -70,9 +70,8 @@ impl VIN {
     fn connect_to_vpic_db(&mut self) -> Result<&Connection, VinError> {
         if self.vpic_db_con.is_none() {
             let conn = Connection::open(VPIC_DB_PATH)
-                .map_err(|_| VinError::VPICConnectFailed)
-                .ok();
-            self.vpic_db_con = conn;
+                .map_err(|_| VinError::VPICConnectFailed);
+            self.vpic_db_con = conn.ok();
         }
         self.vpic_db_con.as_ref().ok_or(VinError::VPICConnectFailed)
     }
@@ -633,6 +632,43 @@ impl VIN {
         }
 
         Err(VinError::NoResultsFound)
+    }
+
+    pub fn get_vehicle_type(&self, type_id: i64) -> Result<String, VinError> {
+        if type_id <= 0 {
+            return Err(VinError::NoResultsFound);
+        }
+
+        let con = match &self.vpic_db_con {
+            Some(con) => con,
+            None => return Err(VinError::VPICNoConnection),
+        };
+
+        let query = "SELECT Name FROM VehicleType WHERE Id = ?";
+
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return Err(VinError::VPICQueryError);
+            }
+        };
+
+        statement
+            .bind((1, type_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        if let Ok(State::Row) = statement.next() {
+            return Ok(statement
+                .read::<String, _>("Name")
+                .map_err(|_| VinError::VPICQueryError)?);
+        }
+
+        Err(VinError::NoResultsFound)
+    }
+
+    pub fn get_manufacturer_country(&self, schema_id: i64) -> Result<String, VinError> {
+        todo!()
     }
 
     /*

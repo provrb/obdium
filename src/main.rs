@@ -8,6 +8,7 @@ fn main() -> Result<(), OBDError> {
     let wmi_id = vin.get_wmi_id(&wmi).unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let vehicle_type_id = vin.get_vehicle_type_id(&wmi).unwrap();
     println!("Model year: {:?}", model_year);
     println!("WMI: {:?}", wmi);
     println!("WMI ID: {:?}", wmi_id);
@@ -36,6 +37,7 @@ fn main() -> Result<(), OBDError> {
         vin.get_engine_manufacturer(schema_id).unwrap()
     );
     println!("Vehicle model: {}", vin.get_vehicle_model(schema_id).unwrap());
+    println!("Vehicle type: {}", vin.get_vehicle_type(vehicle_type_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
