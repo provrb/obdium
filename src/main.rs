@@ -22,6 +22,20 @@ fn main() -> Result<(), OBDError> {
         vin.get_engine_displacement(schema_id)
     );
     println!("Fuel type: {}", vin.get_fuel_type(schema_id).unwrap());
+    println!(
+        "Valve train design: {}",
+        vin.get_valve_train_design(schema_id).unwrap()
+    );
+    println!(
+        "Fuel delivery type: {}",
+        vin.get_fuel_delivery_type(schema_id).unwrap()
+    );
+    println!("Turbo: {}", vin.has_turbo(schema_id).unwrap());
+    println!(
+        "Engine manufacturer: {}",
+        vin.get_engine_manufacturer(schema_id).unwrap()
+    );
+    println!("Vehicle model: {}", vin.get_vehicle_model(schema_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

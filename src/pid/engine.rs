@@ -8,17 +8,36 @@ pub enum ValveTrainDesign {
     CamlessValveActuation = 1,
     DualOverheadCam,
     OverheadValve,
-    SingleOverheadCam
+    SingleOverheadCam,
+    Unknown,
 }
 
 impl ValveTrainDesign {
+    pub fn from_u8(from: u8) -> Self {
+        match from {
+            1u8 => Self::CamlessValveActuation,
+            2u8 => Self::DualOverheadCam,
+            3u8 => Self::OverheadValve,
+            4u8 => Self::SingleOverheadCam,
+            _ => Self::Unknown,
+        }
+    }
+
     pub fn as_str(&self) -> &str {
         match self {
             ValveTrainDesign::CamlessValveActuation => "Camless Valve Actuation (CVA)",
             ValveTrainDesign::DualOverheadCam => "Dual Overhead Cam (DOHC)",
             ValveTrainDesign::OverheadValve => "Overhead Valve (OHV)",
             ValveTrainDesign::SingleOverheadCam => "Single Overhead Cam (SOHC)",
+            ValveTrainDesign::Unknown => "Unknown",
         }
+    }
+}
+
+impl fmt::Display for ValveTrainDesign {
+    #[inline(always)]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.as_str())
     }
 }
 

@@ -2,7 +2,12 @@ use chrono::Datelike;
 use regex::Regex;
 use sqlite::{Connection, State};
 
-use crate::pid::{engine::ValveTrainDesign, fuel::FuelType};
+use crate::pid::{
+    engine::ValveTrainDesign,
+    fuel::{FuelDeliveryType, FuelType},
+};
+
+use crate::vin::element_ids::ElementId;
 
 const VPIC_DB_PATH: &'static str = "./data/vpic.sqlite";
 
@@ -454,13 +459,13 @@ impl VIN {
     fn query_pattern(
         &self,
         schema_id: i64,
-        element_id: i64,
+        element_id: ElementId,
         key: &str,
     ) -> Result<(i64, i64, String, i64, String), VinError> {
         let con = match &self.vpic_db_con {
             Some(con) => con,
             None => {
-                println!("get_attribute_id(): no database connection established. quitting.");
+                println!("query_pattern(): no database connection established. quitting.");
                 return Err(VinError::VPICNoConnection);
             }
         };
@@ -479,7 +484,7 @@ impl VIN {
             .map_err(|_| VinError::VPICQueryError)?;
 
         statement
-            .bind((2, element_id))
+            .bind((2, element_id.as_i64()))
             .map_err(|_| VinError::VPICQueryError)?;
 
         while let Ok(State::Row) = statement.next() {
@@ -498,7 +503,13 @@ impl VIN {
                     .read::<String, _>("AttributeId")
                     .map_err(|_| VinError::VPICQueryError)?;
 
-                return Ok((pattern_id, schema_id, pattern, element_id, attribute_id));
+                return Ok((
+                    pattern_id,
+                    schema_id,
+                    pattern,
+                    element_id.as_i64(),
+                    attribute_id,
+                ));
             }
         }
 
@@ -507,28 +518,28 @@ impl VIN {
 
     pub fn get_engine_model(&self, schema_id: i64) -> Result<String, VinError> {
         let key = self.as_key();
-        let data = self.query_pattern(schema_id, 18, &key)?;
+        let data = self.query_pattern(schema_id, ElementId::EngineModel, &key)?;
 
         Ok(data.4)
     }
 
     pub fn get_cylinder_count(&self, schema_id: i64) -> Result<i64, VinError> {
         let key = self.as_key();
-        let data = self.query_pattern(schema_id, 9, &key)?;
+        let data = self.query_pattern(schema_id, ElementId::EngineCylinderCount, &key)?;
 
         data.4.parse().map_err(|_| VinError::VPICQueryError)
     }
 
     pub fn get_engine_displacement(&self, schema_id: i64) -> Result<f64, VinError> {
         let key = self.as_key();
-        let data = self.query_pattern(schema_id, 13, &key)?;
+        let data = self.query_pattern(schema_id, ElementId::EngineDisplacement, &key)?;
 
         data.4.parse().map_err(|_| VinError::VPICQueryError)
     }
 
     pub fn get_fuel_type(&self, schema_id: i64) -> Result<FuelType, VinError> {
         let key = self.as_key();
-        let data = self.query_pattern(schema_id, 24, &key)?;
+        let data = self.query_pattern(schema_id, ElementId::FuelType, &key)?;
         let fuel_type: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
 
         // NHTSA fuel type bindings is different
@@ -553,6 +564,77 @@ impl VIN {
         }
     }
 
+    pub fn get_valve_train_design(&self, schema_id: i64) -> Result<ValveTrainDesign, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::ValveTrainDesign, &key)?;
+        let id: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+
+        Ok(ValveTrainDesign::from_u8(id))
+    }
+
+    pub fn get_fuel_delivery_type(&self, schema_id: i64) -> Result<FuelDeliveryType, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::FuelDeliveryType, &key)?;
+        let id: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+
+        Ok(FuelDeliveryType::from_u8(id))
+    }
+
+    pub fn has_turbo(&self, schema_id: i64) -> Result<bool, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::HasTurbo, &key)?;
+        let turbo: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+
+        Ok(turbo == 1)
+    }
+
+    pub fn get_engine_manufacturer(&self, schema_id: i64) -> Result<String, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::EngineManufacturer, &key)?;
+
+        Ok(data.4)
+    }
+
+    pub fn get_vehicle_door_count(&self, schema_id: i64) -> Result<String, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::VehicleDoorCount, &key)?;
+
+        data.4.parse().map_err(|_| VinError::VPICQueryError)
+    }
+
+    pub fn get_vehicle_model(&self, schema_id: i64) -> Result<String, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::VehicleModel, &key)?;
+        let model_id: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+
+        let con = match &self.vpic_db_con {
+            Some(con) => con,
+            None => return Err(VinError::VPICNoConnection),
+        };
+
+        let query = "SELECT Name FROM Model WHERE Id = ?";
+
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return Err(VinError::VPICQueryError);
+            }
+        };
+
+        statement
+            .bind((1, model_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        if let Ok(State::Row) = statement.next() {
+            return Ok(statement
+                .read::<String, _>("Name")
+                .map_err(|_| VinError::VPICQueryError)?);
+        }
+
+        Err(VinError::NoResultsFound)
+    }
+
     /*
        declare
        @descriptor varchar(17) = dbo.fVinDescriptor(@vin)
@@ -565,16 +647,16 @@ impl VIN {
        end
     */
     pub fn as_key(&self) -> String {
-        let vin_clone = self.vin.clone();
+        let vin_clone = &self.vin;
         if self.vin.len() < 4 {
             return String::new();
         }
 
-        let mut key;
-        key = vin_clone[3..8].to_string();
+        let mut key = vin_clone[3..8].to_string();
 
         if self.vin.len() > 9 {
-            key = key + "|" + &vin_clone[9..17].to_string();
+            key.push('|');
+            key.push_str(&vin_clone[9..17]);
         }
 
         key
