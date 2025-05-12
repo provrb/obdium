@@ -2,12 +2,14 @@ use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
 use obdium::vin::parser::VIN;
 
 fn main() -> Result<(), OBDError> {
-    let vin = VIN::new("KL4CJASB6JB660929".to_string());
+    let vin = VIN::new("KL4CJASB6JB660929");
     let wmi = vin.get_wmi().unwrap();
     let key = vin.as_key();
     let wmi_id = vin.get_wmi_id(&wmi).unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let vehicle_type_id = vin.get_vehicle_type_id(&wmi).unwrap();
+    let make_id = vin.get_make_id(&wmi).unwrap();
     println!("Model year: {:?}", model_year);
     println!("WMI: {:?}", wmi);
     println!("WMI ID: {:?}", wmi_id);
@@ -35,7 +37,21 @@ fn main() -> Result<(), OBDError> {
         "Engine manufacturer: {}",
         vin.get_engine_manufacturer(schema_id).unwrap()
     );
-    println!("Vehicle model: {}", vin.get_vehicle_model(schema_id).unwrap());
+    println!(
+        "Vehicle model: {}",
+        vin.get_vehicle_model(schema_id).unwrap()
+    );
+    println!("Vehicle Make: {}", vin.get_vehicle_make(make_id).unwrap());
+    println!(
+        "Vehicle type: {}",
+        vin.get_vehicle_type(vehicle_type_id).unwrap()
+    );
+    println!("Plant city: {}", vin.get_plant_city(schema_id).unwrap());
+    println!(
+        "Plant country: {}",
+        vin.get_plant_country(schema_id).unwrap()
+    );
+    println!("Body class: {}", vin.get_body_class(schema_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

@@ -3,7 +3,7 @@ use std::fmt;
 
 use crate::{cmd::Command, obd::OBD};
 
-const CODE_DESC_DB_PATH: &'static str = "./data/code-descriptions.sqlite";
+const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
 #[derive(Debug)]
 pub enum OBDStandard {

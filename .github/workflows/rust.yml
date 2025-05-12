@@ -15,7 +15,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Install Git LFS
+      run: git lfs install
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        lfs: true
     - name: Build
       run: cargo build
     - name: Tests
