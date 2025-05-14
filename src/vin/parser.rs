@@ -245,7 +245,7 @@ impl VIN {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::VehicleModel, key)?;
 
-        data.4.parse().map_err(|_| VinError::VPICQueryError)
+        data.4.parse().map_err(|_| VinError::ParseError)
     }
 
     pub fn get_vspec_schema_id(&self, model_id: i64, make_id: i64) -> Result<i64, VinError> {
@@ -295,7 +295,7 @@ impl VIN {
             }
         }
 
-        return Err(VinError::NoResultsFound);
+        Err(VinError::NoResultsFound)
     }
 
     pub fn get_vspec_pattern_id(
@@ -668,9 +668,9 @@ impl VIN {
             .map_err(|_| VinError::VPICQueryError)?;
 
         if let Ok(State::Row) = statement.next() {
-            return Ok(statement
+            return statement
                 .read::<String, _>("Name")
-                .map_err(|_| VinError::VPICQueryError)?);
+                .map_err(|_| VinError::VPICQueryError);
         }
 
         Err(VinError::NoResultsFound)
@@ -820,7 +820,7 @@ impl VIN {
             .bind((2, element_id.as_i64()))
             .map_err(|_| VinError::VPICQueryError)?;
 
-        while let Ok(State::Row) = statement.next() {
+        if let Ok(State::Row) = statement.next() {
             let pattern_id = statement
                 .read::<i64, _>("Id")
                 .map_err(|_| VinError::VPICQueryError)?;
