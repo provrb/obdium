@@ -116,7 +116,7 @@ fn engine_model() {
 
 #[test]
 fn cylinder_count() {
-        let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi().unwrap();
     let wmi_id = vin.get_wmi_id(&wmi).unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;

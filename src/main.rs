@@ -10,6 +10,11 @@ fn main() -> Result<(), OBDError> {
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let vehicle_type_id = vin.get_vehicle_type_id(&wmi).unwrap();
     let make_id = vin.get_make_id(&wmi).unwrap();
+    let model_id = vin.get_model_id(schema_id).unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let vspec_pattern_id = vin
+        .get_vspec_pattern_id(vspec_schema_id, schema_id)
+        .unwrap();
     println!("Model year: {:?}", model_year);
     println!("WMI: {:?}", wmi);
     println!("WMI ID: {:?}", wmi_id);
@@ -52,6 +57,12 @@ fn main() -> Result<(), OBDError> {
         vin.get_plant_country(schema_id).unwrap()
     );
     println!("Body class: {}", vin.get_body_class(schema_id).unwrap());
+    println!("Vehicle spec schema id: {}", vspec_schema_id);
+    println!("Vehicle spec pattern id: {}", vspec_pattern_id);
+    println!(
+        "ABS: {}",
+        vin.get_abs_availablility(vspec_pattern_id).unwrap()
+    );
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

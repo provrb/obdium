@@ -5,8 +5,10 @@
 /// located in the NHTSA local database and used
 /// to retrieve specific information about an ELEMENT
 /// from the Patterns table alongside a key and VinSchemaId.
+use num_enum::TryFromPrimitive;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, TryFromPrimitive)]
+#[repr(u16)] // Max Element id is 203 - Future proof with u16
 pub enum ElementId {
     EngineModel = 18,
     EngineManufacturer = 146,
@@ -27,6 +29,8 @@ pub enum ElementId {
     Windows = 40,
     BodyClass = 5,
     DriveType = 15,
+    Trim = 38,
+    ABS = 86,
     // BatteryType = 2
     // BedType = 3,
     // BodyCab = 4,

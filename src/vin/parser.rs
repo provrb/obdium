@@ -13,6 +13,7 @@ pub enum VinError {
     VPICNoConnection,
     VPICQueryError,
 
+    ParseError,
     InvalidVinLength,
     WMIError,
     ModelYearError,
@@ -240,6 +241,160 @@ impl VIN {
         }
     }
 
+    pub fn get_model_id(&self, schema_id: i64) -> Result<i64, VinError> {
+        let key = self.as_key();
+        let data = self.query_pattern(schema_id, ElementId::VehicleModel, key)?;
+
+        data.4.parse().map_err(|_| VinError::VPICQueryError)
+    }
+
+    pub fn get_vspec_schema_id(&self, model_id: i64, make_id: i64) -> Result<i64, VinError> {
+        // query VehicleSpecSchema with MakeId
+        // save all rows 'Id'
+        // iterate through all rows 'Id' that matched with 'MakeId'
+        // query VehicleSpecSchema_Model with 'Id' comparing ModelId to 'ModelId'
+        //      if match return Id
+        //      No match: Error no result found
+
+        let con = self.vpic_connection()?;
+        let mut matched_spec_schema_ids = Vec::new();
+
+        {
+            let query = format!(
+                "SELECT Id FROM VehicleSpecSchema WHERE MakeId = {}",
+                make_id
+            );
+            let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+            while let Ok(State::Row) = statement.next() {
+                let id = statement
+                    .read::<i64, _>("Id")
+                    .map_err(|_| VinError::VPICQueryError)?;
+                matched_spec_schema_ids.push(id);
+            }
+
+            matched_spec_schema_ids.sort();
+        }
+
+        {
+            let query = format!(
+                "SELECT VehicleSpecSchemaId FROM VehicleSpecSchema_Model WHERE ModelId = {}",
+                model_id
+            );
+            let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+            while let Ok(State::Row) = statement.next() {
+                let spec_schema_id = statement
+                    .read::<i64, _>("VehicleSpecSchemaId")
+                    .map_err(|_| VinError::VPICQueryError)?;
+
+                match matched_spec_schema_ids.binary_search(&spec_schema_id) {
+                    Ok(_) => return Ok(spec_schema_id),
+                    Err(_) => continue,
+                }
+            }
+        }
+
+        return Err(VinError::NoResultsFound);
+    }
+
+    pub fn get_vspec_pattern_id(
+        &self,
+        vspec_schema_id: i64,
+        vin_schema_id: i64, // AKA 'schema_id'
+    ) -> Result<i64, VinError> {
+        /*
+            So apparently VSpecSchemaPatternIds have a row
+            with ElementId 38 (for 'Trim'). If one VSpecSchemaId
+            matches multiple VSpecSchemaPatternIds, you can differentiate
+            to find the one that matches the correct model by looking at
+            the ElementId 38 row's AttributeId. An example might be "Preferred".
+            This will always be the same as querying 'Pattern' with ElementId 'Trim'.
+
+            For example, querying ElementId::Trim with id '15103' will give:
+            Ok((2080567, 15103, "*J[AE]", 38, "Preferred"))
+            Notice the AttributeId, "Preferred".
+
+            Let's get the VSpecSchemaId using get_vehicle_spec_schema_id.
+            VSpecSchemaId will be 248 if WmiSchemaId is 15103.
+            Now we try and search for the VSpecSchemaPatternId with
+            VSpecSchemaId as 248. This query yields multiple VSpecSchemaPatternIds for 248.
+
+            Results:
+            VSpecSchemaPatternId - VSpecSchemaId
+                            461 - 248
+                            462 - 248
+                            463 - 248
+                            464 - 248
+                            465 - 248
+
+            This is an issue because we need the correct VSpecSchemaPatternId to get
+            the respective information about the correct vehicle model.
+
+            This is where querying the Trim element id will come in.
+            Find expected Trim attribute:
+            1. Query 'Pattern' with WmiSchemaId where ElementId = 38 (Trim)
+            2. Store this in 'expected_trim'
+
+            For every id (v_id) returned (VSpecSchemaPatternIds)
+                1. Query VSpecSchemaPattern for AttributeId
+                    where VSpecSchemaPatternId = v_id
+                    and ElementId = 38 (Trim)
+                2. If AttributeId == expected_trim
+                    - Then we found our correct VSpecSchemaPatternId for our vehicle.
+                3. Otherwise, continue
+
+            Worst case: If there are no VSpecSchemaPatternIds found, we assume there is no
+            VSpecSchemaPatternId for our VSpecSchemaId and return VinError::NoResultsFound.
+        */
+        let con = self.vpic_connection()?;
+        let vin_key = self.as_key();
+        let query = "SELECT Id FROM VSpecSchemaPattern WHERE SchemaId = ?";
+        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((1, vspec_schema_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        while let Ok(State::Row) = statement.next() {
+            let pattern_id = statement
+                .read::<i64, _>("Id")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            // Check the key element id and find its attribute
+
+            // Find key element id
+            let mut pattern_query = con.prepare(
+                "SELECT ElementId, AttributeId FROM VehicleSpecPattern WHERE IsKey = 1 AND VSpecSchemaPatternId = ?"
+            ).map_err(|_| VinError::VPICQueryError)?;
+
+            pattern_query
+                .bind((1, pattern_id))
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            if let Ok(State::Row) = pattern_query.next() {
+                let key_element_id = pattern_query
+                    .read::<i64, _>("ElementId")
+                    .map_err(|_| VinError::VPICQueryError)?;
+
+                let key_attribute = pattern_query
+                    .read::<String, _>("AttributeId")
+                    .map_err(|_| VinError::VPICQueryError)?;
+
+                // query pattern with schema id and key_element_id
+                // compare key_attribute to the attribute from schema_id
+                if let Ok(element_id) = ElementId::try_from(key_element_id as u16) {
+                    let data = self.query_pattern(vin_schema_id, element_id, vin_key)?;
+                    if data.4 == key_attribute {
+                        return Ok(pattern_id);
+                    }
+                }
+            }
+        }
+
+        Err(VinError::NoResultsFound)
+    }
+
     pub fn get_manufacturer_id(&self, wmi: &str) -> Result<i64, VinError> {
         let con = self.vpic_connection()?;
         let query = "SELECT ManufacturerId FROM Wmi WHERE Wmi = ?";
@@ -316,20 +471,20 @@ impl VIN {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::EngineCylinderCount, key)?;
 
-        data.4.parse().map_err(|_| VinError::VPICQueryError)
+        data.4.parse().map_err(|_| VinError::ParseError)
     }
 
     pub fn get_engine_displacement(&self, schema_id: i64) -> Result<f64, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::EngineDisplacement, key)?;
 
-        data.4.parse().map_err(|_| VinError::VPICQueryError)
+        data.4.parse().map_err(|_| VinError::ParseError)
     }
 
     pub fn get_fuel_type(&self, schema_id: i64) -> Result<String, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::FuelType, key)?;
-        let fuel_type_id: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let fuel_type_id: i64 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         let con = self.vpic_connection()?;
         let query = "SELECT Name FROM FuelType WHERE Id = ?";
@@ -350,7 +505,7 @@ impl VIN {
     pub fn get_valve_train_design(&self, schema_id: i64) -> Result<ValveTrainDesign, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::ValveTrainDesign, key)?;
-        let id: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let id: u8 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         Ok(ValveTrainDesign::from_u8(id))
     }
@@ -358,7 +513,7 @@ impl VIN {
     pub fn get_fuel_delivery_type(&self, schema_id: i64) -> Result<FuelDeliveryType, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::FuelDeliveryType, key)?;
-        let id: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let id: u8 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         Ok(FuelDeliveryType::from_u8(id))
     }
@@ -366,7 +521,7 @@ impl VIN {
     pub fn has_turbo(&self, schema_id: i64) -> Result<bool, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::HasTurbo, key)?;
-        let turbo: u8 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let turbo: u8 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         Ok(turbo == 1)
     }
@@ -382,13 +537,11 @@ impl VIN {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::VehicleDoorCount, key)?;
 
-        data.4.parse().map_err(|_| VinError::VPICQueryError)
+        data.4.parse().map_err(|_| VinError::ParseError)
     }
 
     pub fn get_vehicle_model(&self, schema_id: i64) -> Result<String, VinError> {
-        let key = self.as_key();
-        let data = self.query_pattern(schema_id, ElementId::VehicleModel, key)?;
-        let model_id: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let model_id = self.get_model_id(schema_id)?;
 
         let con = match &self.vpic_db_con {
             Some(con) => con,
@@ -438,7 +591,7 @@ impl VIN {
     pub fn get_plant_country(&self, schema_id: i64) -> Result<String, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::PlantCountry, key)?;
-        let country_id: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let country_id: i64 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         let con = self.vpic_connection()?;
 
@@ -484,7 +637,7 @@ impl VIN {
     pub fn get_body_class(&self, schema_id: i64) -> Result<String, VinError> {
         let key = self.as_key();
         let data = self.query_pattern(schema_id, ElementId::BodyClass, key)?;
-        let body_style_id: i64 = data.4.parse().map_err(|_| VinError::VPICQueryError)?;
+        let body_style_id: i64 = data.4.parse().map_err(|_| VinError::ParseError)?;
 
         let con = self.vpic_connection()?;
         let query = "SELECT Name FROM BodyStyle WHERE Id = ?";
@@ -500,6 +653,27 @@ impl VIN {
                 .map_err(|_| VinError::VPICQueryError)?),
             _ => Err(VinError::NoResultsFound),
         }
+    }
+
+    pub fn get_abs_availablility(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::ABS)?;
+        let abs_option: i64 = data.3.parse().map_err(|_| VinError::ParseError)?;
+
+        let con = self.vpic_connection()?;
+        let query = "SELECT Name FROM ABS Where Id = ?";
+        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((1, abs_option))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        if let Ok(State::Row) = statement.next() {
+            return Ok(statement
+                .read::<String, _>("Name")
+                .map_err(|_| VinError::VPICQueryError)?);
+        }
+
+        Err(VinError::NoResultsFound)
     }
 
     fn vpic_connection(&self) -> Result<&Connection, VinError> {
@@ -622,6 +796,45 @@ impl VIN {
                     attribute_id,
                 ));
             }
+        }
+
+        Err(VinError::NoResultsFound)
+    }
+
+    fn query_vspec_pattern(
+        &self,
+        vspec_pattern_id: i64,
+        element_id: ElementId,
+    ) -> Result<(i64, i64, i64, String), VinError> {
+        let con = self.vpic_connection()?;
+
+        let query =
+            "SELECT * FROM VehicleSpecPattern WHERE VSpecSchemaPatternId = ? and ElementId = ?";
+        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((1, vspec_pattern_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((2, element_id.as_i64()))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        while let Ok(State::Row) = statement.next() {
+            let pattern_id = statement
+                .read::<i64, _>("Id")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            let attribute_id = statement
+                .read::<String, _>("AttributeId")
+                .map_err(|_| VinError::VPICQueryError)?;
+
+            return Ok((
+                pattern_id,
+                vspec_pattern_id,
+                element_id.as_i64(),
+                attribute_id,
+            ));
         }
 
         Err(VinError::NoResultsFound)
