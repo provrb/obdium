@@ -59,10 +59,7 @@ fn main() -> Result<(), OBDError> {
     println!("Body class: {}", vin.get_body_class(schema_id).unwrap());
     println!("Vehicle spec schema id: {}", vspec_schema_id);
     println!("Vehicle spec pattern id: {}", vspec_pattern_id);
-    println!(
-        "ABS: {}",
-        vin.get_abs_availablility(vspec_pattern_id).unwrap()
-    );
+    println!("ABS: {}", vin.abs_availablility(vspec_pattern_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

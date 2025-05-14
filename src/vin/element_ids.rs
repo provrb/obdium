@@ -7,7 +7,7 @@
 /// from the Patterns table alongside a key and VinSchemaId.
 use num_enum::TryFromPrimitive;
 
-#[derive(Copy, Clone, TryFromPrimitive)]
+#[derive(Debug, Copy, Clone, TryFromPrimitive)]
 #[repr(u16)] // Max Element id is 203 - Future proof with u16
 pub enum ElementId {
     EngineModel = 18,
@@ -18,6 +18,16 @@ pub enum ElementId {
     HasTurbo = 135,
     FuelType = 24,
     FuelDeliveryType = 67,
+    TransmissionStyle = 37,
+    AxleCount = 41,
+    AdaptiveDrivingBeam = 180,
+    SteeringLocation = 36,
+    KeylessIgnition = 176,
+    AirbagLocationsFront = 65,
+    AirbagLocationsKnee = 69,
+    AirbagLocationsSide = 107,
+    AirbagLocationsCurtain = 55,
+    AirbagLocationsSeatCushion = 56,
 
     VehicleDoorCount = 14,
     VehicleModel = 28,

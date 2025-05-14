@@ -128,3 +128,87 @@ fn cylinder_count() {
         "cylinder_count: provided incorrect cylinder count model. wmi_id: {wmi_id}, wmi: {wmi}, vin: {VIN_STRING}. expected 4."
     )
 }
+
+#[test]
+fn transmission_style() {
+    let vin = VIN::new(VIN_STRING);
+    let wmi = vin.get_wmi().unwrap();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let model_id = vin.get_model_id(schema_id).unwrap();
+    let make_id = vin.get_make_id(&wmi).unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let vspec_pattern_id = vin
+        .get_vspec_pattern_id(vspec_schema_id, schema_id)
+        .unwrap();
+
+    assert_eq!(
+        vin.get_transmission_style(vspec_pattern_id).unwrap(),
+        "Automatic",
+        "transmission_style: incorrect value. expected 'Automatic'"
+    );
+}
+
+#[test]
+fn steering_location() {
+    let vin = VIN::new(VIN_STRING);
+    let wmi = vin.get_wmi().unwrap();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let model_id = vin.get_model_id(schema_id).unwrap();
+    let make_id = vin.get_make_id(&wmi).unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let vspec_pattern_id = vin
+        .get_vspec_pattern_id(vspec_schema_id, schema_id)
+        .unwrap();
+
+    assert_eq!(
+        vin.get_steering_location(vspec_pattern_id).unwrap(),
+        "Left-Hand Drive (LHD)",
+        "steering_location: incorrect value. expected 'Left'"
+    );
+}
+
+#[test]
+fn abs_availability() {
+    let vin = VIN::new(VIN_STRING);
+    let wmi = vin.get_wmi().unwrap();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let model_id = vin.get_model_id(schema_id).unwrap();
+    let make_id = vin.get_make_id(&wmi).unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let vspec_pattern_id = vin
+        .get_vspec_pattern_id(vspec_schema_id, schema_id)
+        .unwrap();
+
+    assert_eq!(
+        vin.abs_availablility(vspec_pattern_id).unwrap(),
+        "Standard",
+        "abs_availability: incorrect value. expected 'Standard'"
+    );
+}
+
+#[test]
+fn keyless_ignition() {
+    let vin = VIN::new(VIN_STRING);
+    let wmi = vin.get_wmi().unwrap();
+    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let model_year = vin.get_model_year().unwrap() as i64;
+    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let model_id = vin.get_model_id(schema_id).unwrap();
+    let make_id = vin.get_make_id(&wmi).unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let vspec_pattern_id = vin
+        .get_vspec_pattern_id(vspec_schema_id, schema_id)
+        .unwrap();
+
+    assert_eq!(
+        vin.keyless_ignition_availability(vspec_pattern_id).unwrap(),
+        "Standard",
+        "keyless_ignition: incorrect value. expected 'Standard'"
+    );
+}

@@ -12,6 +12,7 @@ pub enum VinError {
     VPICConnectFailed,
     VPICNoConnection,
     VPICQueryError,
+    VPICNoLookupTable,
 
     ParseError,
     InvalidVinLength,
@@ -26,6 +27,7 @@ pub enum VinError {
 pub struct VIN {
     vpic_db_con: Option<sqlite::Connection>,
     vin: String,
+
     key_cache: OnceCell<String>,
 }
 
@@ -655,25 +657,48 @@ impl VIN {
         }
     }
 
-    pub fn get_abs_availablility(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::ABS)?;
-        let abs_option: i64 = data.3.parse().map_err(|_| VinError::ParseError)?;
+    pub fn get_transmission_style(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::TransmissionStyle)
+    }
 
-        let con = self.vpic_connection()?;
-        let query = "SELECT Name FROM ABS Where Id = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+    pub fn get_steering_location(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::SteeringLocation)
+    }
 
-        statement
-            .bind((1, abs_option))
-            .map_err(|_| VinError::VPICQueryError)?;
+    pub fn abs_availablility(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::ABS)
+    }
 
-        if let Ok(State::Row) = statement.next() {
-            return statement
-                .read::<String, _>("Name")
-                .map_err(|_| VinError::VPICQueryError);
-        }
+    pub fn adaptive_driving_beam_availability(
+        &self,
+        vspec_pattern_id: i64,
+    ) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AdaptiveDrivingBeam)
+    }
 
-        Err(VinError::NoResultsFound)
+    pub fn keyless_ignition_availability(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::KeylessIgnition)
+    }
+
+    // FIXME: airbags are in regular 'Pattern'
+    pub fn airbag_locations_front(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AirbagLocationsFront)
+    }
+
+    pub fn airbag_locations_knee(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AirbagLocationsKnee)
+    }
+
+    pub fn airbag_locations_side(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AirbagLocationsSide)
+    }
+
+    pub fn airbag_locations_curtain(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AirbagLocationsCurtain)
+    }
+
+    pub fn airbag_locations_seat_cushion(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
+        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AirbagLocationsSeatCushion)
     }
 
     fn vpic_connection(&self) -> Result<&Connection, VinError> {
@@ -838,5 +863,62 @@ impl VIN {
         }
 
         Err(VinError::NoResultsFound)
+    }
+
+    fn get_vehicle_spec(&self, lookup_table: &str, spec_id: i64) -> Result<String, VinError> {
+        let con = self.vpic_connection()?;
+        let query = format!("SELECT Name FROM {} WHERE Id = ?", lookup_table);
+        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+
+        statement
+            .bind((1, spec_id))
+            .map_err(|_| VinError::VPICQueryError)?;
+
+        if let Ok(State::Row) = statement.next() {
+            return statement
+                .read::<String, _>("Name")
+                .map_err(|_| VinError::VPICQueryError);
+        }
+
+        Err(VinError::NoResultsFound)
+    }
+
+    fn get_lookup_table(&self, element_id: ElementId) -> Option<String> {
+        // try and find the lookup table name for Element Id
+        let con = self.vpic_connection().ok()?;
+
+        let query = "SELECT LookupTable FROM Element WHERE Id = ?";
+        let mut statement = con.prepare(query).ok()?;
+        statement.bind((1, element_id.as_i64())).ok()?;
+
+        if let Ok(State::Row) = statement.next() {
+            let x = statement.read::<String, _>("LookupTable").ok();
+            println!("Result: {:?}", x);
+            x
+        } else {
+            None
+        }
+    }
+
+    fn get_spec_from_pattern(
+        &self,
+        vspec_pattern_id: i64,
+        element_id: ElementId,
+    ) -> Result<String, VinError> {
+        println!(
+            "VSpecPatternId: {}, ElementId: {:?}",
+            vspec_pattern_id, element_id
+        );
+        let table_name = match self.get_lookup_table(element_id) {
+            Some(name) => name,
+            None => return Err(VinError::VPICNoLookupTable),
+        };
+
+        let data = self.query_vspec_pattern(vspec_pattern_id, element_id)?;
+        let id: i64 = data.3.parse().map_err(|_| VinError::ParseError)?;
+
+        let spec = self.get_vehicle_spec(&table_name, id);
+        println!("{table_name} {:?}", spec);
+        spec
     }
 }
