@@ -60,6 +60,10 @@ fn main() -> Result<(), OBDError> {
     println!("Vehicle spec schema id: {}", vspec_schema_id);
     println!("Vehicle spec pattern id: {}", vspec_pattern_id);
     println!("ABS: {}", vin.abs_availablility(vspec_pattern_id).unwrap());
+    println!("{}", vin.airbag_locations_curtain(schema_id).unwrap());
+    println!("{}", vin.airbag_locations_front(schema_id).unwrap());
+    println!("{}", vin.airbag_locations_knee(schema_id).unwrap());
+    println!("{}", vin.airbag_locations_side(schema_id).unwrap());
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
