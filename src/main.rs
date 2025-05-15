@@ -3,9 +3,9 @@ use obdium::vin::parser::VIN;
 
 fn main() -> Result<(), OBDError> {
     let vin = VIN::new("KL4CJASB6JB660929");
-    let wmi = vin.get_wmi().unwrap();
+    let wmi = vin.get_wmi();
     let key = vin.as_key();
-    let wmi_id = vin.get_wmi_id(&wmi).unwrap();
+    let wmi_id = vin.get_wmi_id().unwrap().clone();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let vehicle_type_id = vin.get_vehicle_type_id(&wmi).unwrap();

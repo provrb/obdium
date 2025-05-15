@@ -31,8 +31,16 @@ pub enum VinError {
 #[derive(Default)]
 pub struct VIN {
     pub(crate) vpic_db_con: Option<sqlite::Connection>,
-    pub(crate) vin: String,
+
+    /// Caches. These values should not change
+    /// once a VIN structure is initialized.
+    pub(crate) vin: OnceCell<String>,
+    pub(crate) wmi: OnceCell<String>,
     pub(crate) key_cache: OnceCell<String>,
+    pub(crate) wmi_schema_id: OnceCell<i64>,
+    pub(crate) vspec_schema_id: OnceCell<i64>,
+    pub(crate) make_id: OnceCell<i64>,
+    pub(crate) model_id: OnceCell<i64>,
 }
 
 impl PartialEq for VIN {
@@ -44,18 +52,35 @@ impl PartialEq for VIN {
 impl VIN {
     pub fn new<T>(vin: T) -> Self
     where
-        T: Into<String>,
+        T: Into<String> + std::fmt::Debug,
     {
-        let mut _vin = Self {
-            vin: vin.into(),
-            ..Default::default()
-        };
+        let vin_string = vin.into();
+        if vin_string.len() != 17 {
+            panic!("panic when creating new vin. vin expected length 17, got {}", vin_string.len())
+        }
+
+        let mut _vin = Self::default();
+        match _vin.vin.set(vin_string) {
+            Ok(()) => (),
+            Err(err) => {
+                panic!("panic when creating new vin. call to OnceCell::set failed. error {err}");
+            }
+        }
+
+        _vin.get_wmi();
 
         if _vin.connect_to_vpic_db().is_err() {
-            println!("Error connecting to VPIC database.");
+            println!("Error connecting to VPIC database. Features are limited.");
         }
 
         _vin
+    }
+
+    pub fn get_vin(&self) -> &str {
+        match self.vin.get() {
+            Some(vin) => vin,
+            _ => unreachable!(),
+        }
     }
 
     /*
@@ -71,7 +96,7 @@ impl VIN {
     */
     pub fn as_key(&self) -> &str {
         self.key_cache.get_or_init(|| {
-            let vin = self.vin.as_str();
+            let vin = self.get_vin();
             if vin.len() != 17 {
                 return String::new();
             }

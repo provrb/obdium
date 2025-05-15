@@ -46,11 +46,8 @@ impl VIN {
 
     // Based off of NHTSA's ModelYear2 MS SQL Server procedure.
     pub fn get_model_year(&self) -> Result<i32, VinError> {
-        if self.vin.len() < 10 {
-            return Err(VinError::InvalidVinLength);
-        }
-
-        let pos10 = match self.vin.chars().nth(9) {
+        let vin = self.get_vin();
+        let pos10 = match vin.chars().nth(9) {
             Some(ch) => ch,
             None => return Err(VinError::ModelYearError),
         };
@@ -65,7 +62,7 @@ impl VIN {
             _ => unreachable!(),
         };
 
-        let wmi = self.get_wmi()?;
+        let wmi = self.get_wmi();
         let vehicle_type_id = self.get_vehicle_type_id(&wmi)?;
         let truck_type_id = self.get_truck_type_id(&wmi)?;
         let mut car_lt = false;
@@ -74,7 +71,7 @@ impl VIN {
             car_lt = true;
         }
 
-        let pos7 = match self.vin.chars().nth(6) {
+        let pos7 = match vin.chars().nth(6) {
             Some(ch) => ch,
             None => return Err(VinError::ModelYearError),
         };
@@ -160,7 +157,7 @@ impl VIN {
     }
 
     pub fn get_body_class(&self, schema_id: i64) -> Result<String, VinError> {
-        let body_style_id = self.get_attribute_id_from_pattern(schema_id, ElementId::BodyClass)?;
+        let body_style_id = self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::BodyClass)?;
 
         self.lookup_name_from_id("BodyStyle", body_style_id)
     }

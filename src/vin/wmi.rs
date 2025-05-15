@@ -1,45 +1,62 @@
+use std::str::FromStr;
+
 use sqlite::State;
 
 use crate::vin::parser::{VinError, VIN};
 
 impl VIN {
-    pub fn get_wmi(&self) -> Result<String, VinError> {
-        if self.vin.len() < 3 {
-            return Err(VinError::InvalidVinLength);
-        }
-
-        let wmi = &self.vin[..3];
-        let last = match wmi.chars().last() {
-            Some(ch) => ch,
-            None => return Err(VinError::WMIError),
-        };
-
-        // ISO 3780's WMI extended form
-        if last == '9' && self.vin.len() >= 14 {
-            let extended_wmi = format!("{}{}", wmi, &self.vin[11..14]);
-            return Ok(extended_wmi);
-        }
-
-        Ok(wmi.to_string())
-    }
-
-    pub fn get_wmi_id(&self, wmi: &str) -> Result<i64, VinError> {
+    pub(crate) fn query_wmi<T: FromStr>(&self, column_name: &str) 
+    -> Result<T, VinError> 
+    where 
+        T::Err: std::fmt::Debug,
+    {
+        let wmi = self.get_wmi().as_str();
         let con = self.vpic_connection()?;
 
-        let query = "SELECT Id FROM Wmi WHERE Wmi = ?";
-        let mut statement = con
-            .prepare(query)
-            .map_err(|_| VinError::VPICQueryError(query))?;
+        let query = format!("SELECT {} FROM Wmi WHERE Wmi = ?", column_name);
+        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError("query_wmi"))?;
 
-        statement
-            .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError(query))?;
+        statement.bind((1, wmi)).map_err(|_| VinError::VPICQueryError("query_wmi"))?;
 
-        match statement.next() {
-            Ok(State::Row) => Ok(statement
-                .read::<i64, _>("Id")
-                .map_err(|_| VinError::VPICQueryError(query))?),
-            _ => Err(VinError::NoResultsFound(query)),
+        if let Ok(State::Row) = statement.next() {
+            let data = statement.read::<String, _>(column_name).map_err(|_| VinError::VPICQueryError("query_wmi"))?;
+            return  data.parse::<T>().map_err(|_| VinError::ParseError)
+        }
+
+        Err(VinError::NoResultsFound("query_wmi"))
+    }
+
+    pub fn get_wmi(&self) -> &String {
+        self.wmi.get_or_init(||{
+            let vin = self.get_vin();
+            let wmi = &vin[..3];
+            let last = match wmi.chars().last() {
+                Some(ch) => ch,
+                None => '\0',
+            };
+    
+            // ISO 3780's WMI extended form
+            if last == '9' {
+                let extended_wmi = format!("{}{}", wmi, &vin[11..14]);
+                return extended_wmi;
+            }
+    
+            wmi.to_string()
+        })
+    }
+
+    pub fn get_wmi_id(&self) -> Result<&i64, VinError> {
+        let res = self.wmi_schema_id.get_or_init(|| {
+            match self.query_wmi("Id") {
+                Ok(res) => res,
+                Err(_) => -1,
+            }
+        });
+
+        if *res == -1 {
+            Err(VinError::NoResultsFound("SELECT Id FROM Wmi WHERE Wmi = ?"))
+        } else {
+            Ok(res)
         }
     }
 
