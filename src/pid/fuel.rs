@@ -67,36 +67,6 @@ impl FuelSystemStatus {
     }
 }
 
-#[derive(Debug)]
-pub enum FuelDeliveryType {
-    Type(&'static str),
-}
-
-impl FuelDeliveryType {
-    pub fn from_u8(num: u8) -> Self {
-        match num {
-            1u8 => Self::Type("Stoichiometric Gasoline Direction Injection"),
-            2u8 => Self::Type("Lean-Burn Gasoline Direct Injection"),
-            3u8 => Self::Type("Multipoint Fuel Injection"),
-            4u8 => Self::Type("Sequential Fuel Injection"),
-            5u8 => Self::Type("Throttle Body Fuel Injection"),
-            6u8 => Self::Type("Common Rail Direct Injection Diesel"),
-            7u8 => Self::Type("Unit Injector Direct Injection Diesel"),
-            9u8 => Self::Type("Compression Ignition"),
-            10u8 => Self::Type("Transistor Controlled Ignition"),
-            _ => Self::Type("Unknown"),
-        }
-    }
-}
-
-impl fmt::Display for FuelDeliveryType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            FuelDeliveryType::Type(s) => write!(f, "{}", s),
-        }
-    }
-}
-
 impl OBD {
     pub fn short_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
         let mut command = Command::default();

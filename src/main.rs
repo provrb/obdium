@@ -15,18 +15,27 @@ fn main() -> Result<(), OBDError> {
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
         .unwrap();
-    println!("Model year: {:?}", model_year);
-    println!("WMI: {:?}", wmi);
-    println!("WMI ID: {:?}", wmi_id);
-    println!("Key: {:?}", key);
-    println!("Truck type id: {:?}", vin.get_truck_type_id(&wmi));
-    println!("Vehicle type id: {:?}", vin.get_vehicle_type_id(&wmi));
-    println!("Schema ID: {:?}", vin.get_schema_id(wmi_id, model_year));
-    println!("Engine model: {:?}", vin.get_engine_model(schema_id));
-    println!("Cylinder count: {:?}", vin.get_cylinder_count(schema_id));
+    println!("Model year: {}", model_year);
+    println!("WMI: {}", wmi);
+    println!("WMI ID: {}", wmi_id);
+    println!("Key: {}", key);
+    println!("Truck type id: {}", vin.get_truck_type_id(&wmi).unwrap());
     println!(
-        "Engine displacement (L): {:?}",
-        vin.get_engine_displacement(schema_id)
+        "Vehicle type id: {}",
+        vin.get_vehicle_type_id(&wmi).unwrap()
+    );
+    println!(
+        "Schema ID: {}",
+        vin.get_schema_id(wmi_id, model_year).unwrap()
+    );
+    println!("Engine model: {}", vin.get_engine_model(schema_id).unwrap());
+    println!(
+        "Cylinder count: {}",
+        vin.get_cylinder_count(schema_id).unwrap()
+    );
+    println!(
+        "Engine displacement (L): {}",
+        vin.get_engine_displacement(schema_id).unwrap()
     );
     println!("Fuel type: {}", vin.get_fuel_type(schema_id).unwrap());
     println!(
@@ -60,10 +69,112 @@ fn main() -> Result<(), OBDError> {
     println!("Vehicle spec schema id: {}", vspec_schema_id);
     println!("Vehicle spec pattern id: {}", vspec_pattern_id);
     println!("ABS: {}", vin.abs_availablility(vspec_pattern_id).unwrap());
-    println!("{}", vin.airbag_locations_curtain(schema_id).unwrap());
-    println!("{}", vin.airbag_locations_front(schema_id).unwrap());
-    println!("{}", vin.airbag_locations_knee(schema_id).unwrap());
-    println!("{}", vin.airbag_locations_side(schema_id).unwrap());
+    println!(
+        "Airbag locations curtain: {}",
+        vin.airbag_locations_curtain(schema_id).unwrap()
+    );
+    println!(
+        "Airbag locations front: {}",
+        vin.airbag_locations_front(schema_id).unwrap()
+    );
+    println!(
+        "Airbag locations knee: {}",
+        vin.airbag_locations_knee(schema_id).unwrap()
+    );
+    println!(
+        "Airbag locations side: {}",
+        vin.airbag_locations_side(schema_id).unwrap()
+    );
+    println!(
+        "Transmission style: {}",
+        vin.get_transmission_style(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Steering location: {}",
+        vin.get_steering_location(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Keyless ignition: {}",
+        vin.keyless_ignition_availability(vspec_pattern_id).unwrap()
+    );
+    println!("Drive type: {}", vin.get_drive_type(schema_id).unwrap());
+    println!(
+        "Axle count: {}",
+        vin.get_axle_count(vspec_pattern_id).unwrap()
+    );
+    println!("Brake system: {}", vin.get_brake_system(schema_id).unwrap());
+    println!(
+        "ESC: {}",
+        vin.electronic_stability_control(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Traction control: {}",
+        vin.traction_control(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Auto-reverse system: {}",
+        vin.windows_auto_reverse(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Gross vehicle weight rating: {}",
+        vin.get_vehicle_weight_rating(schema_id).unwrap()
+    );
+    println!(
+        "Plant company: {}",
+        vin.get_plant_company(schema_id).unwrap()
+    );
+    println!("Plant state: {}", vin.get_plant_state(schema_id).unwrap());
+    println!(
+        "Top speed: {}MPH",
+        vin.get_vehicle_top_speed(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Front wheel size: {}in",
+        vin.get_front_wheel_size(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Rear wheel size: {}in",
+        vin.get_rear_wheel_size(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Dynamic brake support: {}",
+        vin.dynamic_brake_support(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Backup camera: {}",
+        vin.backup_camera(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Automatic crash notification: {}",
+        vin.automatic_crash_notification(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Daytime running light: {}",
+        vin.daytime_running_light(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Semi-automatic headlamp beam switching: {}",
+        vin.semiauto_headlamp_beam_switching(vspec_pattern_id)
+            .unwrap()
+    );
+    println!(
+        "Tranmission speeds: {}",
+        vin.get_transmission_speeds(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Vehicle base price: ${}",
+        vin.get_vehicle_base_price(vspec_pattern_id).unwrap()
+    );
+    println!("Trim: {}", vin.vehicle_trim(schema_id).unwrap());
+    println!("Seatbelt type: {}", vin.seatbelt_type(schema_id).unwrap());
+    println!(
+        "Number of rows: {}",
+        vin.number_of_rows(vspec_pattern_id).unwrap()
+    );
+    println!(
+        "Number of seats: {}",
+        vin.number_of_seats(vspec_pattern_id).unwrap()
+    );
 
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;

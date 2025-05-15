@@ -27,17 +27,19 @@ impl VIN {
         let con = self.vpic_connection()?;
 
         let query = "SELECT Id FROM Wmi WHERE Wmi = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         match statement.next() {
             Ok(State::Row) => Ok(statement
                 .read::<i64, _>("Id")
-                .map_err(|_| VinError::VPICQueryError)?),
-            _ => Err(VinError::NoResultsFound),
+                .map_err(|_| VinError::VPICQueryError(query))?),
+            _ => Err(VinError::NoResultsFound(query)),
         }
     }
 
@@ -45,16 +47,18 @@ impl VIN {
         let con = self.vpic_connection()?;
 
         let query = "SELECT VehicleTypeId FROM Wmi WHERE Wmi = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         match statement.next() {
             Ok(State::Row) => Ok(statement
                 .read::<i64, _>("VehicleTypeId")
-                .map_err(|_| VinError::VPICQueryError)?),
+                .map_err(|_| VinError::VPICQueryError(query))?),
             _ => Ok(-1),
         }
     }
@@ -63,16 +67,18 @@ impl VIN {
         let con = self.vpic_connection()?;
 
         let query = "SELECT TruckTypeId FROM Wmi WHERE Wmi = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         match statement.next() {
             Ok(State::Row) => Ok(statement
                 .read::<i64, _>("TruckTypeId")
-                .map_err(|_| VinError::VPICQueryError)?),
+                .map_err(|_| VinError::VPICQueryError(query))?),
             _ => Ok(-1),
         }
     }
@@ -80,34 +86,38 @@ impl VIN {
     pub fn get_make_id(&self, wmi: &str) -> Result<i64, VinError> {
         let con = self.vpic_connection()?;
         let query = "SELECT MakeId FROM Wmi WHERE Wmi = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         match statement.next() {
             Ok(State::Row) => Ok(statement
                 .read::<i64, _>("MakeId")
-                .map_err(|_| VinError::VPICQueryError)?),
-            _ => Err(VinError::NoResultsFound),
+                .map_err(|_| VinError::VPICQueryError(query))?),
+            _ => Err(VinError::NoResultsFound(query)),
         }
     }
 
     pub fn get_manufacturer_id(&self, wmi: &str) -> Result<i64, VinError> {
         let con = self.vpic_connection()?;
         let query = "SELECT ManufacturerId FROM Wmi WHERE Wmi = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         match statement.next() {
             Ok(State::Row) => Ok(statement
                 .read::<i64, _>("ManufacturerId")
-                .map_err(|_| VinError::VPICQueryError)?),
-            _ => Err(VinError::NoResultsFound),
+                .map_err(|_| VinError::VPICQueryError(query))?),
+            _ => Err(VinError::NoResultsFound(query)),
         }
     }
 }

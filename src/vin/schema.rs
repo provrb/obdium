@@ -6,9 +6,6 @@ use crate::vin::parser::{VinError, VIN};
 impl VIN {
     pub fn get_schema_id(&self, wmi_id: i64, model_year: i64) -> Result<i64, VinError> {
         let key = self.as_key();
-        if key.is_empty() {
-            return Err(VinError::BadKey);
-        }
 
         // Look for engine model.
         // Element Id for engine model is 18.
@@ -22,7 +19,9 @@ impl VIN {
         let con = self.vpic_connection()?;
 
         let query = "SELECT * FROM Pattern WHERE ElementId = 18";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         let mut matched_schema_ids = Vec::new();
 
@@ -30,7 +29,7 @@ impl VIN {
             // this is where you would check the pattern from Pattern matches the key.
             let pattern = statement
                 .read::<String, _>("Keys")
-                .map_err(|_| VinError::VPICQueryError)?;
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             let pattern_sql_like = pattern.replace("*", "_") + "%"; // simulate MSSQL logic
 
@@ -38,32 +37,34 @@ impl VIN {
                 matched_schema_ids.push(
                     statement
                         .read::<i64, _>("VinSchemaId")
-                        .map_err(|_| VinError::VPICQueryError)?,
+                        .map_err(|_| VinError::VPICQueryError(query))?,
                 );
             }
         }
 
         let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and ? BETWEEN YearFrom and IFNULL(YearTo, 2999)";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, wmi_id))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
         statement
             .bind((2, model_year))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         while let Ok(State::Row) = statement.next() {
             let schema_id = statement
                 .read::<i64, _>("VinSchemaId")
-                .map_err(|_| VinError::VPICQueryError)?;
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             if matched_schema_ids.contains(&schema_id) {
                 return Ok(schema_id);
             }
         }
 
-        Err(VinError::NoResultsFound)
+        Err(VinError::NoResultsFound(query))
     }
 
     pub fn get_model_id(&self, schema_id: i64) -> Result<i64, VinError> {
@@ -85,16 +86,18 @@ impl VIN {
         let mut matched_spec_schema_ids = Vec::new();
 
         {
-            let query = format!(
-                "SELECT Id FROM VehicleSpecSchema WHERE MakeId = {}",
-                make_id
-            );
-            let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+            let query = "SELECT Id FROM VehicleSpecSchema WHERE MakeId = ?";
+            let mut statement = con
+                .prepare(query)
+                .map_err(|_| VinError::VPICQueryError(query))?;
+            statement
+                .bind((1, make_id))
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             while let Ok(State::Row) = statement.next() {
                 let id = statement
                     .read::<i64, _>("Id")
-                    .map_err(|_| VinError::VPICQueryError)?;
+                    .map_err(|_| VinError::VPICQueryError(query))?;
                 matched_spec_schema_ids.push(id);
             }
 
@@ -102,16 +105,18 @@ impl VIN {
         }
 
         {
-            let query = format!(
-                "SELECT VehicleSpecSchemaId FROM VehicleSpecSchema_Model WHERE ModelId = {}",
-                model_id
-            );
-            let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+            let query = "SELECT VehicleSpecSchemaId FROM VehicleSpecSchema_Model WHERE ModelId = ?";
+            let mut statement = con
+                .prepare(query)
+                .map_err(|_| VinError::VPICQueryError(query))?;
+            statement
+                .bind((1, model_id))
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             while let Ok(State::Row) = statement.next() {
                 let spec_schema_id = statement
                     .read::<i64, _>("VehicleSpecSchemaId")
-                    .map_err(|_| VinError::VPICQueryError)?;
+                    .map_err(|_| VinError::VPICQueryError(query))?;
 
                 match matched_spec_schema_ids.binary_search(&spec_schema_id) {
                     Ok(_) => return Ok(spec_schema_id),
@@ -120,7 +125,7 @@ impl VIN {
             }
         }
 
-        Err(VinError::NoResultsFound)
+        Err(VinError::NoResultsFound("get_vspec_schema_id"))
     }
 
     pub fn get_vspec_pattern_id(
@@ -175,36 +180,38 @@ impl VIN {
         let con = self.vpic_connection()?;
         let vin_key = self.as_key();
         let query = "SELECT Id FROM VSpecSchemaPattern WHERE SchemaId = ?";
-        let mut statement = con.prepare(query).map_err(|_| VinError::VPICQueryError)?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
             .bind((1, vspec_schema_id))
-            .map_err(|_| VinError::VPICQueryError)?;
+            .map_err(|_| VinError::VPICQueryError(query))?;
 
         while let Ok(State::Row) = statement.next() {
             let pattern_id = statement
                 .read::<i64, _>("Id")
-                .map_err(|_| VinError::VPICQueryError)?;
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             // Check the key element id and find its attribute
 
             // Find key element id
             let mut pattern_query = con.prepare(
                 "SELECT ElementId, AttributeId FROM VehicleSpecPattern WHERE IsKey = 1 AND VSpecSchemaPatternId = ?"
-            ).map_err(|_| VinError::VPICQueryError)?;
+            ).map_err(|_| VinError::VPICQueryError(query))?;
 
             pattern_query
                 .bind((1, pattern_id))
-                .map_err(|_| VinError::VPICQueryError)?;
+                .map_err(|_| VinError::VPICQueryError(query))?;
 
             if let Ok(State::Row) = pattern_query.next() {
                 let key_element_id = pattern_query
                     .read::<i64, _>("ElementId")
-                    .map_err(|_| VinError::VPICQueryError)?;
+                    .map_err(|_| VinError::VPICQueryError(query))?;
 
                 let key_attribute = pattern_query
                     .read::<String, _>("AttributeId")
-                    .map_err(|_| VinError::VPICQueryError)?;
+                    .map_err(|_| VinError::VPICQueryError(query))?;
 
                 // query pattern with schema id and key_element_id
                 // compare key_attribute to the attribute from schema_id
@@ -217,6 +224,6 @@ impl VIN {
             }
         }
 
-        Err(VinError::NoResultsFound)
+        Err(VinError::NoResultsFound(query))
     }
 }

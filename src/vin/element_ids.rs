@@ -10,6 +10,8 @@ use num_enum::TryFromPrimitive;
 #[derive(Debug, Copy, Clone, TryFromPrimitive)]
 #[repr(u16)] // Max Element id is 203 - Future proof with u16
 pub enum ElementId {
+    AutoReverseSystem = 172,
+    VehicleWeightRating = 25,
     EngineModel = 18,
     EngineManufacturer = 146,
     EngineDisplacement = 13,
@@ -28,6 +30,23 @@ pub enum ElementId {
     AirbagLocationsSide = 107,
     AirbagLocationsCurtain = 55,
     AirbagLocationsSeatCushion = 56,
+    BrakeSystem = 42,
+    ElectronicStabilityControl = 99,
+    TractionControl = 100,
+    PlantState = 77,
+    PlantCompanyName = 76,
+    TopSpeedMPH = 139,
+    WheelSizeFront = 119,
+    WheelSizeRear = 120,
+    DynamicBrakeSupport = 170,
+    BackupCamera = 104,
+    ACN = 174,
+    DaytimeRunningLight = 177,
+    SemiAutoHeadlampBeamSwitching = 179,
+    TransmissionSpeeds = 63,
+    VehicleBasePrice = 136,
+    SeatbeltType = 79,
+    NumberOfRows = 61,
 
     VehicleDoorCount = 14,
     VehicleModel = 28,

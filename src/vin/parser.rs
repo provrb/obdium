@@ -1,22 +1,31 @@
 use sqlite::Connection;
 use std::cell::OnceCell;
+use thiserror::Error;
+
+use super::element_ids::ElementId;
 
 const VPIC_DB_PATH: &str = "./data/vpic.sqlite";
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum VinError {
+    #[error("connection to vpic db failed.")]
     VPICConnectFailed,
+    #[error("not connected to vpic db")]
     VPICNoConnection,
-    VPICQueryError,
-    VPICNoLookupTable,
-
+    #[error("no lookup table for element id {0:?}")]
+    VPICNoLookupTable(ElementId),
+    #[error("when querying vpic db. query: {0}")]
+    VPICQueryError(&'static str),
+    #[error("when converting attribute id to data type")]
     ParseError,
+    #[error("vin length invalid. must be 17 characters")]
     InvalidVinLength,
+    #[error("when calculate vin wmi")]
     WMIError,
+    #[error("when calculating model year from vin")]
     ModelYearError,
-
-    BadKey,
-    NoResultsFound,
+    #[error("no results found for query {0}")]
+    NoResultsFound(&'static str),
 }
 
 #[derive(Default)]
@@ -63,21 +72,15 @@ impl VIN {
     pub fn as_key(&self) -> &str {
         self.key_cache.get_or_init(|| {
             let vin = self.vin.as_str();
-            if vin.len() < 4 {
+            if vin.len() != 17 {
                 return String::new();
             }
 
-            match vin.len() {
-                0..=8 => vin[3..8].to_string(),
-                10..=usize::MAX => {
-                    let mut key = String::with_capacity(13); // 5 + 1 + 8
-                    key.push_str(&vin[3..8]);
-                    key.push('|');
-                    key.push_str(&vin[9..17]);
-                    key
-                }
-                _ => vin[3..8].to_string(),
-            }
+            let mut key = String::with_capacity(13);
+            key.push_str(&vin[3..8]);
+            key.push('|');
+            key.push_str(&vin[9..17]);
+            key
         })
     }
 
