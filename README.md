@@ -9,6 +9,8 @@
   <img alt="repo-language-count" src="https://img.shields.io/github/languages/count/provrb/obdium?style=flat&color=0080ff">
 </div>
 
+![Banner](/docs/banner.jpg)
+
 ## Table of Contents
 - [Overview](#overview)
 - [Implementation](#implementation-and-logic)
