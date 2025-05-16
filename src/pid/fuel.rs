@@ -1,9 +1,20 @@
+use std::fmt;
+
 use crate::cmd::Command;
 use crate::obd::{BankNumber, OBD};
 
 #[derive(Debug)]
 pub enum FuelType {
     Type(&'static str),
+}
+
+impl fmt::Display for FuelType {
+    #[inline(always)]
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            FuelType::Type(s) => write!(f, "{}", s),
+        }
+    }
 }
 
 impl FuelType {
@@ -17,21 +28,21 @@ impl FuelType {
             0x06 => Self::Type("CNG"),
             0x07 => Self::Type("Propane"),
             0x08 => Self::Type("Electric"),
-            0x09 => Self::Type("BifuelGasoline"),
-            0x0A => Self::Type("BifuelMethanol"),
-            0x0B => Self::Type("BifuelEthanol"),
-            0x0C => Self::Type("BifuelLPG"),
-            0x0D => Self::Type("BifuelCNG"),
-            0x0E => Self::Type("BifuelPropane"),
-            0x0F => Self::Type("BifuelElectric"),
-            0x10 => Self::Type("BifuelElectricEngine"),
-            0x11 => Self::Type("HybridGasoline"),
-            0x12 => Self::Type("HybridEthanol"),
-            0x13 => Self::Type("HybridDiesel"),
-            0x14 => Self::Type("HybridElectric"),
-            0x15 => Self::Type("HybridElectricEngine"),
-            0x16 => Self::Type("HybridRegenerative"),
-            0x17 => Self::Type("BifuelDiesel"),
+            0x09 => Self::Type("Bifuel Gasoline"),
+            0x0A => Self::Type("Bifuel Methanol"),
+            0x0B => Self::Type("Bifuel Ethanol"),
+            0x0C => Self::Type("Bifuel LPG"),
+            0x0D => Self::Type("Bifuel CNG"),
+            0x0E => Self::Type("Bifuel Propane"),
+            0x0F => Self::Type("Bifuel Electric"),
+            0x10 => Self::Type("Bifuel ElectricEngine"),
+            0x11 => Self::Type("Hybrid Gasoline"),
+            0x12 => Self::Type("Hybrid Ethanol"),
+            0x13 => Self::Type("Hybrid Diesel"),
+            0x14 => Self::Type("Hybrid Electric"),
+            0x15 => Self::Type("Hybrid ElectricEngine"),
+            0x16 => Self::Type("Hybrid Regenerative"),
+            0x17 => Self::Type("Bifuel Diesel"),
             _ => Self::Type("Unknown"),
         }
     }

@@ -1,7 +1,9 @@
+use sqlite::State;
 use std::fmt;
 
 use crate::{cmd::Command, obd::OBD};
-use sqlite::State;
+
+const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
 #[derive(Debug)]
 pub enum OBDStandard {
@@ -50,6 +52,7 @@ impl OBDStandard {
 }
 
 impl fmt::Display for OBDStandard {
+    #[inline(always)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             OBDStandard::Standard(value) => write!(f, "{}", value),
@@ -73,6 +76,7 @@ impl AuxiliaryInputStatus {
 }
 
 impl fmt::Display for AuxiliaryInputStatus {
+    #[inline(always)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }
@@ -116,6 +120,7 @@ impl Default for TroubleCodeCategory {
 }
 
 impl fmt::Display for TroubleCodeCategory {
+    #[inline(always)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }
@@ -144,7 +149,7 @@ impl TroubleCode {
         self.description = "none".to_string(); // default
 
         // connect to trouble code data base
-        let con = match sqlite::Connection::open("./data/code-descriptions.sqlite") {
+        let con = match sqlite::Connection::open(CODE_DESC_DB_PATH) {
             Ok(con) => con,
             Err(err) => {
                 println!("when connecting to codes database: {err}");
