@@ -322,47 +322,23 @@ Engine type: Internal Combustion Engine
 Engine speed: 703.5RPM
 Engine load: 14.901961%
 Coolant temperature: 81°C
-Coolant temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
-Engine fuel rate: 0L/h
 Engine runtime: 191s
-Engine runtime (diesel): 0s
-Engine mileage: 0km
-Engine oil temperature: -40°C
-Engine oil temperatue from sensors - Sensor 1: 0°C - Sensor 2: 0°C 
-Drivers demand engine torque: -125%
-Actual engine torque: -125%
-Reference engine torque: 0Nm
-Engine percent torque data:
-        Idle: -125%
-        Engine point 1: -125%
-        Engine point 2: -125%
-        Engine point 3: -125%
-        Engine point 4: -125%
 
-======================== FUEL SYSTEM ========================
 Short term fuel trim:
         Bank 1: 3.90625
-        Bank 2: -100
 Long term fuel trim:
         Bank 1: 9.375
-        Bank 2: -100
 Fuel system status:
 Fuel system 1: Status("Closed loop, using O2 sensor feedback for fuel mix")
 Fuel system 2: Status("Motor is off")
 Fuel pressure: 294kPa
 Fuel tank level: 21.960785%
-Fuel rail pressure: 0kPa
-Fuel rail gauge pressure: 0kPa
 Fuel type: Type("Gasoline")
 Ethanol fuel percentage: 0%
-Fuel injection timing: -210°
 Commanded EVAP purge: 16.078432%
 EVAP system vapor pressure: 16300.25Pa
-Cylinder fuel rate: 0mg/stroke
 
-======================== SENSOR DATA ========================
 Vehicle speed: 0km/h
-Timing advance: 5° before top-dead-center
 Throttle position: 18.82353%
 Relative throttle position: 5.098039%
 Absolute throttle position B: 18.431374%

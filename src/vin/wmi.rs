@@ -59,7 +59,8 @@ impl VIN {
         }
     }
 
-    pub fn get_vehicle_type_id(&self, wmi: &str) -> Result<i64, VinError> {
+    pub fn get_vehicle_type_id(&self) -> Result<i64, VinError> {
+        let wmi = self.get_wmi();
         let con = self.vpic_connection()?;
 
         let query = "SELECT VehicleTypeId FROM Wmi WHERE Wmi = ?";
@@ -79,7 +80,8 @@ impl VIN {
         }
     }
 
-    pub fn get_truck_type_id(&self, wmi: &str) -> Result<i64, VinError> {
+    pub fn get_truck_type_id(&self) -> Result<i64, VinError> {
+        let wmi = self.get_wmi();
         let con = self.vpic_connection()?;
 
         let query = "SELECT TruckTypeId FROM Wmi WHERE Wmi = ?";
@@ -119,7 +121,8 @@ impl VIN {
         }
     }
 
-    pub fn get_manufacturer_id(&self, wmi: &str) -> Result<i64, VinError> {
+    pub fn get_manufacturer_id(&self) -> Result<i64, VinError> {
+        let wmi = self.get_wmi();
         let con = self.vpic_connection()?;
         let query = "SELECT ManufacturerId FROM Wmi WHERE Wmi = ?";
         let mut statement = con

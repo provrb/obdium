@@ -44,7 +44,7 @@ fn truck_type_id() {
     let wmi = vin.get_wmi();
 
     assert_eq!(
-        vin.get_truck_type_id(wmi).unwrap(),
+        vin.get_truck_type_id().unwrap(),
         0,
         "get_truck_type_id: provided incorrect truck type id for wmi: {wmi}. expected 0"
     )
@@ -56,7 +56,7 @@ fn vehicle_type_id() {
     let wmi = vin.get_wmi();
 
     assert_eq!(
-        vin.get_vehicle_type_id(wmi).unwrap(),
+        vin.get_vehicle_type_id().unwrap(),
         7,
         "get_vehicle_type_id: provided incorrect vehicle type id for wmi: {wmi}. expected 7"
     )
@@ -102,10 +102,9 @@ fn engine_model() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
     let wmi_id = vin.get_wmi_id().unwrap();
-    let schema_id = vin.get_vin_schema_id().unwrap();
 
     assert_eq!(
-        vin.get_engine_model(schema_id).unwrap(),
+        vin.get_engine_model().unwrap(),
         "LUV: MFI, Variable Valve Timing, ALUM, E85 MAX",
         "engine_model: provided incorrect engine model. wmi_id: {wmi_id}, wmi: {wmi}, vin: {VIN_STRING}."
     )
@@ -116,10 +115,9 @@ fn cylinder_count() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
     let wmi_id = vin.get_wmi_id().unwrap();
-    let schema_id = vin.get_vin_schema_id().unwrap();
 
     assert_eq!(
-        vin.get_cylinder_count(schema_id).unwrap(),
+        vin.get_cylinder_count().unwrap(),
         4,
         "cylinder_count: provided incorrect cylinder count model. wmi_id: {wmi_id}, wmi: {wmi}, vin: {VIN_STRING}. expected 4."
     )
@@ -128,11 +126,7 @@ fn cylinder_count() {
 #[test]
 fn transmission_style() {
     let vin = VIN::new(VIN_STRING);
-    let schema_id = vin.get_vin_schema_id().unwrap();
-    let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
-    let vspec_pattern_id = vin
-        .get_vspec_pattern_id(vspec_schema_id, schema_id)
-        .unwrap();
+    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
         vin.get_transmission_style(vspec_pattern_id).unwrap(),
@@ -144,11 +138,7 @@ fn transmission_style() {
 #[test]
 fn steering_location() {
     let vin = VIN::new(VIN_STRING);
-    let schema_id = vin.get_vin_schema_id().unwrap();
-    let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
-    let vspec_pattern_id = vin
-        .get_vspec_pattern_id(vspec_schema_id, schema_id)
-        .unwrap();
+    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
         vin.get_steering_location(vspec_pattern_id).unwrap(),
@@ -160,11 +150,7 @@ fn steering_location() {
 #[test]
 fn abs_availability() {
     let vin = VIN::new(VIN_STRING);
-    let schema_id = vin.get_vin_schema_id().unwrap();
-    let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
-    let vspec_pattern_id = vin
-        .get_vspec_pattern_id(vspec_schema_id, schema_id)
-        .unwrap();
+    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
         vin.abs_availablility(vspec_pattern_id).unwrap(),
@@ -176,11 +162,7 @@ fn abs_availability() {
 #[test]
 fn keyless_ignition() {
     let vin = VIN::new(VIN_STRING);
-    let schema_id = vin.get_vin_schema_id().unwrap();
-    let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
-    let vspec_pattern_id = vin
-        .get_vspec_pattern_id(vspec_schema_id, schema_id)
-        .unwrap();
+    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
         vin.keyless_ignition_availability(vspec_pattern_id).unwrap(),

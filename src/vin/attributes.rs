@@ -9,12 +9,12 @@ use crate::vin::parser::{VinError, VIN};
 impl VIN {
     pub(crate) fn get_attribute_id_from_pattern<T: FromStr>(
         &self,
-        schema_id: i64,
         element_id: ElementId,
     ) -> Result<T, VinError>
     where
         T::Err: std::fmt::Debug,
     {
+        let schema_id = self.get_vin_schema_id()?;
         let key = self.as_key();
         let data = self.query_pattern(schema_id, element_id, key)?;
 
@@ -59,10 +59,9 @@ impl VIN {
             _ => unreachable!(),
         };
 
-        let wmi = self.get_wmi();
         let mut car_lt = false;
-        let vehicle_type_id = self.get_vehicle_type_id(wmi)?;
-        let truck_type_id = self.get_truck_type_id(wmi)?;
+        let vehicle_type_id = self.get_vehicle_type_id()?;
+        let truck_type_id = self.get_truck_type_id()?;
 
         if (2..=7).contains(&vehicle_type_id) || (vehicle_type_id == 3 && truck_type_id == 1) {
             car_lt = true;
@@ -83,48 +82,46 @@ impl VIN {
         Ok(model_year)
     }
 
-    pub fn get_engine_model(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern::<String>(schema_id, ElementId::EngineModel)
+    pub fn get_engine_model(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern::<String>(ElementId::EngineModel)
     }
 
-    pub fn get_cylinder_count(&self, schema_id: i64) -> Result<i64, VinError> {
-        self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::EngineCylinderCount)
+    pub fn get_cylinder_count(&self) -> Result<i64, VinError> {
+        self.get_attribute_id_from_pattern::<i64>(ElementId::EngineCylinderCount)
     }
 
-    pub fn get_engine_displacement(&self, schema_id: i64) -> Result<f64, VinError> {
-        self.get_attribute_id_from_pattern::<f64>(schema_id, ElementId::EngineDisplacement)
+    pub fn get_engine_displacement(&self) -> Result<f64, VinError> {
+        self.get_attribute_id_from_pattern::<f64>(ElementId::EngineDisplacement)
     }
 
-    pub fn get_fuel_type(&self, schema_id: i64) -> Result<String, VinError> {
-        let fuel_type_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::FuelType)?;
+    pub fn get_fuel_type(&self) -> Result<String, VinError> {
+        let fuel_type_id = self.get_attribute_id_from_pattern::<i64>(ElementId::FuelType)?;
         self.lookup_name_from_id("FuelType", fuel_type_id)
     }
 
-    pub fn get_valve_train_design(&self, schema_id: i64) -> Result<String, VinError> {
-        let id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::ValveTrainDesign)?;
+    pub fn get_valve_train_design(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern::<i64>(ElementId::ValveTrainDesign)?;
         self.lookup_name_from_id("ValvetrainDesign", id)
     }
 
-    pub fn get_fuel_delivery_type(&self, schema_id: i64) -> Result<String, VinError> {
-        let id = self.get_attribute_id_from_pattern(schema_id, ElementId::FuelDeliveryType)?;
+    pub fn get_fuel_delivery_type(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern(ElementId::FuelDeliveryType)?;
 
         self.lookup_name_from_id("FuelDeliveryType", id)
     }
 
-    pub fn has_turbo(&self, schema_id: i64) -> Result<bool, VinError> {
-        let turbo = self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::HasTurbo)?;
+    pub fn has_turbo(&self) -> Result<bool, VinError> {
+        let turbo = self.get_attribute_id_from_pattern::<i64>(ElementId::HasTurbo)?;
 
         Ok(turbo == 1)
     }
 
-    pub fn get_engine_manufacturer(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern::<String>(schema_id, ElementId::EngineManufacturer)
+    pub fn get_engine_manufacturer(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern::<String>(ElementId::EngineManufacturer)
     }
 
-    pub fn get_vehicle_door_count(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern(schema_id, ElementId::VehicleDoorCount)
+    pub fn get_vehicle_door_count(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern(ElementId::VehicleDoorCount)
     }
 
     pub fn get_vehicle_model(&self) -> Result<String, VinError> {
@@ -132,27 +129,27 @@ impl VIN {
         self.lookup_name_from_id("Model", model_id)
     }
 
-    pub fn get_vehicle_type(&self, type_id: i64) -> Result<String, VinError> {
+    pub fn get_vehicle_type(&self) -> Result<String, VinError> {
+        let type_id = self.get_vehicle_type_id()?;
         self.lookup_name_from_id("VehicleType", type_id)
     }
 
-    pub fn get_plant_country(&self, schema_id: i64) -> Result<String, VinError> {
-        let country_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::PlantCountry)?;
+    pub fn get_plant_country(&self) -> Result<String, VinError> {
+        let country_id = self.get_attribute_id_from_pattern::<i64>(ElementId::PlantCountry)?;
         self.lookup_name_from_id("Country", country_id)
     }
 
-    pub fn get_plant_city(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern(schema_id, ElementId::PlantCity)
+    pub fn get_plant_city(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern(ElementId::PlantCity)
     }
 
-    pub fn get_vehicle_make(&self, make_id: i64) -> Result<String, VinError> {
+    pub fn get_vehicle_make(&self) -> Result<String, VinError> {
+        let make_id = self.get_make_id()?;
         self.lookup_name_from_id("Make", make_id)
     }
 
-    pub fn get_body_class(&self, schema_id: i64) -> Result<String, VinError> {
-        let body_style_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::BodyClass)?;
+    pub fn get_body_class(&self) -> Result<String, VinError> {
+        let body_style_id = self.get_attribute_id_from_pattern::<i64>(ElementId::BodyClass)?;
 
         self.lookup_name_from_id("BodyStyle", body_style_id)
     }
@@ -173,34 +170,34 @@ impl VIN {
         self.get_spec_from_pattern(vspec_pattern_id, ElementId::KeylessIgnition)
     }
 
-    pub fn airbag_locations_front(&self, schema_id: i64) -> Result<String, VinError> {
+    pub fn airbag_locations_front(&self) -> Result<String, VinError> {
         let airbag_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::AirbagLocationsFront)?;
+            self.get_attribute_id_from_pattern::<i64>(ElementId::AirbagLocationsFront)?;
         self.lookup_name_from_id("AirBagLocFront", airbag_id)
     }
 
-    pub fn airbag_locations_knee(&self, schema_id: i64) -> Result<String, VinError> {
+    pub fn airbag_locations_knee(&self) -> Result<String, VinError> {
         let airbag_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::AirbagLocationsKnee)?;
+            self.get_attribute_id_from_pattern::<i64>(ElementId::AirbagLocationsKnee)?;
 
         self.lookup_name_from_id("AirBagLocKnee", airbag_id)
     }
 
-    pub fn airbag_locations_side(&self, schema_id: i64) -> Result<String, VinError> {
+    pub fn airbag_locations_side(&self) -> Result<String, VinError> {
         let airbag_id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::AirbagLocationsSide)?;
+            self.get_attribute_id_from_pattern::<i64>(ElementId::AirbagLocationsSide)?;
         self.lookup_name_from_id("AirBagLocations", airbag_id)
     }
 
-    pub fn airbag_locations_curtain(&self, schema_id: i64) -> Result<String, VinError> {
-        let airbag_id = self
-            .get_attribute_id_from_pattern::<i64>(schema_id, ElementId::AirbagLocationsCurtain)?;
+    pub fn airbag_locations_curtain(&self) -> Result<String, VinError> {
+        let airbag_id =
+            self.get_attribute_id_from_pattern::<i64>(ElementId::AirbagLocationsCurtain)?;
 
         self.lookup_name_from_id("AirBagLocations", airbag_id)
     }
 
-    pub fn get_drive_type(&self, schema_id: i64) -> Result<String, VinError> {
-        let id = self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::DriveType)?;
+    pub fn get_drive_type(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern::<i64>(ElementId::DriveType)?;
         self.lookup_name_from_id("DriveType", id)
     }
 
@@ -209,8 +206,8 @@ impl VIN {
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
-    pub fn get_brake_system(&self, schema_id: i64) -> Result<String, VinError> {
-        let id = self.get_attribute_id_from_pattern(schema_id, ElementId::BrakeSystem)?;
+    pub fn get_brake_system(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern(ElementId::BrakeSystem)?;
         self.lookup_name_from_id("BrakeSystem", id)
     }
 
@@ -226,18 +223,17 @@ impl VIN {
         self.get_spec_from_pattern(vspec_pattern_id, ElementId::AutoReverseSystem)
     }
 
-    pub fn get_vehicle_weight_rating(&self, schema_id: i64) -> Result<String, VinError> {
-        let id =
-            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::VehicleWeightRating)?;
+    pub fn get_vehicle_weight_rating(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern::<i64>(ElementId::VehicleWeightRating)?;
         self.lookup_name_from_id("GrossVehicleWeightRating", id)
     }
 
-    pub fn get_plant_company(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern::<String>(schema_id, ElementId::PlantCompanyName)
+    pub fn get_plant_company(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern::<String>(ElementId::PlantCompanyName)
     }
 
-    pub fn get_plant_state(&self, schema_id: i64) -> Result<String, VinError> {
-        match self.get_attribute_id_from_pattern::<String>(schema_id, ElementId::PlantState) {
+    pub fn get_plant_state(&self) -> Result<String, VinError> {
+        match self.get_attribute_id_from_pattern::<String>(ElementId::PlantState) {
             Ok(state) => Ok(state),
             Err(_) => Ok("Not Applicable".to_string()),
         }
@@ -294,12 +290,12 @@ impl VIN {
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
-    pub fn vehicle_trim(&self, schema_id: i64) -> Result<String, VinError> {
-        self.get_attribute_id_from_pattern(schema_id, ElementId::Trim)
+    pub fn vehicle_trim(&self) -> Result<String, VinError> {
+        self.get_attribute_id_from_pattern(ElementId::Trim)
     }
 
-    pub fn seatbelt_type(&self, schema_id: i64) -> Result<String, VinError> {
-        let id = self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::SeatbeltType)?;
+    pub fn seatbelt_type(&self) -> Result<String, VinError> {
+        let id = self.get_attribute_id_from_pattern::<i64>(ElementId::SeatbeltType)?;
         self.lookup_name_from_id("SeatBeltsAll", id)
     }
 

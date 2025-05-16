@@ -157,11 +157,7 @@ impl VIN {
         }
     }
 
-    pub fn get_vspec_pattern_id(
-        &self,
-        vspec_schema_id: i64,
-        vin_schema_id: i64, // AKA 'schema_id'
-    ) -> Result<i64, VinError> {
+    pub fn get_vspec_pattern_id(&self) -> Result<i64, VinError> {
         /*
             So apparently VSpecSchemaPatternIds have a row
             with ElementId 38 (for 'Trim'). If one VSpecSchemaId
@@ -206,6 +202,8 @@ impl VIN {
             Worst case: If there are no VSpecSchemaPatternIds found, we assume there is no
             VSpecSchemaPatternId for our VSpecSchemaId and return VinError::NoResultsFound.
         */
+        let vspec_schema_id = self.get_vspec_schema_id()?;
+        let vin_schema_id = self.get_vin_schema_id()?;
         let con = self.vpic_connection()?;
         let vin_key = self.as_key();
         let query = "SELECT Id FROM VSpecSchemaPattern WHERE SchemaId = ?";
