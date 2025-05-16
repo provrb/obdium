@@ -127,6 +127,7 @@ This code has minimal restrictions, such that any distributions are made free-of
 ## Roadmap
 1. Finish VIN parsing functionality.
 2. Fully functional user-interface with live graph view and the ability to send requests manually to the vehicle.
+3. DOCUMENT THE CRATE!!!!
 
 ---
 
