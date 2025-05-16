@@ -78,7 +78,7 @@ impl Command {
 
     pub fn set_at(&mut self, at_command: &'static [u8]) -> bool {
         if self.command_type == CommandType::Default {
-            self.command_type = CommandType::Default;
+            self.command_type = CommandType::ATCommand;
         }
 
         if self.command_type != CommandType::ATCommand {
