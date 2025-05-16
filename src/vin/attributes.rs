@@ -63,8 +63,8 @@ impl VIN {
         };
 
         let wmi = self.get_wmi();
-        let vehicle_type_id = self.get_vehicle_type_id(&wmi)?;
-        let truck_type_id = self.get_truck_type_id(&wmi)?;
+        let vehicle_type_id = self.get_vehicle_type_id(wmi)?;
+        let truck_type_id = self.get_truck_type_id(wmi)?;
         let mut car_lt = false;
 
         if (2..=7).contains(&vehicle_type_id) || (vehicle_type_id == 3 && truck_type_id == 1) {

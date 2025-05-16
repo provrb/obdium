@@ -30,10 +30,7 @@ impl VIN {
         self.wmi.get_or_init(||{
             let vin = self.get_vin();
             let wmi = &vin[..3];
-            let last = match wmi.chars().last() {
-                Some(ch) => ch,
-                None => '\0',
-            };
+            let last = wmi.chars().last().unwrap_or('\0');
     
             // ISO 3780's WMI extended form
             if last == '9' {
@@ -47,10 +44,7 @@ impl VIN {
 
     pub fn get_wmi_id(&self) -> Result<&i64, VinError> {
         let res = self.wmi_schema_id.get_or_init(|| {
-            match self.query_wmi("Id") {
-                Ok(res) => res,
-                Err(_) => -1,
-            }
+            self.query_wmi("Id").unwrap_or(-1)
         });
 
         if *res == -1 {

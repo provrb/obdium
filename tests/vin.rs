@@ -32,8 +32,8 @@ fn wmi_id() {
     let vin = VIN::new(VIN_STRING);
 
     assert_eq!(
-        vin.get_wmi_id().unwrap(),
-        &2069,
+        *vin.get_wmi_id().unwrap(),
+        2069,
         "get_wmi_id: provided incorrect wmi id for wmi. expected 2069"
     )
 }
@@ -44,7 +44,7 @@ fn truck_type_id() {
     let wmi = vin.get_wmi();
 
     assert_eq!(
-        vin.get_truck_type_id(&wmi).unwrap(),
+        vin.get_truck_type_id(wmi).unwrap(),
         0,
         "get_truck_type_id: provided incorrect truck type id for wmi: {wmi}. expected 0"
     )
@@ -56,7 +56,7 @@ fn vehicle_type_id() {
     let wmi = vin.get_wmi();
 
     assert_eq!(
-        vin.get_vehicle_type_id(&wmi).unwrap(),
+        vin.get_vehicle_type_id(wmi).unwrap(),
         7,
         "get_vehicle_type_id: provided incorrect vehicle type id for wmi: {wmi}. expected 7"
     )
@@ -88,7 +88,7 @@ fn vin_key() {
 fn schema_id() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
 
     assert_eq!(
@@ -102,7 +102,7 @@ fn schema_id() {
 fn engine_model() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
 
@@ -117,7 +117,7 @@ fn engine_model() {
 fn cylinder_count() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
 
@@ -132,11 +132,11 @@ fn cylinder_count() {
 fn transmission_style() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let model_id = vin.get_model_id(schema_id).unwrap();
-    let make_id = vin.get_make_id(&wmi).unwrap();
+    let make_id = vin.get_make_id(wmi).unwrap();
     let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
@@ -153,11 +153,11 @@ fn transmission_style() {
 fn steering_location() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let model_id = vin.get_model_id(schema_id).unwrap();
-    let make_id = vin.get_make_id(&wmi).unwrap();
+    let make_id = vin.get_make_id(wmi).unwrap();
     let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
@@ -174,11 +174,11 @@ fn steering_location() {
 fn abs_availability() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let model_id = vin.get_model_id(schema_id).unwrap();
-    let make_id = vin.get_make_id(&wmi).unwrap();
+    let make_id = vin.get_make_id(wmi).unwrap();
     let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
@@ -195,11 +195,11 @@ fn abs_availability() {
 fn keyless_ignition() {
     let vin = VIN::new(VIN_STRING);
     let wmi = vin.get_wmi();
-    let wmi_id = vin.get_wmi_id().unwrap().clone();
+    let wmi_id = *vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
     let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
     let model_id = vin.get_model_id(schema_id).unwrap();
-    let make_id = vin.get_make_id(&wmi).unwrap();
+    let make_id = vin.get_make_id(wmi).unwrap();
     let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
