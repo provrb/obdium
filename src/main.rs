@@ -5,13 +5,12 @@ fn main() -> Result<(), OBDError> {
     let vin = VIN::new("KL4CJASB6JB660929");
     let wmi = vin.get_wmi();
     let key = vin.as_key();
-    let wmi_id = *vin.get_wmi_id().unwrap();
+    let wmi_id = vin.get_wmi_id().unwrap();
     let model_year = vin.get_model_year().unwrap() as i64;
-    let schema_id = vin.get_schema_id(wmi_id, model_year).unwrap();
+    let schema_id = vin.get_vin_schema_id().unwrap();
     let vehicle_type_id = vin.get_vehicle_type_id(wmi).unwrap();
-    let make_id = vin.get_make_id(wmi).unwrap();
-    let model_id = vin.get_model_id(schema_id).unwrap();
-    let vspec_schema_id = vin.get_vspec_schema_id(model_id, make_id).unwrap();
+    let make_id = vin.get_make_id().unwrap();
+    let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
     let vspec_pattern_id = vin
         .get_vspec_pattern_id(vspec_schema_id, schema_id)
         .unwrap();
@@ -20,14 +19,8 @@ fn main() -> Result<(), OBDError> {
     println!("WMI ID: {}", wmi_id);
     println!("Key: {}", key);
     println!("Truck type id: {}", vin.get_truck_type_id(wmi).unwrap());
-    println!(
-        "Vehicle type id: {}",
-        vin.get_vehicle_type_id(wmi).unwrap()
-    );
-    println!(
-        "Schema ID: {}",
-        vin.get_schema_id(wmi_id, model_year).unwrap()
-    );
+    println!("Vehicle type id: {}", vin.get_vehicle_type_id(wmi).unwrap());
+    println!("Schema ID: {}", schema_id);
     println!("Engine model: {}", vin.get_engine_model(schema_id).unwrap());
     println!(
         "Cylinder count: {}",
@@ -51,10 +44,7 @@ fn main() -> Result<(), OBDError> {
         "Engine manufacturer: {}",
         vin.get_engine_manufacturer(schema_id).unwrap()
     );
-    println!(
-        "Vehicle model: {}",
-        vin.get_vehicle_model(schema_id).unwrap()
-    );
+    println!("Vehicle model: {}", vin.get_vehicle_model().unwrap());
     println!("Vehicle Make: {}", vin.get_vehicle_make(make_id).unwrap());
     println!(
         "Vehicle type: {}",

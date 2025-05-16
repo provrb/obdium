@@ -26,6 +26,12 @@ pub enum VinError {
     ModelYearError,
     #[error("no results found for query {0}")]
     NoResultsFound(&'static str),
+    #[error("vin schema id is invalid")]
+    InvalidVinSchemaId,
+    #[error("model year is invalid")]
+    InvalidModelYear,
+    #[error("vehicle spec schema id is invalid")]
+    InvalidVSpecSchemaId,
 }
 
 #[derive(Default)]
@@ -37,10 +43,9 @@ pub struct VIN {
     pub(crate) vin: OnceCell<String>,
     pub(crate) wmi: OnceCell<String>,
     pub(crate) key_cache: OnceCell<String>,
-    pub(crate) wmi_schema_id: OnceCell<i64>,
+    pub(crate) wmi_id: OnceCell<i64>,
+    pub(crate) vin_schema_id: OnceCell<i64>,
     pub(crate) vspec_schema_id: OnceCell<i64>,
-    pub(crate) make_id: OnceCell<i64>,
-    pub(crate) model_id: OnceCell<i64>,
 }
 
 impl PartialEq for VIN {
@@ -56,7 +61,10 @@ impl VIN {
     {
         let vin_string = vin.into();
         if vin_string.len() != 17 {
-            panic!("panic when creating new vin. vin expected length 17, got {}", vin_string.len())
+            panic!(
+                "panic when creating new vin. vin expected length 17, got {}",
+                vin_string.len()
+            )
         }
 
         let mut _vin = Self::default();

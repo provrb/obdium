@@ -101,7 +101,7 @@ impl VIN {
     /// 3. Key matches pattern 'Keys'
     pub(crate) fn query_pattern(
         &self,
-        schema_id: i64,
+        vin_schema_id: i64,
         element_id: ElementId,
         key: &str,
     ) -> Result<(i64, i64, String, i64, String), VinError> {
@@ -113,7 +113,7 @@ impl VIN {
             .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
-            .bind((1, schema_id))
+            .bind((1, vin_schema_id))
             .map_err(|_| VinError::VPICQueryError(query))?;
 
         statement
@@ -138,7 +138,7 @@ impl VIN {
 
                 return Ok((
                     pattern_id,
-                    schema_id,
+                    vin_schema_id,
                     pattern,
                     element_id.as_i64(),
                     attribute_id,

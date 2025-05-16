@@ -47,10 +47,7 @@ impl VIN {
     // Based off of NHTSA's ModelYear2 MS SQL Server procedure.
     pub fn get_model_year(&self) -> Result<i32, VinError> {
         let vin = self.get_vin();
-        let pos10 = match vin.chars().nth(9) {
-            Some(ch) => ch,
-            None => return Err(VinError::ModelYearError),
-        };
+        let pos10 = vin.chars().nth(9).unwrap_or('\0');
 
         let mut model_year = match pos10 {
             'A'..'H' => 2010 + (pos10 as i32) - ('A' as i32),
@@ -63,18 +60,15 @@ impl VIN {
         };
 
         let wmi = self.get_wmi();
+        let mut car_lt = false;
         let vehicle_type_id = self.get_vehicle_type_id(wmi)?;
         let truck_type_id = self.get_truck_type_id(wmi)?;
-        let mut car_lt = false;
 
         if (2..=7).contains(&vehicle_type_id) || (vehicle_type_id == 3 && truck_type_id == 1) {
             car_lt = true;
         }
 
-        let pos7 = match vin.chars().nth(6) {
-            Some(ch) => ch,
-            None => return Err(VinError::ModelYearError),
-        };
+        let pos7 = vin.chars().nth(6).unwrap_or('\0');
 
         if car_lt {
             if let '0'..='9' = pos7 {
@@ -133,8 +127,8 @@ impl VIN {
         self.get_attribute_id_from_pattern(schema_id, ElementId::VehicleDoorCount)
     }
 
-    pub fn get_vehicle_model(&self, schema_id: i64) -> Result<String, VinError> {
-        let model_id = self.get_model_id(schema_id)?;
+    pub fn get_vehicle_model(&self) -> Result<String, VinError> {
+        let model_id = self.get_model_id()?;
         self.lookup_name_from_id("Model", model_id)
     }
 
@@ -157,7 +151,8 @@ impl VIN {
     }
 
     pub fn get_body_class(&self, schema_id: i64) -> Result<String, VinError> {
-        let body_style_id = self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::BodyClass)?;
+        let body_style_id =
+            self.get_attribute_id_from_pattern::<i64>(schema_id, ElementId::BodyClass)?;
 
         self.lookup_name_from_id("BodyStyle", body_style_id)
     }
