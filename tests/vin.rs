@@ -126,10 +126,9 @@ fn cylinder_count() {
 #[test]
 fn transmission_style() {
     let vin = VIN::new(VIN_STRING);
-    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
-        vin.get_transmission_style(vspec_pattern_id).unwrap(),
+        vin.get_transmission_style().unwrap(),
         "Automatic",
         "transmission_style: incorrect value. expected 'Automatic'"
     );
@@ -138,10 +137,9 @@ fn transmission_style() {
 #[test]
 fn steering_location() {
     let vin = VIN::new(VIN_STRING);
-    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
-        vin.get_steering_location(vspec_pattern_id).unwrap(),
+        vin.get_steering_location().unwrap(),
         "Left-Hand Drive (LHD)",
         "steering_location: incorrect value. expected 'Left'"
     );
@@ -150,10 +148,9 @@ fn steering_location() {
 #[test]
 fn abs_availability() {
     let vin = VIN::new(VIN_STRING);
-    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
-        vin.abs_availablility(vspec_pattern_id).unwrap(),
+        vin.abs_availablility().unwrap(),
         "Standard",
         "abs_availability: incorrect value. expected 'Standard'"
     );
@@ -162,10 +159,9 @@ fn abs_availability() {
 #[test]
 fn keyless_ignition() {
     let vin = VIN::new(VIN_STRING);
-    let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
 
     assert_eq!(
-        vin.keyless_ignition_availability(vspec_pattern_id).unwrap(),
+        vin.keyless_ignition_availability().unwrap(),
         "Standard",
         "keyless_ignition: incorrect value. expected 'Standard'"
     );

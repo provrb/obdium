@@ -154,20 +154,20 @@ impl VIN {
         self.lookup_name_from_id("BodyStyle", body_style_id)
     }
 
-    pub fn get_transmission_style(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::TransmissionStyle)
+    pub fn get_transmission_style(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::TransmissionStyle)
     }
 
-    pub fn get_steering_location(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::SteeringLocation)
+    pub fn get_steering_location(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::SteeringLocation)
     }
 
-    pub fn abs_availablility(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::ABS)
+    pub fn abs_availablility(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::ABS)
     }
 
-    pub fn keyless_ignition_availability(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::KeylessIgnition)
+    pub fn keyless_ignition_availability(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::KeylessIgnition)
     }
 
     pub fn airbag_locations_front(&self) -> Result<String, VinError> {
@@ -201,8 +201,8 @@ impl VIN {
         self.lookup_name_from_id("DriveType", id)
     }
 
-    pub fn get_axle_count(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::AxleCount)?;
+    pub fn get_axle_count(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::AxleCount)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
@@ -211,16 +211,16 @@ impl VIN {
         self.lookup_name_from_id("BrakeSystem", id)
     }
 
-    pub fn electronic_stability_control(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::ElectronicStabilityControl)
+    pub fn electronic_stability_control(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::ElectronicStabilityControl)
     }
 
-    pub fn traction_control(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::TractionControl)
+    pub fn traction_control(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::TractionControl)
     }
 
-    pub fn windows_auto_reverse(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::AutoReverseSystem)
+    pub fn windows_auto_reverse(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::AutoReverseSystem)
     }
 
     pub fn get_vehicle_weight_rating(&self) -> Result<String, VinError> {
@@ -240,53 +240,50 @@ impl VIN {
     }
 
     /// MPH
-    pub fn get_vehicle_top_speed(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::TopSpeedMPH)?;
+    pub fn get_vehicle_top_speed(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::TopSpeedMPH)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
     /// Inches
-    pub fn get_front_wheel_size(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::WheelSizeFront)?;
+    pub fn get_front_wheel_size(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::WheelSizeFront)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
     /// Inches
-    pub fn get_rear_wheel_size(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::WheelSizeRear)?;
+    pub fn get_rear_wheel_size(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::WheelSizeRear)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
-    pub fn dynamic_brake_support(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::DynamicBrakeSupport)
+    pub fn dynamic_brake_support(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::DynamicBrakeSupport)
     }
 
-    pub fn backup_camera(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::BackupCamera)
+    pub fn backup_camera(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::BackupCamera)
     }
 
-    pub fn automatic_crash_notification(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::ACN)
+    pub fn automatic_crash_notification(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::ACN)
     }
 
-    pub fn daytime_running_light(&self, vspec_pattern_id: i64) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::DaytimeRunningLight)
+    pub fn daytime_running_light(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::DaytimeRunningLight)
     }
 
-    pub fn semiauto_headlamp_beam_switching(
-        &self,
-        vspec_pattern_id: i64,
-    ) -> Result<String, VinError> {
-        self.get_spec_from_pattern(vspec_pattern_id, ElementId::SemiAutoHeadlampBeamSwitching)
+    pub fn semiauto_headlamp_beam_switching(&self) -> Result<String, VinError> {
+        self.get_vspec_from_pattern(ElementId::SemiAutoHeadlampBeamSwitching)
     }
 
-    pub fn get_transmission_speeds(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::TransmissionSpeeds)?;
+    pub fn get_transmission_speeds(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::TransmissionSpeeds)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
-    pub fn get_vehicle_base_price(&self, vspec_pattern_id: i64) -> Result<f64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::VehicleBasePrice)?;
+    pub fn get_vehicle_base_price(&self) -> Result<f64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::VehicleBasePrice)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
@@ -299,13 +296,13 @@ impl VIN {
         self.lookup_name_from_id("SeatBeltsAll", id)
     }
 
-    pub fn number_of_seats(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::NumberOfSeats)?;
+    pub fn number_of_seats(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::NumberOfSeats)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 
-    pub fn number_of_rows(&self, vspec_pattern_id: i64) -> Result<i64, VinError> {
-        let data = self.query_vspec_pattern(vspec_pattern_id, ElementId::NumberOfRows)?;
+    pub fn number_of_rows(&self) -> Result<i64, VinError> {
+        let data = self.query_vspec_pattern(ElementId::NumberOfRows)?;
         data.3.parse().map_err(|_| VinError::ParseError)
     }
 }

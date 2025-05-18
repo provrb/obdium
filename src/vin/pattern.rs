@@ -19,9 +19,8 @@ impl VIN {
         }
     }
 
-    pub(crate) fn get_spec_from_pattern(
+    pub(crate) fn get_vspec_from_pattern(
         &self,
-        vspec_pattern_id: i64,
         element_id: ElementId,
     ) -> Result<String, VinError> {
         let table_name = match self.get_lookup_table(element_id) {
@@ -29,7 +28,7 @@ impl VIN {
             None => return Err(VinError::VPICNoLookupTable(element_id)),
         };
 
-        let data = self.query_vspec_pattern(vspec_pattern_id, element_id)?;
+        let data = self.query_vspec_pattern(element_id)?;
         let id: i64 = data.3.parse().map_err(|_| VinError::ParseError)?;
 
         self.get_vehicle_spec(&table_name, id)
@@ -151,9 +150,9 @@ impl VIN {
 
     pub(crate) fn query_vspec_pattern(
         &self,
-        vspec_pattern_id: i64,
         element_id: ElementId,
     ) -> Result<(i64, i64, i64, String), VinError> {
+        let vspec_pattern_id = self.get_vspec_pattern_id()?;
         let con = self.vpic_connection()?;
 
         let query =
@@ -212,5 +211,126 @@ impl VIN {
         }
 
         Err(VinError::NoResultsFound("get_vehicle_spec"))
+    }
+
+    pub fn get_vspec_pattern_id(&self) -> Result<i64, VinError> {
+        /*
+            So apparently VSpecSchemaPatternIds have a row
+            with ElementId 38 (for 'Trim'). If one VSpecSchemaId
+            matches multiple VSpecSchemaPatternIds, you can differentiate
+            to find the one that matches the correct model by looking at
+            the ElementId 38 row's AttributeId. An example might be "Preferred".
+            This will always be the same as querying 'Pattern' with ElementId 'Trim'.
+
+            For example, querying ElementId::Trim with id '15103' will give:
+            Ok((2080567, 15103, "*J[AE]", 38, "Preferred"))
+            Notice the AttributeId, "Preferred".
+
+            Let's get the VSpecSchemaId using get_vehicle_spec_schema_id.
+            VSpecSchemaId will be 248 if WmiSchemaId is 15103.
+            Now we try and search for the VSpecSchemaPatternId with
+            VSpecSchemaId as 248. This query yields multiple VSpecSchemaPatternIds for 248.
+
+            Results:
+            VSpecSchemaPatternId - VSpecSchemaId
+                            461 - 248
+                            462 - 248
+                            463 - 248
+                            464 - 248
+                            465 - 248
+
+            This is an issue because we need the correct VSpecSchemaPatternId to get
+            the respective information about the correct vehicle model.
+
+            This is where querying the Trim element id will come in.
+            Find expected Trim attribute:
+            1. Query 'Pattern' with WmiSchemaId where ElementId = 38 (Trim)
+            2. Store this in 'expected_trim'
+
+            For every id (v_id) returned (VSpecSchemaPatternIds)
+                1. Query VSpecSchemaPattern for AttributeId
+                    where VSpecSchemaPatternId = v_id
+                    and ElementId = 38 (Trim)
+                2. If AttributeId == expected_trim
+                    - Then we found our correct VSpecSchemaPatternId for our vehicle.
+                3. Otherwise, continue
+
+            Worst case: If there are no VSpecSchemaPatternIds found, we assume there is no
+            VSpecSchemaPatternId for our VSpecSchemaId and return VinError::NoResultsFound.
+        */
+        let vspec_pattern_id = *self.vspec_pattern_id.get_or_init(|| {
+            let vspec_schema_id = match self.get_vspec_schema_id() {
+                Ok(id) => id,
+                Err(_) => return -1,
+            };
+            let vin_schema_id = match self.get_vin_schema_id() {
+                Ok(id) => id,
+                Err(_) => return -1,
+            };
+            let con = match self.vpic_connection() {
+                Ok(c) => c,
+                Err(_) => return -1,
+            };
+            let vin_key = self.as_key();
+            let query = "SELECT Id FROM VSpecSchemaPattern WHERE SchemaId = ?";
+            let mut statement = match con.prepare(query) {
+                Ok(stmt) => stmt,
+                Err(_) => return -1
+            };
+
+            if statement.bind((1, vspec_schema_id)).is_err() {
+                return -1;
+            }
+
+            while let Ok(State::Row) = statement.next() {
+                let pattern_id = match statement.read::<i64, _>("Id") {
+                    Ok(id) => id,
+                    Err(_) => continue,
+                };
+
+                // Check the key element id and find its attribute
+                let mut pattern_query = match con.prepare(
+                    "SELECT ElementId, AttributeId FROM VehicleSpecPattern WHERE IsKey = 1 AND VSpecSchemaPatternId = ?"
+                ) {
+                    Ok(stmt) => stmt,
+                    Err(_) => continue,
+                };
+
+                if pattern_query.bind((1, pattern_id)).is_err() {
+                    continue;
+                }
+
+                if let Ok(State::Row) = pattern_query.next() {
+                    let key_element_id = match pattern_query.read::<i64, _>("ElementId") {
+                        Ok(id) => id,
+                        Err(_) => continue,
+                    };
+
+                    let key_attribute = match pattern_query.read::<String, _>("AttributeId") {
+                        Ok(attr) => attr,
+                        Err(_) => continue,
+                    };
+
+                    // query pattern with schema id and key_element_id
+                    // compare key_attribute to the attribute from schema_id
+                    if let Ok(element_id) = ElementId::try_from(key_element_id as u16) {
+                        if let Ok(data) = self.query_pattern(vin_schema_id, element_id, vin_key) {
+                            if data.4 == key_attribute {
+                                return pattern_id;
+                            }
+                        }
+                    }
+                }
+            }
+
+            panic!("NoResultsFound: {}", query);
+        });
+
+        if vspec_pattern_id == -1 {
+            Err(VinError::InvalidVSpecPatternId)
+        } else {
+            Ok(vspec_pattern_id)
+        }
+        
     }
 }

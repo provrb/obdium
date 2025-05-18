@@ -32,6 +32,8 @@ pub enum VinError {
     InvalidModelYear,
     #[error("vehicle spec schema id is invalid")]
     InvalidVSpecSchemaId,
+    #[error("vehicle spec pattern id is invalid")]
+    InvalidVSpecPatternId,
 }
 
 #[derive(Default)]
@@ -46,6 +48,7 @@ pub struct VIN {
     pub(crate) wmi_id: OnceCell<i64>,
     pub(crate) vin_schema_id: OnceCell<i64>,
     pub(crate) vspec_schema_id: OnceCell<i64>,
+    pub(crate) vspec_pattern_id: OnceCell<i64>,
 }
 
 impl PartialEq for VIN {

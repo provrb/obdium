@@ -60,7 +60,7 @@ fn main() {
     println!("Body class: {}", vin.get_body_class().unwrap());
     println!("Vehicle spec schema id: {}", vspec_schema_id);
     println!("Vehicle spec pattern id: {}", vspec_pattern_id);
-    println!("ABS: {}", vin.abs_availablility(vspec_pattern_id).unwrap());
+    println!("ABS: {}", vin.abs_availablility().unwrap());
     println!(
         "Airbag locations curtain: {}",
         vin.airbag_locations_curtain().unwrap()
@@ -79,33 +79,33 @@ fn main() {
     );
     println!(
         "Transmission style: {}",
-        vin.get_transmission_style(vspec_pattern_id).unwrap()
+        vin.get_transmission_style().unwrap()
     );
     println!(
         "Steering location: {}",
-        vin.get_steering_location(vspec_pattern_id).unwrap()
+        vin.get_steering_location().unwrap()
     );
     println!(
         "Keyless ignition: {}",
-        vin.keyless_ignition_availability(vspec_pattern_id).unwrap()
+        vin.keyless_ignition_availability().unwrap()
     );
     println!("Drive type: {}", vin.get_drive_type().unwrap());
     println!(
         "Axle count: {}",
-        vin.get_axle_count(vspec_pattern_id).unwrap()
+        vin.get_axle_count().unwrap()
     );
     println!("Brake system: {}", vin.get_brake_system().unwrap());
     println!(
         "ESC: {}",
-        vin.electronic_stability_control(vspec_pattern_id).unwrap()
+        vin.electronic_stability_control().unwrap()
     );
     println!(
         "Traction control: {}",
-        vin.traction_control(vspec_pattern_id).unwrap()
+        vin.traction_control().unwrap()
     );
     println!(
         "Auto-reverse system: {}",
-        vin.windows_auto_reverse(vspec_pattern_id).unwrap()
+        vin.windows_auto_reverse().unwrap()
     );
     println!(
         "Gross vehicle weight rating: {}",
@@ -115,53 +115,53 @@ fn main() {
     println!("Plant state: {}", vin.get_plant_state().unwrap());
     println!(
         "Top speed: {}MPH",
-        vin.get_vehicle_top_speed(vspec_pattern_id).unwrap()
+        vin.get_vehicle_top_speed().unwrap()
     );
     println!(
         "Front wheel size: {}in",
-        vin.get_front_wheel_size(vspec_pattern_id).unwrap()
+        vin.get_front_wheel_size().unwrap()
     );
     println!(
         "Rear wheel size: {}in",
-        vin.get_rear_wheel_size(vspec_pattern_id).unwrap()
+        vin.get_rear_wheel_size().unwrap()
     );
     println!(
         "Dynamic brake support: {}",
-        vin.dynamic_brake_support(vspec_pattern_id).unwrap()
+        vin.dynamic_brake_support().unwrap()
     );
     println!(
         "Backup camera: {}",
-        vin.backup_camera(vspec_pattern_id).unwrap()
+        vin.backup_camera().unwrap()
     );
     println!(
         "Automatic crash notification: {}",
-        vin.automatic_crash_notification(vspec_pattern_id).unwrap()
+        vin.automatic_crash_notification().unwrap()
     );
     println!(
         "Daytime running light: {}",
-        vin.daytime_running_light(vspec_pattern_id).unwrap()
+        vin.daytime_running_light().unwrap()
     );
     println!(
         "Semi-automatic headlamp beam switching: {}",
-        vin.semiauto_headlamp_beam_switching(vspec_pattern_id)
+        vin.semiauto_headlamp_beam_switching()
             .unwrap()
     );
     println!(
         "Tranmission speeds: {}",
-        vin.get_transmission_speeds(vspec_pattern_id).unwrap()
+        vin.get_transmission_speeds().unwrap()
     );
     println!(
         "Vehicle base price: ${}",
-        vin.get_vehicle_base_price(vspec_pattern_id).unwrap()
+        vin.get_vehicle_base_price().unwrap()
     );
     println!("Trim: {}", vin.vehicle_trim().unwrap());
     println!("Seatbelt type: {}", vin.seatbelt_type().unwrap());
     println!(
         "Number of rows: {}",
-        vin.number_of_rows(vspec_pattern_id).unwrap()
+        vin.number_of_rows().unwrap()
     );
     println!(
         "Number of seats: {}",
-        vin.number_of_seats(vspec_pattern_id).unwrap()
+        vin.number_of_seats().unwrap()
     );
 }
