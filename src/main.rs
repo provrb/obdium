@@ -115,8 +115,8 @@ fn main() -> Result<(), OBDError> {
     println!("Fuel system 2: {:?}", fuel_system_status.1);
 
     println!("Fuel pressure: {}kPa", obd.fuel_pressure());
-    println!("Fuel tank level: {}%", obd.fuel_tank_level());
-    println!("Fuel rail pressure: {}kPa", obd.fuel_rail_pressure());
+    println!("Fuel tank level: {}", obd.fuel_tank_level());
+    println!("Fuel rail pressure: {}", obd.fuel_rail_pressure());
     println!(
         "Fuel rail gauge pressure: {}kPa",
         obd.fuel_rail_guage_pressure()

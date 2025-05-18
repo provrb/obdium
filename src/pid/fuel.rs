@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::cmd::Command;
 use crate::obd::{BankNumber, OBD};
+use crate::scalar::{Scalar, Unit};
 
 #[derive(Debug)]
 pub enum FuelType {
@@ -105,14 +106,22 @@ impl OBD {
         response.a_value() * 3.0
     }
 
-    pub fn fuel_tank_level(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"012F"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn fuel_tank_level(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"012F")).map_no_data(|r| {
+            Scalar::new(
+                 (100.0 / 255.0) * r.a_value(),
+                 Unit::Percent
+            )
+        })
     }
 
-    pub fn fuel_rail_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0122"));
-        0.079 * ((256.0 * response.a_value()) + response.b_value())
+    pub fn fuel_rail_pressure(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0122")).map_no_data(|r| {
+            Scalar::new(
+                0.079 * ((256.0 * r.a_value()) + r.b_value()),
+                Unit::KiloPascal
+            )
+        })
     }
 
     pub fn fuel_rail_guage_pressure(&mut self) -> f32 {

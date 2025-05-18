@@ -1,4 +1,5 @@
 use crate::obd::OBD;
+use crate::scalar::Scalar;
 
 #[derive(Debug, Copy, Clone)]
 enum PayloadComponent {
@@ -15,7 +16,7 @@ impl PayloadComponent {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Response {
     /**
      * Full response including request and
@@ -83,6 +84,23 @@ impl Response {
             payload_size: 0,
             responding_ecus: Vec::new(),
         }
+    }
+
+    pub fn no_data() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
+
+    pub fn map_no_data<F>(self, op: F) -> Scalar<>
+    where
+        F: FnOnce(Self) -> Scalar<>,
+    {
+        if self.payload_size == 0 {
+            return Scalar::no_data()
+        }
+        
+        op(self)
     }
 
     pub fn full_response(&self) -> Option<String> {

@@ -523,7 +523,7 @@ impl OBD {
                     String::from_utf8_lossy(request.get_at()),
                     String::from_utf8(request.get_pid().to_vec()).unwrap_or_default()
                 );
-                Response::default()
+                Response::no_data()
             }
         }
     }

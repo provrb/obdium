@@ -3,3 +3,4 @@ pub mod obd;
 pub mod pid;
 pub mod response;
 pub mod vin;
+pub mod scalar;
