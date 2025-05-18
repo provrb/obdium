@@ -19,7 +19,6 @@ jobs:
       uses: actions/checkout@v4
     - name: Download and move VPIC database
       run: |
-        mkdir -p data
         curl -L -o data/vpic.sqlite "https://www.dropbox.com/scl/fi/qt21pwczi1pyv7syh05cy/vpic.sqlite?rlkey=zk0qh8q1mn6wyrjm8njfn61r0&e=1&st=ef0qnpt8&dl=1"
     - name: Build
       run: cargo build
