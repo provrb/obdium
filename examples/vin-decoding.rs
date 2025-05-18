@@ -90,19 +90,10 @@ fn main() {
         vin.keyless_ignition_availability().unwrap()
     );
     println!("Drive type: {}", vin.get_drive_type().unwrap());
-    println!(
-        "Axle count: {}",
-        vin.get_axle_count().unwrap()
-    );
+    println!("Axle count: {}", vin.get_axle_count().unwrap());
     println!("Brake system: {}", vin.get_brake_system().unwrap());
-    println!(
-        "ESC: {}",
-        vin.electronic_stability_control().unwrap()
-    );
-    println!(
-        "Traction control: {}",
-        vin.traction_control().unwrap()
-    );
+    println!("ESC: {}", vin.electronic_stability_control().unwrap());
+    println!("Traction control: {}", vin.traction_control().unwrap());
     println!(
         "Auto-reverse system: {}",
         vin.windows_auto_reverse().unwrap()
@@ -113,26 +104,17 @@ fn main() {
     );
     println!("Plant company: {}", vin.get_plant_company().unwrap());
     println!("Plant state: {}", vin.get_plant_state().unwrap());
-    println!(
-        "Top speed: {}MPH",
-        vin.get_vehicle_top_speed().unwrap()
-    );
+    println!("Top speed: {}MPH", vin.get_vehicle_top_speed().unwrap());
     println!(
         "Front wheel size: {}in",
         vin.get_front_wheel_size().unwrap()
     );
-    println!(
-        "Rear wheel size: {}in",
-        vin.get_rear_wheel_size().unwrap()
-    );
+    println!("Rear wheel size: {}in", vin.get_rear_wheel_size().unwrap());
     println!(
         "Dynamic brake support: {}",
         vin.dynamic_brake_support().unwrap()
     );
-    println!(
-        "Backup camera: {}",
-        vin.backup_camera().unwrap()
-    );
+    println!("Backup camera: {}", vin.backup_camera().unwrap());
     println!(
         "Automatic crash notification: {}",
         vin.automatic_crash_notification().unwrap()
@@ -143,8 +125,7 @@ fn main() {
     );
     println!(
         "Semi-automatic headlamp beam switching: {}",
-        vin.semiauto_headlamp_beam_switching()
-            .unwrap()
+        vin.semiauto_headlamp_beam_switching().unwrap()
     );
     println!(
         "Tranmission speeds: {}",
@@ -156,12 +137,6 @@ fn main() {
     );
     println!("Trim: {}", vin.vehicle_trim().unwrap());
     println!("Seatbelt type: {}", vin.seatbelt_type().unwrap());
-    println!(
-        "Number of rows: {}",
-        vin.number_of_rows().unwrap()
-    );
-    println!(
-        "Number of seats: {}",
-        vin.number_of_seats().unwrap()
-    );
+    println!("Number of rows: {}", vin.number_of_rows().unwrap());
+    println!("Number of seats: {}", vin.number_of_seats().unwrap());
 }

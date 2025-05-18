@@ -69,7 +69,7 @@ impl FuelSystemStatus {
 }
 
 impl OBD {
-    pub fn short_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
+    pub fn short_term_fuel_trim(&mut self, bank: BankNumber) -> Scalar {
         let mut command = Command::default();
 
         match bank {
@@ -77,23 +77,29 @@ impl OBD {
             BankNumber::Bank2 => command.set_pid(b"0108"),
         }
 
-        let response = self.query(command);
-
-        (response.a_value() / 1.28) - 100.0
+        self.query(command)
+            .map_no_data(|r| Scalar::new((r.a_value() / 1.28) - 100.0, Unit::Percent))
     }
 
-    pub fn long_term_fuel_trim(&mut self, bank: BankNumber) -> f32 {
+    pub fn long_term_fuel_trim(&mut self, bank: BankNumber) -> Scalar {
         let command = match bank {
             BankNumber::Bank1 => Command::new_pid(b"0107"),
             BankNumber::Bank2 => Command::new_pid(b"0109"),
         };
 
-        let response = self.query(command);
-        (response.a_value() / 1.28) - 100.0
+        self.query(command)
+            .map_no_data(|r| Scalar::new((r.a_value() / 1.28) - 100.0, Unit::Percent))
     }
 
     pub fn fuel_system_status(&mut self) -> (FuelSystemStatus, FuelSystemStatus) {
         let response = self.query(Command::new_pid(b"0103"));
+        if *response.get_payload_size() == 0 {
+            // unknown
+            return (
+                FuelSystemStatus::from_u8(200),
+                FuelSystemStatus::from_u8(200),
+            );
+        }
 
         (
             FuelSystemStatus::from_u8(response.a_value() as u8),
@@ -101,62 +107,74 @@ impl OBD {
         )
     }
 
-    pub fn fuel_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"010A"));
-        response.a_value() * 3.0
+    pub fn fuel_pressure(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"010A"))
+            .map_no_data(|r| Scalar::new(r.a_value() * 3.0, Unit::KiloPascal))
     }
 
     pub fn fuel_tank_level(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"012F")).map_no_data(|r| {
-            Scalar::new(
-                 (100.0 / 255.0) * r.a_value(),
-                 Unit::Percent
-            )
-        })
+        self.query(Command::new_pid(b"012F"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
     pub fn fuel_rail_pressure(&mut self) -> Scalar {
         self.query(Command::new_pid(b"0122")).map_no_data(|r| {
             Scalar::new(
                 0.079 * ((256.0 * r.a_value()) + r.b_value()),
-                Unit::KiloPascal
+                Unit::KiloPascal,
             )
         })
     }
 
-    pub fn fuel_rail_guage_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0123"));
-        10.0 * ((256.0 * response.a_value()) + response.b_value())
+    pub fn fuel_rail_guage_pressure(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0123")).map_no_data(|r| {
+            Scalar::new(
+                10.0 * ((256.0 * r.a_value()) + r.b_value()),
+                Unit::KiloPascal,
+            )
+        })
     }
 
     pub fn fuel_type(&mut self) -> FuelType {
         let response = self.query(Command::new_pid(b"0151"));
+        if *response.get_payload_size() == 0 {
+            // unknown
+            return FuelType::from_u8(200);
+        }
 
         FuelType::from_u8(response.a_value() as u8)
     }
 
-    pub fn ethanol_fuel_percentage(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0152"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn ethanol_fuel_percentage(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0152"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
-    pub fn fuel_injection_timing(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"015D"));
-        (((256.0 * response.a_value()) + response.b_value()) / 128.0) - 210.0
+    pub fn fuel_injection_timing(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"015D")).map_no_data(|r| {
+            Scalar::new(
+                (((256.0 * r.a_value()) + r.b_value()) / 128.0) - 210.0,
+                Unit::Degrees,
+            )
+        })
     }
 
-    pub fn commanded_evap_purge(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"012E"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn commanded_evap_purge(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"012E"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
-    pub fn evap_system_vapor_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0132"));
-        ((256.0 * response.a_value()) + response.b_value()) / 4.0
+    pub fn evap_system_vapor_pressure(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0132"))
+            .map_no_data(|r| Scalar::new(((256.0 * r.a_value()) + r.b_value()) / 4.0, Unit::Pascal))
     }
 
-    pub fn cylinder_fuel_rate(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"01A2"));
-        ((256.0 * response.a_value()) + response.b_value()) / 32.0
+    pub fn cylinder_fuel_rate(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"01A2")).map_no_data(|r| {
+            Scalar::new(
+                ((256.0 * r.a_value()) + r.b_value()) / 32.0,
+                Unit::MiligramsPerStroke,
+            )
+        })
     }
 }

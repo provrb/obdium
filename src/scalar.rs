@@ -23,13 +23,14 @@ pub enum Unit {
     KilogramsPerSecond,
     PartsPerMillion,
     MiligramsPerStroke,
+    None,
     NoData,
 }
 
 #[derive(Clone)]
 pub struct Scalar {
     value: f32,
-    unit: Unit
+    unit: Unit,
 }
 
 impl fmt::Display for Scalar {
@@ -58,6 +59,7 @@ impl fmt::Display for Scalar {
             Unit::PartsPerMillion => write!(f, "ppm"),
             Unit::MiligramsPerStroke => write!(f, "mg/stroke"),
             Unit::NoData => write!(f, "??"),
+            _ => write!(f, ""),
         }
     }
 }
@@ -68,6 +70,9 @@ impl Scalar {
     }
 
     pub fn no_data() -> Self {
-        Self { value: 0.0, unit: Unit::NoData }
+        Self {
+            value: 0.0,
+            unit: Unit::NoData,
+        }
     }
 }

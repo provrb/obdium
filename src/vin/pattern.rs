@@ -19,10 +19,7 @@ impl VIN {
         }
     }
 
-    pub(crate) fn get_vspec_from_pattern(
-        &self,
-        element_id: ElementId,
-    ) -> Result<String, VinError> {
+    pub(crate) fn get_vspec_from_pattern(&self, element_id: ElementId) -> Result<String, VinError> {
         let table_name = match self.get_lookup_table(element_id) {
             Some(name) => name,
             None => return Err(VinError::VPICNoLookupTable(element_id)),
@@ -331,6 +328,5 @@ impl VIN {
         } else {
             Ok(vspec_pattern_id)
         }
-        
     }
 }

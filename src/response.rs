@@ -92,19 +92,23 @@ impl Response {
         }
     }
 
-    pub fn map_no_data<F>(self, op: F) -> Scalar<>
+    pub fn map_no_data<F>(self, op: F) -> Scalar
     where
-        F: FnOnce(Self) -> Scalar<>,
+        F: FnOnce(Self) -> Scalar,
     {
         if self.payload_size == 0 {
-            return Scalar::no_data()
+            return Scalar::no_data();
         }
-        
+
         op(self)
     }
 
     pub fn full_response(&self) -> Option<String> {
         self.raw_response.clone()
+    }
+
+    pub fn get_payload_size(&self) -> &usize {
+        &self.payload_size
     }
 
     pub fn get_payload(&self) -> Option<String> {
