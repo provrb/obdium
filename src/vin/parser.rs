@@ -34,6 +34,14 @@ pub enum VinError {
     InvalidVSpecSchemaId,
     #[error("vehicle spec pattern id is invalid")]
     InvalidVSpecPatternId,
+    #[error("invalid vin character: {ch} at position {pos:?}. {msg}")]
+    InvalidCharacter {
+        ch: char,
+        pos: Option<usize>,
+        msg: &'static str,
+    },
+    #[error("check digit does not calculate properly. expected {expected}, found {found}")]
+    InvalidCheckDigit { expected: char, found: char },
 }
 
 #[derive(Default)]
@@ -58,16 +66,13 @@ impl PartialEq for VIN {
 }
 
 impl VIN {
-    pub fn new<T>(vin: T) -> Self
+    pub fn new<T>(vin: T) -> Result<Self, VinError>
     where
         T: Into<String> + std::fmt::Debug,
     {
         let vin_string = vin.into();
         if vin_string.len() != 17 {
-            panic!(
-                "panic when creating new vin. vin expected length 17, got {}",
-                vin_string.len()
-            )
+            return Err(VinError::InvalidVinLength);
         }
 
         let mut _vin = Self::default();
@@ -78,19 +83,110 @@ impl VIN {
             }
         }
 
+        _vin.get_model_year()?;
+        _vin.checksum()?;
         _vin.get_wmi();
 
         if _vin.connect_to_vpic_db().is_err() {
             println!("Error connecting to VPIC database. Features are limited.");
         }
 
-        _vin
+        Ok(_vin)
     }
 
     pub fn get_vin(&self) -> &str {
         match self.vin.get() {
             Some(vin) => vin,
             _ => unreachable!(),
+        }
+    }
+
+    fn get_transliteration(ch: &char) -> Result<u8, VinError> {
+        // Numeric digits use their own digits as transliteration
+        if ch.is_numeric() {
+            return Ok(ch.to_digit(10).unwrap() as u8);
+        }
+
+        match ch {
+            'A' | 'J' => Ok(1),
+            'B' | 'K' | 'S' => Ok(2),
+            'C' | 'L' | 'T' => Ok(3),
+            'D' | 'M' | 'U' => Ok(4),
+            'E' | 'N' | 'V' => Ok(5),
+            'F' | 'W' => Ok(6),
+            'G' | 'P' | 'X' => Ok(7),
+            'H' | 'Y' => Ok(8),
+            'R' | 'Z' => Ok(9),
+            _ => Err(VinError::InvalidCharacter {
+                ch: *ch,
+                pos: None,
+                msg: "unexpected character when transliterating.",
+            }),
+        }
+    }
+
+    fn get_weight(char_position: usize) -> u8 {
+        match char_position {
+            1 | 11 => 8,
+            2 | 12 => 7,
+            3 | 13 => 6,
+            4 | 14 => 5,
+            5 | 15 => 4,
+            6 | 16 => 3,
+            7 | 17 => 2,
+            8 => 10,
+            9 => 0,
+            10 => 9,
+            _ => 0,
+        }
+    }
+
+    pub fn checksum(&self) -> Result<char, VinError> {
+        // transliterate
+        // multiply each number by its weight
+        // sum the products
+        // divide the sum by 11 and take the remainder for the check digit
+
+        let vin = self.get_vin();
+        let mut products = Vec::new();
+
+        // 1. Transliterate
+        //    - Convert character to its number representation
+        // 2. Get weight
+        //    - Get the weight of the character based on its index in the vin
+        //    - We add one since index starts at 0
+        for (index, ch) in vin.chars().enumerate() {
+            let trans = VIN::get_transliteration(&ch)?;
+            let weight = VIN::get_weight(index + 1);
+            products.push((trans * weight) as u16);
+        }
+
+        // Take sum and mod the sum by 11.
+        // If the remainder is 10, check digit is X,
+        // otherwise it is the remainder.
+        let sum: u16 = products.iter().sum();
+        let check_digit = (sum % 11) as u8;
+        let check_char;
+        if check_digit == 10 {
+            check_char = 'X'
+        } else {
+            check_char = char::from_digit(check_digit as u32, 10).unwrap();
+        }
+                     
+        // Check if the check digit in the vin
+        // is the calculated check digit.
+        // If not, throw an error.
+        // If so, return the check digit.
+
+        // Ninth character in the vin is the check digit
+        let check_char_from_vin = vin.chars().nth(8).unwrap();
+        if check_char_from_vin == check_char {
+            Ok(check_char_from_vin)
+        } else {
+            Err(VinError::InvalidCheckDigit {
+                expected: check_char,
+                found: check_char_from_vin,
+            })
         }
     }
 

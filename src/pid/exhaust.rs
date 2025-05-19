@@ -11,9 +11,8 @@ impl OBD {
 
     // Exhaust gas recirculation error
     pub fn egr_error(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"012D")).map_no_data(|r| {
-            Scalar::new(((100.0 / 128.0) * r.a_value()) - 100.0, Unit::Percent)
-        })
+        self.query(Command::new_pid(b"012D"))
+            .map_no_data(|r| Scalar::new(((100.0 / 128.0) * r.a_value()) - 100.0, Unit::Percent))
     }
 
     pub fn catalyst_temp(&mut self, bank: BankNumber, sensor: SensorNumber) -> Scalar {
@@ -29,7 +28,10 @@ impl OBD {
         };
 
         self.query(command).map_no_data(|r| {
-            Scalar::new((((256.0 * r.a_value()) + r.b_value()) / 10.0) - 40.0, Unit::Celsius)
+            Scalar::new(
+                (((256.0 * r.a_value()) + r.b_value()) / 10.0) - 40.0,
+                Unit::Celsius,
+            )
         })
     }
 

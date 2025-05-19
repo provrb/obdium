@@ -100,7 +100,7 @@ impl OBD {
         )
     }
 
-    pub fn engine_mileage(&mut self) -> Scalar {
+    pub fn odometer(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"01A6"));
         if *response.get_payload_size() == 0 {
             return Scalar::no_data();
@@ -116,7 +116,7 @@ impl OBD {
         let c_power = f32::powf(2f32, 8f32);
 
         Scalar::new(
-            ((a * a_power) + (b * b_power) + (c * c_power) + d) / 40.0,
+            ((a * a_power) + (b * b_power) + (c * c_power) + d) / 10.0,
             Unit::Kilometers,
         )
     }

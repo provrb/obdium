@@ -1,6 +1,4 @@
 use std::str::FromStr;
-
-use chrono::Datelike;
 use sqlite::State;
 
 use crate::vin::element_ids::ElementId;
@@ -49,35 +47,41 @@ impl VIN {
         let vin = self.get_vin();
         let pos10 = vin.chars().nth(9).unwrap_or('\0');
 
-        let mut model_year = match pos10 {
-            'A'..'H' => 2010 + (pos10 as i32) - ('A' as i32),
-            'J'..'N' => 2010 + (pos10 as i32) - ('A' as i32) - 1,
+        let model_year = match pos10 {
+            'A'..='H' => 2010 + (pos10 as i32) - ('A' as i32),
+            'J'..='N' => 2010 + (pos10 as i32) - ('A' as i32) - 1,
             'P' => 2023,
-            'R'..'T' => 2010 + (pos10 as i32) - ('A' as i32) - 3,
-            'V'..'Y' => 2010 + (pos10 as i32) - ('A' as i32) - 4,
-            '1'..'9' => 2031 + (pos10 as i32) - ('1' as i32),
-            _ => unreachable!(),
+            'R'..='T' => 2010 + (pos10 as i32) - ('A' as i32) - 3,
+            'V'..='Y' => 2010 + (pos10 as i32) - ('A' as i32) - 4,
+            '1'..='9' => 2031 + (pos10 as i32) - ('1' as i32),
+            _ => {
+                return Err(VinError::InvalidCharacter {
+                    ch: pos10,
+                    pos: Some(9),
+                    msg: "got invalid character for model year.",
+                })
+            }
         };
 
-        let mut car_lt = false;
-        let vehicle_type_id = self.get_vehicle_type_id()?;
-        let truck_type_id = self.get_truck_type_id()?;
+        // let mut car_lt = false;
+        // let vehicle_type_id = self.get_vehicle_type_id()?;
+        // let truck_type_id = self.get_truck_type_id()?;
 
-        if (2..=7).contains(&vehicle_type_id) || (vehicle_type_id == 3 && truck_type_id == 1) {
-            car_lt = true;
-        }
+        // if (2..=7).contains(&vehicle_type_id) || (vehicle_type_id == 3 && truck_type_id == 1) {
+        //     car_lt = true;
+        // }
 
-        let pos7 = vin.chars().nth(6).unwrap_or('\0');
+        // let pos7 = vin.chars().nth(6).unwrap_or('\0');
 
-        if car_lt {
-            if let '0'..='9' = pos7 {
-                model_year -= 30;
-            }
-        }
+        // if car_lt {
+        //     if let '0'..='9' = pos7 {
+        //         model_year -= 30;
+        //     }
+        // }
 
-        if model_year > chrono::Utc::now().year() + 1 {
-            model_year -= 30;
-        }
+        // if model_year > chrono::Utc::now().year() + 1 {
+        //     model_year -= 30;
+        // }
 
         Ok(model_year)
     }

@@ -73,7 +73,6 @@ pub enum Service {
 #[derive(Default)]
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
-    vin: VIN,
     elm_version: Option<String>,
 }
 
@@ -473,8 +472,11 @@ impl OBD {
         payload
     }
 
-    pub fn get_vin(&mut self) -> Result<&VIN, OBDError> {
-        self.send_command(&Command::new_pid(b"0902"))?;
+    pub fn get_vin(&mut self) -> Option<VIN> {
+        match self.send_command(&Command::new_pid(b"0902")) {
+            Ok(()) => (),
+            Err(_) => return None,
+        }
 
         // Convert hex payload to ASCII string
         let mut vin = String::new();
@@ -486,8 +488,13 @@ impl OBD {
             );
         }
 
-        self.vin = VIN::new(vin);
-        Ok(&self.vin)
+        match VIN::new(vin) {
+            Ok(vin) => Some(vin),
+            Err(err) => {
+                println!("error when getting vin. {err}");
+                None
+            }
+        }
     }
 
     pub(crate) fn format_response(response: &str) -> String {

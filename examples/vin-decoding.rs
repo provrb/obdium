@@ -3,7 +3,7 @@ use obdium::vin::parser::VIN;
 fn main() {
     // Create the VIN object.
     // A vin can only be assigned once per VIN object.
-    let vin = VIN::new("KL4CJASB6JB660929");
+    let vin = VIN::new("KL4CJASB6JB660929").unwrap();
 
     // Get the 'World Manufcaturer Identifier' from the VIN.
     // The first 3 characters of the vin. Contains

@@ -8,7 +8,7 @@ const VIN_STRING: &'static str = "KL4CJASB6JB660929";
 
 #[test]
 fn database_connect() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert!(
         vin.test_database_connection(),
@@ -18,7 +18,7 @@ fn database_connect() {
 
 #[test]
 fn wmi_prefix() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.get_wmi(),
@@ -29,7 +29,7 @@ fn wmi_prefix() {
 
 #[test]
 fn wmi_id() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.get_wmi_id().unwrap(),
@@ -40,7 +40,7 @@ fn wmi_id() {
 
 #[test]
 fn truck_type_id() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
     let wmi = vin.get_wmi();
 
     assert_eq!(
@@ -52,7 +52,7 @@ fn truck_type_id() {
 
 #[test]
 fn vehicle_type_id() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
     let wmi = vin.get_wmi();
 
     assert_eq!(
@@ -64,7 +64,7 @@ fn vehicle_type_id() {
 
 #[test]
 fn model_year() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.get_model_year().unwrap(),
@@ -75,7 +75,7 @@ fn model_year() {
 
 #[test]
 fn vin_key() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.as_key(),
@@ -86,7 +86,7 @@ fn vin_key() {
 
 #[test]
 fn schema_id() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
     let wmi = vin.get_wmi();
     let wmi_id = vin.get_wmi_id().unwrap();
 
@@ -99,7 +99,7 @@ fn schema_id() {
 
 #[test]
 fn engine_model() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
     let wmi = vin.get_wmi();
     let wmi_id = vin.get_wmi_id().unwrap();
 
@@ -112,7 +112,7 @@ fn engine_model() {
 
 #[test]
 fn cylinder_count() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
     let wmi = vin.get_wmi();
     let wmi_id = vin.get_wmi_id().unwrap();
 
@@ -125,7 +125,7 @@ fn cylinder_count() {
 
 #[test]
 fn transmission_style() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.get_transmission_style().unwrap(),
@@ -136,7 +136,7 @@ fn transmission_style() {
 
 #[test]
 fn steering_location() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.get_steering_location().unwrap(),
@@ -147,7 +147,7 @@ fn steering_location() {
 
 #[test]
 fn abs_availability() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.abs_availablility().unwrap(),
@@ -158,7 +158,7 @@ fn abs_availability() {
 
 #[test]
 fn keyless_ignition() {
-    let vin = VIN::new(VIN_STRING);
+    let vin = VIN::new(VIN_STRING).unwrap();
 
     assert_eq!(
         vin.keyless_ignition_availability().unwrap(),

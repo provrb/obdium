@@ -3,6 +3,9 @@ use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
+    let vin = obd.get_vin().unwrap();
+    println!("vin: {}", vin.get_vin());
+    println!("{}", vin.get_vehicle_model().unwrap());
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");
@@ -64,7 +67,7 @@ fn main() -> Result<(), OBDError> {
     println!("Engine fuel rate: {}", obd.engine_fuel_rate());
     println!("Engine runtime: {}", obd.engine_runtime());
     println!("Engine runtime (diesel): {}", obd.engine_runtime_diesel());
-    println!("Engine mileage: {}", obd.engine_mileage());
+    println!("Engine mileage: {}", obd.odometer());
 
     let oil_temp = obd.engine_oil_temp_sensors();
     println!(
