@@ -48,7 +48,7 @@ impl OBD {
 
     pub fn coolant_temp_sensors(&mut self) -> (Scalar, Scalar) {
         let mut coolant_temp = (Scalar::no_data(), Scalar::no_data());
-        let response = self.query(Command::new_pid(b"0166"));
+        let response = self.query(Command::new_pid(b"0167"));
         if *response.get_payload_size() == 0 {
             return coolant_temp;
         }

@@ -3,12 +3,13 @@ use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
-    let vin = obd.get_vin().unwrap();
-    println!("vin: {}", vin.get_vin());
-    println!("{}", vin.get_vehicle_model().unwrap());
+    // let vin = obd.get_vin().unwrap();
+    // println!("vin: {}", vin.get_vin());
+    // println!("{}", vin.get_vehicle_model().unwrap());
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");
+    obd.toggle_freeze_frame_query();
 
     println!("Supported pids for ECUs");
     for (ecu_name, pids) in supported_pids.iter() {

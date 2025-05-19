@@ -159,7 +159,6 @@ impl Response {
 
                     resp[6..].to_string()
                 } else {
-                    println!("unexpected response prefix: '{resp}'");
                     return Vec::new();
                 }
             }
