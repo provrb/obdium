@@ -3,9 +3,9 @@ use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
     obd.connect("COM4", 38400)?;
-    // let vin = obd.get_vin().unwrap();
-    // println!("vin: {}", vin.get_vin());
-    // println!("{}", vin.get_vehicle_model().unwrap());
+    if let Some(vin) = obd.get_vin() {
+        println!("VIN: {}", vin.get_vin())
+    }
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");
@@ -222,5 +222,13 @@ fn main() -> Result<(), OBDError> {
         "Absolute barometric pressure: {}",
         obd.abs_barometric_pressure()
     );
+
+    println!(
+        "\n{} SENDING MANUAL COMMANDS {}",
+        "=".repeat(24),
+        "=".repeat(24)
+    );
+    obd.read_from_user_input();
+
     Ok(())
 }

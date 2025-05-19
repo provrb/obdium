@@ -112,19 +112,24 @@ impl OBD {
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
 
         if sensors_supported.contains(&SensorNumber::Sensor1) {
-            data.0 = Scalar::new(((256.0 * response.b_value()) + response.c_value()) / 32.0, Unit::GramsPerSecond);
+            data.0 = Scalar::new(
+                ((256.0 * response.b_value()) + response.c_value()) / 32.0,
+                Unit::GramsPerSecond,
+            );
         }
 
         if sensors_supported.contains(&SensorNumber::Sensor2) {
-            data.1 = Scalar::new(((256.0 * response.d_value()) + response.e_value()) / 32.0, Unit::GramsPerSecond);
+            data.1 = Scalar::new(
+                ((256.0 * response.d_value()) + response.e_value()) / 32.0,
+                Unit::GramsPerSecond,
+            );
         }
 
         data
     }
 
     pub fn abs_barometric_pressure(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0133")).map_no_data(|r| {
-            Scalar::new(r.a_value(), Unit::KiloPascal)
-        })
+        self.query(Command::new_pid(b"0133"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KiloPascal))
     }
 }
