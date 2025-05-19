@@ -1,6 +1,7 @@
 use sqlite::State;
 use std::fmt;
 
+use crate::response::Response;
 use crate::{cmd::Command, obd::OBD, scalar::Scalar, scalar::Unit};
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
@@ -193,6 +194,12 @@ impl fmt::Display for TroubleCode {
 }
 
 impl OBD {
+    /// Get the DTC that caused the freeze frame.
+    pub fn get_freeze_frame_dtc(&mut self) -> Vec<TroubleCode> {
+        let response = self.query(Command::new_pid(b"0102"));
+        self.decode_trouble_codes(&response)
+    }
+
     pub fn check_engine_light(&mut self) -> bool {
         let response = self.query(Command::new_pid(b"0101"));
         (response.a_value() as u32 & 0x80) != 0
@@ -222,8 +229,11 @@ impl OBD {
         }
 
         let response = self.query(Command::new_svc(b"03"));
-        // println!("dtc response: {:#?}", response);
-        let sanitized = response
+        self.decode_trouble_codes(&response)
+    }
+
+    fn decode_trouble_codes(&self, dtc_response: &Response) -> Vec<TroubleCode> {
+        let sanitized = dtc_response
             .full_response()
             .unwrap_or_default()
             .replace(" ", "")

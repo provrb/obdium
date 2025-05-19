@@ -5,6 +5,7 @@ use std::io::{Read, Write};
 use std::str;
 use std::time::Duration;
 
+use crate::cmd::CommandType;
 use crate::vin::parser::VIN;
 use crate::{cmd::Command, response::Response};
 
@@ -74,6 +75,7 @@ pub enum Service {
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
     elm_version: Option<String>,
+    freeze_frame_query: bool,
 }
 
 impl OBD {
@@ -130,6 +132,17 @@ impl OBD {
         }
 
         Ok(())
+    }
+
+    /// Toggles whether PID requests are redirected to freeze frame (service 02).
+    ///
+    /// If `self.freeze_frame_query` is `true`, all service 01 PID requests
+    /// will be redirected to service 02 (freeze frame).
+    ///
+    /// Returns the updated value of `freeze_frame_query`.
+    pub fn toggle_freeze_frame_query(&mut self) -> bool {
+        self.freeze_frame_query = !self.freeze_frame_query;
+        self.freeze_frame_query
     }
 
     pub fn read_from_user_input(&mut self) {
@@ -507,7 +520,14 @@ impl OBD {
         chunks.join(" ")
     }
 
-    pub(crate) fn query(&mut self, request: Command) -> Response {
+    pub(crate) fn query(&mut self, mut request: Command) -> Response {
+        if self.freeze_frame_query && request.command_type() == CommandType::PIDCommand {
+            let pid = request.get_pid();
+            if pid.starts_with(b"01") {
+                request.set_pid(&[b'0', b'2', pid[2], pid[3]]);
+            }
+        }
+
         match self.send_command(&request) {
             Ok(_) => {}
             Err(err) => {

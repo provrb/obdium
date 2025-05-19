@@ -166,13 +166,12 @@ impl VIN {
         // otherwise it is the remainder.
         let sum: u16 = products.iter().sum();
         let check_digit = (sum % 11) as u8;
-        let check_char;
-        if check_digit == 10 {
-            check_char = 'X'
+        let check_char = if check_digit == 10 {
+            'X'
         } else {
-            check_char = char::from_digit(check_digit as u32, 10).unwrap();
-        }
-                     
+            char::from_digit(check_digit as u32, 10).unwrap()
+        };
+
         // Check if the check digit in the vin
         // is the calculated check digit.
         // If not, throw an error.

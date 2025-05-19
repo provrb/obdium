@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use sqlite::State;
+use std::str::FromStr;
 
 use crate::vin::element_ids::ElementId;
 use crate::vin::parser::{VinError, VIN};
