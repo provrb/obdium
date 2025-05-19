@@ -1,7 +1,7 @@
 use sqlite::State;
 use std::fmt;
 
-use crate::{cmd::Command, obd::OBD};
+use crate::{cmd::Command, obd::OBD, scalar::Scalar, scalar::Unit};
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
@@ -198,14 +198,14 @@ impl OBD {
         (response.a_value() as u32 & 0x80) != 0
     }
 
-    pub fn warm_ups_since_codes_cleared(&mut self) -> u8 {
-        let response = self.query(Command::new_pid(b"0130"));
-        response.a_value() as u8
+    pub fn warm_ups_since_codes_cleared(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0130"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::NoData))
     }
 
-    pub fn distance_traveled_since_codes_cleared(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0131"));
-        (256.0 * response.a_value()) + response.b_value()
+    pub fn distance_traveled_since_codes_cleared(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0131"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Kilometers))
     }
 
     pub fn get_num_trouble_codes(&mut self) -> u32 {
@@ -279,19 +279,6 @@ impl OBD {
                 right
             );
 
-            // println!("left: {}", left);
-            // println!("transformed left: {}", new_left);
-            // println!("right: {}", right);
-
-            // println!("C2: {}", c2);
-
-            // println!("- DTC: {}", dtc_code);
-
-            // println!(
-            //     "left: {:02X}\nright: {:02X}\nbit 7: {}\nbit 6: {}\nbit 5: {}\nbit 4: {}\ncategory: {:?}\nc2: {}\ndtc_code: {}",
-            //     left, right, bit_7, bit_6, bit_5, bit_4, category, c2, dtc_code
-            // );
-
             codes.push(TroubleCode::new(category, dtc_code));
         }
 
@@ -314,23 +301,24 @@ impl OBD {
         }
     }
 
-    pub fn distance_traveled_with_mil(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0121"));
-        (256.0 * response.a_value()) + response.b_value()
+    pub fn distance_traveled_with_mil(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0121"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Kilometers))
     }
 
-    pub fn time_run_with_mil(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"014D"));
-        (256.0 * response.a_value()) + response.b_value()
+    pub fn time_run_with_mil(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"014D"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Minutes))
     }
 
-    pub fn control_module_voltage(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0142"));
-        ((256.0 * response.a_value()) + response.b_value()) / 1000.0
+    pub fn control_module_voltage(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0142")).map_no_data(|r| {
+            Scalar::new(((256.0 * r.a_value()) + r.b_value()) / 1000.0, Unit::Volts)
+        })
     }
 
-    pub fn time_since_codes_cleared(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"014E"));
-        (256.0 * response.a_value()) + response.b_value()
+    pub fn time_since_codes_cleared(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"014E"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Minutes))
     }
 }

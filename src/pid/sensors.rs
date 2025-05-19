@@ -1,67 +1,74 @@
 use crate::cmd::Command;
 use crate::obd::{SensorNumber, OBD};
+use crate::scalar::{Scalar, Unit};
 
 impl OBD {
-    pub fn vehicle_speed(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"010D"));
-        response.a_value()
+    pub fn vehicle_speed(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"010D"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KilometersPerHour))
     }
 
-    pub fn timing_advance(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"010E"));
-        (response.a_value() / 2.0) - 64.0
+    pub fn timing_advance(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"010E"))
+            .map_no_data(|r| Scalar::new((r.a_value() / 2.0) - 64.0, Unit::Degrees))
     }
 
-    pub fn oxygen_sensors_present(&mut self) -> f32 {
-        todo!()
-    }
-
-    pub fn max_values_for(&mut self) -> (f32, f32, f32, f32) {
+    /// Fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
+    pub fn max_values_for(&mut self) -> (Scalar, Scalar, Scalar, Scalar) {
         let response = self.query(Command::new_pid(b"014F"));
+        if *response.get_payload_size() == 0 {
+            return (
+                Scalar::no_data(),
+                Scalar::no_data(),
+                Scalar::no_data(),
+                Scalar::no_data(),
+            );
+        }
+
         (
-            response.a_value(),
-            response.b_value(),
-            response.c_value(),
-            response.d_value() * 10.0,
+            Scalar::new(response.a_value(), Unit::Ratio),
+            Scalar::new(response.b_value(), Unit::Volts),
+            Scalar::new(response.c_value(), Unit::Milliampere),
+            Scalar::new(response.d_value() * 10.0, Unit::KiloPascal),
         )
-    } // fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
-
-    pub fn throttle_position(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0111"));
-        response.a_value() * (100.0 / 255.0)
     }
 
-    pub fn relative_throttle_pos(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0145"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn throttle_position(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0111"))
+            .map_no_data(|r| Scalar::new(r.a_value() * (100.0 / 255.0), Unit::Percent))
     }
 
-    pub fn abs_throttle_position_b(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0147"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn relative_throttle_pos(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0145"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
-    pub fn abs_throttle_position_c(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0148"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn abs_throttle_position_b(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0147"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+    }
+
+    pub fn abs_throttle_position_c(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0148"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
     // Accelerator pedal position d
-    pub fn acc_pedal_position_d(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0149"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn acc_pedal_position_d(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0149"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
     // Accelerator pedal position e
-    pub fn acc_pedal_position_e(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"014A"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn acc_pedal_position_e(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"014A"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
     // Accelerator pedal position f
-    pub fn acc_pedal_position_f(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"014B"));
-        (100.0 / 255.0) * response.a_value()
+    pub fn acc_pedal_position_f(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"014B"))
+            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
     }
 
     pub(crate) fn sensors_supported_for(&self, byte: u8) -> Vec<SensorNumber> {

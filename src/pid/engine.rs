@@ -2,12 +2,15 @@ use crate::cmd::Command;
 use crate::obd::SensorNumber;
 use crate::obd::Service;
 use crate::obd::OBD;
+use crate::scalar::Scalar;
+use crate::scalar::Unit;
 use std::fmt;
 
 #[derive(PartialEq, Eq)]
 pub enum EngineType {
     SparkIgnition,
     CompressionIgnition,
+    Unknown,
 }
 
 impl EngineType {
@@ -15,6 +18,7 @@ impl EngineType {
         match self {
             EngineType::SparkIgnition => "Internal Combustion Engine",
             EngineType::CompressionIgnition => "Compression Ignition Engine",
+            EngineType::Unknown => "Unkown",
         }
     }
 }
@@ -27,53 +31,61 @@ impl fmt::Display for EngineType {
 }
 
 impl OBD {
-    pub fn rpm(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"010C"));
-        ((256.0 * response.a_value()) + response.b_value()) / 4.0
+    pub fn rpm(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"010C"))
+            .map_no_data(|r| Scalar::new(((256.0 * r.a_value()) + r.b_value()) / 4.0, Unit::RPM))
     }
 
-    pub fn engine_load(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0104"));
-        response.a_value() / 2.55
+    pub fn engine_load(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0104"))
+            .map_no_data(|r| Scalar::new(r.a_value() / 2.55, Unit::Percent))
     }
 
-    pub fn coolant_temp(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0105"));
-        response.a_value() - 40.0
+    pub fn coolant_temp(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0105"))
+            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
     }
 
-    pub fn coolant_temp_sensors(&mut self) -> (f32, f32) {
+    pub fn coolant_temp_sensors(&mut self) -> (Scalar, Scalar) {
+        let mut coolant_temp = (Scalar::no_data(), Scalar::no_data());
         let response = self.query(Command::new_pid(b"0166"));
+        if *response.get_payload_size() == 0 {
+            return coolant_temp;
+        }
+
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
-        let mut coolant_temp = (0f32, 0f32);
 
         if sensors_supported.contains(&SensorNumber::Sensor1) {
-            coolant_temp.0 = response.b_value() - 40.0;
+            coolant_temp.0 = Scalar::new(response.b_value() - 40.0, Unit::Celsius)
         }
 
         if sensors_supported.contains(&SensorNumber::Sensor2) {
-            coolant_temp.1 = response.c_value() - 40.0;
+            coolant_temp.1 = Scalar::new(response.c_value() - 40.0, Unit::Celsius);
         }
 
         coolant_temp
     }
 
-    pub fn engine_fuel_rate(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"019D"));
-        response.a_value()
+    pub fn engine_fuel_rate(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"019D"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::GramsPerSecond))
     }
 
-    pub fn engine_runtime(&mut self) -> f32 {
+    pub fn engine_runtime(&mut self) -> Scalar {
         if self.get_engine_type() == EngineType::CompressionIgnition {
             return self.engine_runtime_diesel();
         }
 
-        let response = self.query(Command::new_pid(b"011F"));
-        (256.0 * response.a_value()) + response.b_value()
+        self.query(Command::new_pid(b"011F"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Seconds))
     }
 
-    pub fn engine_runtime_diesel(&mut self) -> f32 {
+    pub fn engine_runtime_diesel(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"017F"));
+        if *response.get_payload_size() == 0 {
+            return Scalar::no_data();
+        }
+
         let b = response.b_value();
         let c = response.c_value();
         let d = response.d_value();
@@ -82,11 +94,18 @@ impl OBD {
         let c_power = f32::powf(2f32, 16f32);
         let d_power = f32::powf(2f32, 8f32);
 
-        (b * b_power) + (c * c_power) + (d * d_power) + e
+        Scalar::new(
+            (b * b_power) + (c * c_power) + (d * d_power) + e,
+            Unit::Seconds,
+        )
     }
 
-    pub fn engine_mileage(&mut self) -> f32 {
+    pub fn engine_mileage(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"01A6"));
+        if *response.get_payload_size() == 0 {
+            return Scalar::no_data();
+        }
+
         let a = response.a_value();
         let b = response.b_value();
         let c = response.c_value();
@@ -96,57 +115,74 @@ impl OBD {
         let b_power = f32::powf(2f32, 16f32);
         let c_power = f32::powf(2f32, 8f32);
 
-        ((a * a_power) + (b * b_power) + (c * c_power) + d) / 40.0
+        Scalar::new(
+            ((a * a_power) + (b * b_power) + (c * c_power) + d) / 40.0,
+            Unit::Kilometers,
+        )
     }
 
-    pub fn engine_oil_temp(&mut self, mode: Service) -> f32 {
+    pub fn engine_oil_temp(&mut self, mode: Service) -> Scalar {
         let command = match mode {
             Service::Mode01 => Command::new_pid(b"015C"),
             Service::Mode22 => Command::new_arb("221154"),
         };
 
-        let response = self.query(command);
-        response.a_value() - 40.0
+        self.query(command)
+            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
     }
 
-    pub fn engine_oil_temp_sensors(&mut self) -> (f32, f32) {
+    pub fn engine_oil_temp_sensors(&mut self) -> (Scalar, Scalar) {
+        let mut oil_temp = (Scalar::no_data(), Scalar::no_data());
         let response = self.query(Command::new_pid(b"0167"));
+        if *response.get_payload_size() == 0 {
+            return oil_temp;
+        }
+
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
-        let mut oil_temp = (0f32, 0f32);
 
         if sensors_supported.contains(&SensorNumber::Sensor1) {
-            oil_temp.0 = response.b_value() - 40.0;
+            oil_temp.0 = Scalar::new(response.b_value() - 40.0, Unit::Celsius)
         }
 
         if sensors_supported.contains(&SensorNumber::Sensor2) {
-            oil_temp.1 = response.c_value() - 40.0;
+            oil_temp.1 = Scalar::new(response.c_value() - 40.0, Unit::Celsius);
         }
 
         oil_temp
     }
 
-    pub fn engine_oil_pressure(&mut self) -> f32 {
-        let response = self.query(Command::new_arb("221470"));
-        response.a_value() * 3.985 // kPa
+    pub fn engine_oil_pressure(&mut self) -> Scalar {
+        self.query(Command::new_arb("221470"))
+            .map_no_data(|r| Scalar::new(r.a_value() * 3.985, Unit::KiloPascal))
     }
 
-    pub fn drivers_demand_engine_torque(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0161"));
-        response.a_value() - 125.0
+    pub fn drivers_demand_engine_torque(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0161"))
+            .map_no_data(|r| Scalar::new(r.a_value() - 125.0, Unit::Percent))
     }
 
-    pub fn actual_engine_torque(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0162"));
-        response.a_value() - 125.0
+    pub fn actual_engine_torque(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0162"))
+            .map_no_data(|r| Scalar::new(r.a_value() - 125.0, Unit::Percent))
     }
 
-    pub fn reference_engine_torque(&mut self) -> f32 {
-        let response = self.query(Command::new_pid(b"0163"));
-        (256.0 * response.a_value()) + response.b_value()
+    pub fn reference_engine_torque(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0163"))
+            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::NewtonMeters))
     }
 
-    pub fn engine_percent_torque_data(&mut self) -> (f32, f32, f32, f32, f32) {
+    pub fn engine_percent_torque_data(&mut self) -> (Scalar, Scalar, Scalar, Scalar, Scalar) {
         let response = self.query(Command::new_pid(b"0164"));
+        if *response.get_payload_size() == 0 {
+            return (
+                Scalar::no_data(),
+                Scalar::no_data(),
+                Scalar::no_data(),
+                Scalar::no_data(),
+                Scalar::no_data(),
+            );
+        }
+
         let idle = response.a_value() - 125.0;
         let engine_point_1 = response.b_value() - 125.0;
         let engine_point_2 = response.c_value() - 125.0;
@@ -154,16 +190,20 @@ impl OBD {
         let engine_point_4 = response.e_value() - 125.0;
 
         (
-            idle,
-            engine_point_1,
-            engine_point_2,
-            engine_point_3,
-            engine_point_4,
+            Scalar::new(idle, Unit::Percent),
+            Scalar::new(engine_point_1, Unit::Percent),
+            Scalar::new(engine_point_2, Unit::Percent),
+            Scalar::new(engine_point_3, Unit::Percent),
+            Scalar::new(engine_point_4, Unit::Percent),
         )
     }
 
     pub fn get_engine_type(&mut self) -> EngineType {
         let response = self.query(Command::new_pid(b"0101"));
+        if *response.get_payload_size() == 0 {
+            return EngineType::Unknown;
+        }
+
         match response.b_value() as u32 & 0b00001000 {
             0 => EngineType::SparkIgnition,
             _ => EngineType::CompressionIgnition,

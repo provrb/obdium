@@ -32,17 +32,17 @@ fn main() -> Result<(), OBDError> {
 
     println!("OBD standard: {}", obd.obd_standards());
     println!("Auxiliary input status: {}", obd.aux_input_status());
-    println!("Control module voltage: {}V", obd.control_module_voltage());
+    println!("Control module voltage: {}", obd.control_module_voltage());
     println!(
-        "Distance traveled with malfunction indicator lamp: {}km",
+        "Distance traveled with malfunction indicator lamp: {}",
         obd.distance_traveled_with_mil()
     );
     println!(
-        "TIme run with malfunction indicator lamp: {}s",
+        "TIme run with malfunction indicator lamp: {}",
         obd.time_run_with_mil()
     );
     println!(
-        "Time since codes cleared: {}s",
+        "Time since codes cleared: {}",
         obd.time_since_codes_cleared()
     );
     println!(
@@ -52,52 +52,49 @@ fn main() -> Result<(), OBDError> {
 
     println!("\n{} ENGINE {}", "=".repeat(24), "=".repeat(24));
     println!("Engine type: {}", obd.get_engine_type());
-    println!("Engine speed: {}RPM", obd.rpm());
-    println!("Engine load: {}%", obd.engine_load());
+    println!("Engine speed: {}", obd.rpm());
+    println!("Engine load: {}", obd.engine_load());
 
     let coolant_temp = obd.coolant_temp_sensors();
-    println!("Coolant temperature: {}°C", obd.coolant_temp());
+    println!("Coolant temperature: {}", obd.coolant_temp());
     println!(
-        "Coolant temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
+        "Coolant temperatue from sensors - Sensor 1: {} - Sensor 2: {} ",
         coolant_temp.0, coolant_temp.1
     );
-    println!("Engine fuel rate: {}L/h", obd.engine_fuel_rate());
-    println!("Engine runtime: {}s", obd.engine_runtime());
-    println!("Engine runtime (diesel): {}s", obd.engine_runtime_diesel());
-    println!("Engine mileage: {}km", obd.engine_mileage());
+    println!("Engine fuel rate: {}", obd.engine_fuel_rate());
+    println!("Engine runtime: {}", obd.engine_runtime());
+    println!("Engine runtime (diesel): {}", obd.engine_runtime_diesel());
+    println!("Engine mileage: {}", obd.engine_mileage());
 
     let oil_temp = obd.engine_oil_temp_sensors();
     println!(
-        "Engine oil temperature (Mode 1): {}°C",
+        "Engine oil temperature (Mode 1): {}",
         obd.engine_oil_temp(Service::Mode01)
     );
     println!(
-        "Engine oil temperature (Mode 22): {}°C",
+        "Engine oil temperature (Mode 22): {}",
         obd.engine_oil_temp(Service::Mode22)
     );
     println!(
-        "Engine oil temperatue from sensors - Sensor 1: {}°C - Sensor 2: {}°C ",
+        "Engine oil temperatue from sensors - Sensor 1: {} - Sensor 2: {} ",
         oil_temp.0, oil_temp.1
     );
-    println!("Engine oil pressure: {}kPa", obd.engine_oil_pressure()); // Mode 22 PID
+    println!("Engine oil pressure: {}", obd.engine_oil_pressure()); // Mode 22 PID
 
     println!(
-        "Drivers demand engine torque: {}%",
+        "Drivers demand engine torque: {}",
         obd.drivers_demand_engine_torque()
     );
-    println!("Actual engine torque: {}%", obd.actual_engine_torque());
-    println!(
-        "Reference engine torque: {}Nm",
-        obd.reference_engine_torque()
-    );
+    println!("Actual engine torque: {}", obd.actual_engine_torque());
+    println!("Reference engine torque: {}", obd.reference_engine_torque());
 
     let percent_torque_data = obd.engine_percent_torque_data();
     println!("Engine percent torque data:");
-    println!("\tIdle: {}%", percent_torque_data.0);
-    println!("\tEngine point 1: {}%", percent_torque_data.1);
-    println!("\tEngine point 2: {}%", percent_torque_data.2);
-    println!("\tEngine point 3: {}%", percent_torque_data.3);
-    println!("\tEngine point 4: {}%", percent_torque_data.4);
+    println!("\tIdle: {}", percent_torque_data.0);
+    println!("\tEngine point 1: {}", percent_torque_data.1);
+    println!("\tEngine point 2: {}", percent_torque_data.2);
+    println!("\tEngine point 3: {}", percent_torque_data.3);
+    println!("\tEngine point 4: {}", percent_torque_data.4);
 
     println!("\n{} FUEL SYSTEM {}", "=".repeat(24), "=".repeat(24));
 
@@ -114,56 +111,50 @@ fn main() -> Result<(), OBDError> {
     println!("Fuel system 1: {:?}", fuel_system_status.0);
     println!("Fuel system 2: {:?}", fuel_system_status.1);
 
-    println!("Fuel pressure: {}kPa", obd.fuel_pressure());
+    println!("Fuel pressure: {}", obd.fuel_pressure());
     println!("Fuel tank level: {}", obd.fuel_tank_level());
     println!("Fuel rail pressure: {}", obd.fuel_rail_pressure());
     println!(
-        "Fuel rail gauge pressure: {}kPa",
+        "Fuel rail gauge pressure: {}",
         obd.fuel_rail_guage_pressure()
     );
     println!("Fuel type: {:?}", obd.fuel_type());
+    println!("Ethanol fuel percentage: {}", obd.ethanol_fuel_percentage());
+    println!("Fuel injection timing: {}", obd.fuel_injection_timing());
+    println!("Commanded EVAP purge: {}", obd.commanded_evap_purge());
     println!(
-        "Ethanol fuel percentage: {}%",
-        obd.ethanol_fuel_percentage()
-    );
-    println!("Fuel injection timing: {}°", obd.fuel_injection_timing());
-    println!("Commanded EVAP purge: {}%", obd.commanded_evap_purge());
-    println!(
-        "EVAP system vapor pressure: {}Pa",
+        "EVAP system vapor pressure: {}",
         obd.evap_system_vapor_pressure()
     );
-    println!("Cylinder fuel rate: {}mg/stroke", obd.cylinder_fuel_rate());
+    println!("Cylinder fuel rate: {}", obd.cylinder_fuel_rate());
 
     println!("\n{} SENSOR DATA {}", "=".repeat(24), "=".repeat(24));
-    println!("Vehicle speed: {}km/h", obd.vehicle_speed());
-    println!(
-        "Timing advance: {}° before top-dead-center",
-        obd.timing_advance()
-    );
+    println!("Vehicle speed: {}", obd.vehicle_speed());
+    println!("Timing advance: {}", obd.timing_advance());
 
-    println!("Throttle position: {}%", obd.throttle_position());
+    println!("Throttle position: {}", obd.throttle_position());
     println!(
-        "Relative throttle position: {}%",
+        "Relative throttle position: {}",
         obd.relative_throttle_pos()
     );
     println!(
-        "Absolute throttle position B: {}%",
+        "Absolute throttle position B: {}",
         obd.abs_throttle_position_b()
     );
     println!(
-        "Absolute throttle position C: {}%",
+        "Absolute throttle position C: {}",
         obd.abs_throttle_position_c()
     );
     println!(
-        "Accelerator pedal position D: {}%",
+        "Accelerator pedal position D: {}",
         obd.acc_pedal_position_d()
     );
     println!(
-        "Accelerator pedal position E: {}%",
+        "Accelerator pedal position E: {}",
         obd.acc_pedal_position_e()
     );
     println!(
-        "Accelerator pedal position F: {}%",
+        "Accelerator pedal position F: {}",
         obd.acc_pedal_position_f()
     );
 
@@ -204,30 +195,27 @@ fn main() -> Result<(), OBDError> {
 
     let maf = obd.read_mass_air_flow_sensor();
     println!("Mass air flow sensor:");
-    println!("\tSensor A: {}g/s", maf.0);
-    println!("\tSensor B: {}g/s", maf.1);
+    println!("\tSensor A: {}", maf.0);
+    println!("\tSensor B: {}", maf.1);
 
     let max_values_for = obd.max_values_for();
     println!("Maximum values for:");
     println!("\tFuel-air equivalance ratio: {}", max_values_for.0);
-    println!("\tOxygen sensor voltage: {}V", max_values_for.1);
-    println!("\tOxygen sensor current: {}mA", max_values_for.2);
-    println!(
-        "\tIntake manifold absolute pressure: {}kPa",
-        max_values_for.3
-    );
+    println!("\tOxygen sensor voltage: {}", max_values_for.1);
+    println!("\tOxygen sensor current: {}", max_values_for.2);
+    println!("\tIntake manifold absolute pressure: {}", max_values_for.3);
 
-    println!("Intake air temperature: {}°C", obd.intake_air_temp());
-    println!("Mass air-flow sensor rate: {}g/s", obd.maf_air_flow_rate());
-    println!("Ambient air temperature: {}°C", obd.ambient_air_temp());
+    println!("Intake air temperature: {}", obd.intake_air_temp());
+    println!("Mass air-flow sensor rate: {}", obd.maf_air_flow_rate());
+    println!("Ambient air temperature: {}", obd.ambient_air_temp());
     println!(
-        "Maximum air-flow rate from mass air-flow sensor: {}g/s",
+        "Maximum air-flow rate from mass air-flow sensor: {}",
         obd.max_air_flow_rate_from_maf()
     );
 
     println!("Secondary air status: {:?}", obd.secondary_air_status());
     println!(
-        "Absolute barometric pressure: {}kPa",
+        "Absolute barometric pressure: {}",
         obd.abs_barometric_pressure()
     );
     Ok(())

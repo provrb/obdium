@@ -124,7 +124,6 @@ impl Response {
     pub fn get_payload_components(&self) -> Vec<Vec<u8>> {
         let clean = match self.get_payload() {
             Some(resp) => {
-                println!("P: {resp}");
                 // Check what type of response this is based on the prefix
                 //
                 // In a mode 22 response
@@ -144,7 +143,6 @@ impl Response {
                 // Due to the difference in structures, to get the payload bytes
                 // for mode 22 responses, we have to start 8 characters in the string
                 // instead of 6 for a 01 service response
-                println!("resp: {resp}");
                 if resp.starts_with("62") {
                     // Mode 22 response
                     if resp.len() < 9 {
@@ -167,7 +165,8 @@ impl Response {
             }
             None => return Vec::new(),
         };
-        println!("Payload: '{clean}'");
+
+        // dbg: println!("Payload: '{clean}'");
 
         let hex: Vec<Vec<u8>> = clean
             .as_bytes()

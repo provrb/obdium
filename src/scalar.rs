@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Unit {
     Percent,
     Ratio,
@@ -35,6 +35,10 @@ pub struct Scalar {
 
 impl fmt::Display for Scalar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if self.unit == Unit::NoData {
+            return write!(f, "NO DATA");
+        }
+
         write!(f, "{}", self.value)?;
         match self.unit {
             Unit::Percent => write!(f, "%"),
@@ -58,7 +62,6 @@ impl fmt::Display for Scalar {
             Unit::KilogramsPerSecond => write!(f, "Kg/s"),
             Unit::PartsPerMillion => write!(f, "ppm"),
             Unit::MiligramsPerStroke => write!(f, "mg/stroke"),
-            Unit::NoData => write!(f, "??"),
             _ => write!(f, ""),
         }
     }

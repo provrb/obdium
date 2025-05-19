@@ -514,17 +514,6 @@ impl OBD {
             }
         };
 
-        match self.get_pid_response() {
-            Ok(response) => response,
-            Err(err) => {
-                println!(
-                    "{}\tAT: '{}' - PID: '{}' ",
-                    err,
-                    String::from_utf8_lossy(request.get_at()),
-                    String::from_utf8(request.get_pid().to_vec()).unwrap_or_default()
-                );
-                Response::no_data()
-            }
-        }
+        self.get_pid_response().unwrap_or(Response::no_data())
     }
 }
