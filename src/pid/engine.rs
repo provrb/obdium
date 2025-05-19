@@ -49,7 +49,7 @@ impl OBD {
     pub fn coolant_temp_sensors(&mut self) -> (Scalar, Scalar) {
         let mut coolant_temp = (Scalar::no_data(), Scalar::no_data());
         let response = self.query(Command::new_pid(b"0167"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return coolant_temp;
         }
 
@@ -82,7 +82,7 @@ impl OBD {
 
     pub fn engine_runtime_diesel(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"017F"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return Scalar::no_data();
         }
 
@@ -102,7 +102,7 @@ impl OBD {
 
     pub fn odometer(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"01A6"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return Scalar::no_data();
         }
 
@@ -134,7 +134,7 @@ impl OBD {
     pub fn engine_oil_temp_sensors(&mut self) -> (Scalar, Scalar) {
         let mut oil_temp = (Scalar::no_data(), Scalar::no_data());
         let response = self.query(Command::new_pid(b"0167"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return oil_temp;
         }
 
@@ -173,7 +173,7 @@ impl OBD {
 
     pub fn engine_percent_torque_data(&mut self) -> (Scalar, Scalar, Scalar, Scalar, Scalar) {
         let response = self.query(Command::new_pid(b"0164"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return (
                 Scalar::no_data(),
                 Scalar::no_data(),
@@ -200,7 +200,7 @@ impl OBD {
 
     pub fn get_engine_type(&mut self) -> EngineType {
         let response = self.query(Command::new_pid(b"0101"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return EngineType::Unknown;
         }
 

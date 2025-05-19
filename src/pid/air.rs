@@ -62,7 +62,7 @@ impl OBD {
         };
 
         let response = self.query(command);
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return (Scalar::no_data(), Scalar::no_data());
         }
 
@@ -88,7 +88,7 @@ impl OBD {
         };
 
         let response = self.query(command);
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return (Scalar::no_data(), Scalar::no_data());
         }
 
@@ -105,7 +105,7 @@ impl OBD {
     pub fn read_mass_air_flow_sensor(&mut self) -> (Scalar, Scalar) {
         let mut data = (Scalar::no_data(), Scalar::no_data());
         let response = self.query(Command::new_pid(b"0166"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return data;
         }
 

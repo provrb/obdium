@@ -92,11 +92,15 @@ impl Response {
         }
     }
 
+    pub fn is_no_data(&self) -> bool {
+        self.get_payload_components().is_empty()
+    }
+
     pub fn map_no_data<F>(self, op: F) -> Scalar
     where
         F: FnOnce(Self) -> Scalar,
     {
-        if self.payload_size == 0 {
+        if self.is_no_data() {
             return Scalar::no_data();
         }
 

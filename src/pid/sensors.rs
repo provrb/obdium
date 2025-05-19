@@ -16,7 +16,7 @@ impl OBD {
     /// Fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
     pub fn max_values_for(&mut self) -> (Scalar, Scalar, Scalar, Scalar) {
         let response = self.query(Command::new_pid(b"014F"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             return (
                 Scalar::no_data(),
                 Scalar::no_data(),

@@ -93,7 +93,7 @@ impl OBD {
 
     pub fn fuel_system_status(&mut self) -> (FuelSystemStatus, FuelSystemStatus) {
         let response = self.query(Command::new_pid(b"0103"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             // unknown
             return (
                 FuelSystemStatus::from_u8(200),
@@ -137,7 +137,7 @@ impl OBD {
 
     pub fn fuel_type(&mut self) -> FuelType {
         let response = self.query(Command::new_pid(b"0151"));
-        if *response.get_payload_size() == 0 {
+        if response.is_no_data() {
             // unknown
             return FuelType::from_u8(200);
         }
