@@ -1,7 +1,6 @@
 use sqlite::State;
 use std::fmt;
 
-use crate::response::Response;
 use crate::{cmd::Command, obd::OBD, scalar::Scalar, scalar::Unit};
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
@@ -196,8 +195,18 @@ impl fmt::Display for TroubleCode {
 impl OBD {
     /// Get the DTC that caused the freeze frame.
     pub fn get_freeze_frame_dtc(&mut self) -> Vec<TroubleCode> {
-        let response = self.query(Command::new_pid(b"0102"));
-        self.decode_trouble_codes(&response)
+        if let Err(err) = self.send_command(&Command::new_pid(b"0102")) {
+            println!("when getting dtc: {err}");
+            return Vec::new();
+        }
+
+        match self.read_until(b'>') {
+            Ok(response) => self.decode_trouble_codes(&response),
+            Err(err) => {
+                println!("when getting dtc: {err}");
+                Vec::new()
+            }
+        }
     }
 
     pub fn check_engine_light(&mut self) -> bool {
@@ -222,22 +231,37 @@ impl OBD {
 
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
-        let n_dtcs = self.get_num_trouble_codes();
-        if n_dtcs == 0 {
-            // no trouble codes
+        // let n_dtcs = self.get_num_trouble_codes();
+        // if n_dtcs == 0 {
+        //     // no trouble codes
+        //     return Vec::new();
+        // }
+
+        if let Err(err) = self.send_command(&Command::new_svc(b"03")) {
+            println!("when getting dtc: {err}");
             return Vec::new();
         }
 
-        let response = self.query(Command::new_svc(b"03"));
-        self.decode_trouble_codes(&response)
+        match self.read_until(b'>') {
+            Ok(response) => self.decode_trouble_codes(&response),
+            Err(err) => {
+                println!("when getting dtc: {err}");
+                Vec::new()
+            }
+        }
     }
 
-    fn decode_trouble_codes(&self, dtc_response: &Response) -> Vec<TroubleCode> {
-        let sanitized = dtc_response
-            .full_response()
-            .unwrap_or_default()
-            .replace(" ", "")
+    fn decode_trouble_codes(&self, response: &str) -> Vec<TroubleCode> {
+        let binding = response.replace("\r", "").replace(" ", "");
+        let sanitized = binding
             .split("43")
+            .filter_map(|chunk| {
+                if chunk.len() >= 4 {
+                    Some(chunk.trim_end_matches("00"))
+                } else {
+                    None
+                }
+            })
             .collect::<Vec<_>>()
             .join("");
 

@@ -368,6 +368,8 @@ impl OBD {
                     return None;
                 }
 
+                println!("split: {split:?}");
+
                 let ecu_name = split[0].to_string();
                 if ecu_name.len() != 3 {
                     // can ids are 3 character hex strings
@@ -421,7 +423,12 @@ impl OBD {
             }
         }
 
-        Ok(response)
+        if response.contains("UNABLE TO CONNECT") {
+            println!("unable to connect");
+            Err(OBDError::NoConnection)
+        } else {
+            Ok(response)
+        }
     }
 
     pub(crate) fn read_iso_tp_response(&mut self) -> Vec<String> {
@@ -447,13 +454,17 @@ impl OBD {
 
         // Parsing
         let mut response = self.read_until(b'>').unwrap_or_default();
+        response = response.replace("SEARCHING...", "");
+
         let ecu_names = self.extract_ecu_names(&response);
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
+        println!("ecu names: {:?}", ecu_names);
 
         let stack_frames: Vec<&str> = response
             .split('\r')
             .filter(|l| !l.trim().is_empty())
             .collect();
+        println!("response: {}", response.escape_default());
 
         // Parse each stack frame
         for frame in stack_frames {
@@ -462,6 +473,8 @@ impl OBD {
             if bytes.len() < 2 {
                 continue;
             }
+
+            println!("bytes: {bytes:?}");
 
             for byte in bytes.iter() {
                 match byte {
@@ -481,7 +494,7 @@ impl OBD {
                 }
             }
         }
-
+        println!("payload: {payload:?}");
         payload
     }
 
@@ -500,6 +513,8 @@ impl OBD {
                     .expect("call to u8::from_str_radix failed on str '{byte}'"),
             );
         }
+
+        println!("vin: {vin}");
 
         match VIN::new(vin) {
             Ok(vin) => Some(vin),
