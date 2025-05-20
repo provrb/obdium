@@ -87,6 +87,11 @@ impl OBD {
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), OBDError> {
+        if self.replay_requests {
+            // No connection required
+            return Ok(());
+        }
+        
         if self.connection.is_some() {
             return Ok(());
         }

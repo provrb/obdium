@@ -26,6 +26,15 @@
 
 Our goal with OBDium is to fill a gap in the ecosystem, providing the best free, open-source, and easy-to-use vehicle diagnostics tool.
 
+## Features
+
+- **🔌 Serial Communication:** Connects to ELM327 OBD-II adapters via serial port
+- **🧠 Live Vehicle Metrics:** Reads and decodes various OBD-II PIDs (engine, fuel, air, exhaust, diagnostics, etc.) with plans for manufacturer specific PIDs soon
+- **🔎 Advanced VIN Decoding:** In-depth VIN decoding using a custom parser and SQLite-backed lookups based off of the NHTSA's VPIC MSSQL database
+- **💾 SQLite-Backed Caching & Queries:** Persistent VIN metadata and decoded lookup results are stored locally for fast and offline operation
+- **🧪 Unit Tests:** Comprehensive unit tests for VIN decoding and database access ([`tests/vin.rs`](tests/vin.rs))
+- **⚙️ Error Handling and Resilience:** Gracefully handles common ELM327 quirks and serial errors with clear messages and fallbacks
+
 ## Implementation and Logic
 This project required extensive research into concepts like ELM327, the OBD-II protocol, and response decoding. Below is a brief explanation of the implementation and logic behind OBDium.
 
@@ -37,18 +46,21 @@ This project required extensive research into concepts like ELM327, the OBD-II p
 
 For any questions about the implementation or logic behind OBDium, feel free to create a Discussion or open an Issue!
 
-## Features
+## Try it yourself!
 
-- **🔌 Serial Communication:** Connects to ELM327 OBD-II adapters via serial port
-- **🧠 Live Vehicle Metrics:** Reads and decodes various OBD-II PIDs (engine, fuel, air, exhaust, diagnostics, etc.) with plans for manufacturer specific PIDs soon
-- **🔎 Advanced VIN Decoding:** In-depth VIN decoding using a custom parser and SQLite-backed lookups based off of the NHTSA's VPIC MSSQL database
-- **💾 SQLite-Backed Caching & Queries:** Persistent VIN metadata and decoded lookup results are stored locally for fast and offline operation
-- **🧪 Unit Tests:** Comprehensive unit tests for VIN decoding and database access ([`tests/vin.rs`](tests/vin.rs))
-- **⚙️ Error Handling and Resilience:** Gracefully handles common ELM327 quirks and serial errors with clear messages and fallbacks
+Since commit 9a22b44, it is now possible to use previously recorded results for responses to simulate a vehicle responding to commands. **This means you don't even need an EML327 adapter for testing.**
+
+1. To get started, follow the [installation](#installation) steps. 
+
+2. In [`src/main.rs`](src/main.rs), ensure the line `obd.record_requests(state)` is commented out or set to false, and `obd.replay_requests(state)` is uncommented or set to true (soon to be made more convienant in later version).
+
+Now, OBDium will use all the responses located in the [`data/requests.json`](data/requests.json) file.
 
 ## Example Usage
 
-Connect your ELM327 adapter to your computer and note the serial port (e.g., `COM4` on Windows or `/dev/ttyUSB0` on Linux).
+To try it with an ELM327 adapter paired with a real car:
+
+1. Connect your ELM327 adapter to your computer and note the serial port (e.g., `COM4` on Windows or `/dev/ttyUSB0` on Linux).
 
 ```sh
 cargo run --release
