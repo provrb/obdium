@@ -76,6 +76,9 @@ pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
     elm_version: Option<String>,
     freeze_frame_query: bool,
+
+    pub(crate) record_requests: bool,
+    pub(crate) replay_requests: bool,
 }
 
 impl OBD {
@@ -110,24 +113,34 @@ impl OBD {
             Command::new_at(b"ATSP0"), // Automatic protocol
         ];
 
-        for command in commands {
+        for mut command in commands {
             // Cannot proceed with the initialization.
             // Refer to above. Furthermore, if we don't send a command
             // and read the buffer and then get junk values,
             // the program will be messed up.
             // Ensure the intiialization is 100% valid.
-            self.send_command(&command)
-                .map_err(|_| OBDError::InitFailed)?;
 
-            let response = self.get_at_response().map_err(|_| OBDError::InitFailed)?;
+            let response = if self.replay_requests {
+                self.get_recorded_response(&command)
+            } else {
+                self.send_command(&mut command)
+                    .map_err(|_| OBDError::InitFailed)?;
+                self.get_at_response().map_err(|_| OBDError::InitFailed)?
+            };
+
+            if self.record_requests {
+                self.save_request(&command, &response);
+            }
 
             match (command.get_at(), response.raw_response.as_deref()) {
                 (b"ATZ", Some(data)) => {
                     self.elm_version = Some(data.to_owned());
                 }
-                (b"ATE0", Some(data)) if data.contains("OK") => {}
-                (_, Some("OK")) => {}
-                _ => return Err(OBDError::InitFailed),
+                (_, Some(data)) if data.contains("OK") => {}
+                x => {
+                    println!("{:?}", x);
+                    return Err(OBDError::InitFailed);
+                }
             }
         }
 
@@ -160,7 +173,7 @@ impl OBD {
                 break;
             }
 
-            if self.send_command(&Command::new_arb(&message)).is_err() {
+            if self.send_command(&mut Command::new_arb(&message)).is_err() {
                 println!("< error sending message {message}");
                 continue;
             }
@@ -178,7 +191,13 @@ impl OBD {
         }
     }
 
-    pub fn send_command(&mut self, req: &Command) -> Result<(), OBDError> {
+    pub fn send_command(&mut self, req: &mut Command) -> Result<(), OBDError> {
+        // We don't need to send a command since we already
+        // know what the respond will be.
+        if self.replay_requests {
+            return Ok(());
+        }
+
         let stream = match &mut self.connection {
             Some(stream) => stream,
             None => return Err(OBDError::NoConnection),
@@ -200,11 +219,12 @@ impl OBD {
     }
 
     pub fn get_at_response(&mut self) -> Result<Response, OBDError> {
-        let mut response = self.read_until(b'>')?;
-        response = response.replace("\r", "");
+        let response = self.read_until(b'>')?;
 
         let meta_data = Response {
-            raw_response: Some(response),
+            escaped_response: Some(response.clone()),
+            raw_response: Some(response.replace("\r", "")),
+
             ..Default::default()
         };
 
@@ -212,11 +232,16 @@ impl OBD {
     }
 
     pub fn get_pid_response(&mut self) -> Result<Response, OBDError> {
-        let mut response = self.read_until(b'>')?;
-        response = response.replace("SEARCHING...", "").replace("\r", "\n");
+        let response = self.read_until(b'>')?;
+        self.parse_pid_response(&response)
+    }
+
+    pub(crate) fn parse_pid_response(&self, raw_response: &str) -> Result<Response, OBDError> {
+        let mut response = raw_response.replace("SEARCHING...", "").replace("\r", "\n");
 
         let payload_size = self.extract_payload_size(&response);
         let ecu_names = self.extract_ecu_names(&response);
+        let escaped = response.clone();
 
         response = response
             .replace(" ", "")
@@ -234,14 +259,13 @@ impl OBD {
         let parsed = Self::format_response(&response);
         let no_whitespace = parsed.replace(" ", "");
         let as_bytes = no_whitespace.as_bytes();
-        let mut meta_data = Response {
-            responding_ecus: ecu_names,
-            raw_response: Some(parsed.clone()),
-            payload_size: payload_size as usize,
-            service: [as_bytes[0], as_bytes[1]],
-            ..Default::default()
-        };
 
+        let mut meta_data = Response::no_data();
+        meta_data.responding_ecus = ecu_names;
+        meta_data.raw_response = Some(parsed.clone());
+        meta_data.escaped_response = Some(escaped);
+        meta_data.payload_size = payload_size as usize;
+        meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
 
         Ok(meta_data)
@@ -368,8 +392,6 @@ impl OBD {
                     return None;
                 }
 
-                println!("split: {split:?}");
-
                 let ecu_name = split[0].to_string();
                 if ecu_name.len() != 3 {
                     // can ids are 3 character hex strings
@@ -396,6 +418,10 @@ impl OBD {
     }
 
     pub(crate) fn read_until(&mut self, until: u8) -> Result<String, OBDError> {
+        if self.replay_requests {
+            return Ok(String::new());
+        }
+
         let port = match &mut self.connection {
             Some(port) => port,
             None => return Err(OBDError::NoConnection),
@@ -458,13 +484,11 @@ impl OBD {
 
         let ecu_names = self.extract_ecu_names(&response);
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
-        println!("ecu names: {:?}", ecu_names);
 
         let stack_frames: Vec<&str> = response
             .split('\r')
             .filter(|l| !l.trim().is_empty())
             .collect();
-        println!("response: {}", response.escape_default());
 
         // Parse each stack frame
         for frame in stack_frames {
@@ -473,8 +497,6 @@ impl OBD {
             if bytes.len() < 2 {
                 continue;
             }
-
-            println!("bytes: {bytes:?}");
 
             for byte in bytes.iter() {
                 match byte {
@@ -494,12 +516,11 @@ impl OBD {
                 }
             }
         }
-        println!("payload: {payload:?}");
         payload
     }
 
     pub fn get_vin(&mut self) -> Option<VIN> {
-        match self.send_command(&Command::new_pid(b"0902")) {
+        match self.send_command(&mut Command::new_pid(b"0902")) {
             Ok(()) => (),
             Err(_) => return None,
         }
@@ -536,14 +557,14 @@ impl OBD {
     }
 
     pub(crate) fn query(&mut self, mut request: Command) -> Response {
-        if self.freeze_frame_query && request.command_type() == CommandType::PIDCommand {
+        if self.freeze_frame_query && *request.command_type() == CommandType::PIDCommand {
             let pid = request.get_pid();
             if pid.starts_with(b"01") {
                 request.set_pid(&[b'0', b'2', pid[2], pid[3]]);
             }
         }
 
-        match self.send_command(&request) {
+        match self.send_command(&mut request) {
             Ok(_) => {}
             Err(err) => {
                 println!(
@@ -556,6 +577,16 @@ impl OBD {
             }
         };
 
-        self.get_pid_response().unwrap_or(Response::no_data())
+        let response = if self.replay_requests {
+            self.get_recorded_response(&request)
+        } else {
+            self.get_pid_response().unwrap_or(Response::no_data())
+        };
+
+        if self.record_requests {
+            self.save_request(&request, &response);
+        }
+
+        response
     }
 }

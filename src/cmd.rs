@@ -1,4 +1,6 @@
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub(crate) enum CommandType {
     PIDCommand,
     ATCommand,
@@ -13,7 +15,7 @@ impl Default for CommandType {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Command {
     command_type: CommandType,
     pid_command: [u8; 4],
@@ -22,44 +24,48 @@ pub struct Command {
     arbitrary_message: String,
 }
 
+impl Default for Command {
+    fn default() -> Self {
+        Command {
+            command_type: CommandType::Default,
+            pid_command: [0u8; 4],
+            at_command: &[],
+            svc_command: [0u8; 2],
+            arbitrary_message: String::new(),
+        }
+    }
+}
+
 impl Command {
     pub fn new_pid(command: &[u8; 4]) -> Self {
         Self {
             command_type: CommandType::PIDCommand,
             pid_command: *command,
-            at_command: &[],
-            svc_command: [0u8; 2],
-            arbitrary_message: String::default(),
+            ..Default::default()
         }
     }
 
     pub fn new_at(at_command: &'static [u8]) -> Self {
         Self {
             command_type: CommandType::ATCommand,
-            pid_command: [0u8; 4],
             at_command,
-            svc_command: [0u8; 2],
-            arbitrary_message: String::default(),
+            ..Default::default()
         }
     }
 
     pub fn new_svc(svc_command: &[u8; 2]) -> Self {
         Self {
             command_type: CommandType::ServiceQuery,
-            pid_command: [0u8; 4],
-            at_command: &[],
             svc_command: *svc_command,
-            arbitrary_message: String::default(),
+            ..Default::default()
         }
     }
 
     pub(crate) fn new_arb(arbitrary_msg: &str) -> Self {
         Self {
             command_type: CommandType::Arbitrary,
-            pid_command: [0u8; 4],
-            at_command: &[],
-            svc_command: [0u8; 2],
             arbitrary_message: arbitrary_msg.to_owned(),
+            ..Default::default()
         }
     }
 
@@ -122,6 +128,13 @@ impl Command {
         self.arbitrary_message.clone()
     }
 
+    pub fn as_string(&self) -> String {
+        match String::from_utf8(self.as_bytes()) {
+            Ok(string) => string,
+            Err(err) => panic!("UTF-8 error converting command to string. {err}"),
+        }
+    }
+
     /// Get the command as a Vector of bytes.
     /// e.g: if at_command is in use, return it as Vec<u8>
     pub fn as_bytes(&self) -> Vec<u8> {
@@ -134,7 +147,7 @@ impl Command {
         }
     }
 
-    pub(crate) fn command_type(&self) -> CommandType {
-        self.command_type
+    pub(crate) fn command_type(&self) -> &CommandType {
+        &self.command_type
     }
 }

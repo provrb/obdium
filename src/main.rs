@@ -2,6 +2,10 @@ use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
+
+    //obd.replay_requests(true);
+    obd.record_requests(true);
+
     obd.connect("COM4", 38400)?;
     if let Some(vin) = obd.get_vin() {
         println!("VIN: {}", vin.get_vin())

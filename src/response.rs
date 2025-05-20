@@ -35,6 +35,9 @@ pub struct Response {
      */
     pub(crate) raw_response: Option<String>, // Hex Response from ECU
 
+    /// raw_response with '\r'
+    pub(crate) escaped_response: Option<String>,
+
     /**
      * Information pulled from the raw_response.
      * This string is of size, 'payload_size'
@@ -76,9 +79,10 @@ pub struct Response {
 }
 
 impl Response {
-    pub fn new(raw: String) -> Self {
+    pub fn new(raw: String, escaped: String) -> Self {
         Self {
             raw_response: Some(raw),
+            escaped_response: Some(escaped),
             payload: None,
             service: [0u8; 2],
             payload_size: 0,
@@ -88,6 +92,8 @@ impl Response {
 
     pub fn no_data() -> Self {
         Self {
+            raw_response: Some("NO DATA".to_string()),
+            escaped_response: Some("NO DATA".to_string()),
             ..Default::default()
         }
     }

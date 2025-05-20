@@ -195,13 +195,13 @@ impl fmt::Display for TroubleCode {
 impl OBD {
     /// Get the DTC that caused the freeze frame.
     pub fn get_freeze_frame_dtc(&mut self) -> Vec<TroubleCode> {
-        if let Err(err) = self.send_command(&Command::new_pid(b"0102")) {
+        if let Err(err) = self.send_command(&mut Command::new_pid(b"0102")) {
             println!("when getting dtc: {err}");
             return Vec::new();
         }
 
         match self.read_until(b'>') {
-            Ok(response) => self.decode_trouble_codes(&response),
+            Ok(mut response) => self.decode_trouble_codes(&mut response),
             Err(err) => {
                 println!("when getting dtc: {err}");
                 Vec::new()
@@ -237,13 +237,13 @@ impl OBD {
         //     return Vec::new();
         // }
 
-        if let Err(err) = self.send_command(&Command::new_svc(b"03")) {
+        if let Err(err) = self.send_command(&mut Command::new_svc(b"03")) {
             println!("when getting dtc: {err}");
             return Vec::new();
         }
 
         match self.read_until(b'>') {
-            Ok(response) => self.decode_trouble_codes(&response),
+            Ok(mut response) => self.decode_trouble_codes(&mut response),
             Err(err) => {
                 println!("when getting dtc: {err}");
                 Vec::new()
@@ -251,8 +251,12 @@ impl OBD {
         }
     }
 
-    fn decode_trouble_codes(&self, response: &str) -> Vec<TroubleCode> {
+    fn decode_trouble_codes(&self, response: &mut String) -> Vec<TroubleCode> {
+        let ecu_names = self.extract_ecu_names(response);
+        self.strip_ecu_names(response, &ecu_names);
+
         let binding = response.replace("\r", "").replace(" ", "");
+        println!("raw: {}", binding.escape_default());
         let sanitized = binding
             .split("43")
             .filter_map(|chunk| {

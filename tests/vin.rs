@@ -4,7 +4,7 @@ use obdium::vin::parser::VIN;
 // All test outputs rely on accurate and reliabled tested outcomes for
 // this specific VIN.
 // Changing this will result in tests failing.
-const VIN_STRING: &'static str = "KL4CJASB6JB660929";
+const VIN_STRING: &str = "KL4CJASB6JB660929";
 
 #[test]
 fn database_connect() {
