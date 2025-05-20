@@ -18,71 +18,80 @@ impl PayloadComponent {
 
 #[derive(Debug, Default, Clone)]
 pub struct Response {
-    /**
-     * Full response including request and
-     * multiple responses from different ecus, if any.
-     * Excludes '>' and '\r' characters. Formatted as hexadecimal.
-     *
-     * (e.g: "01 0C 41 0C 11 D0 41 0C 11 D0")
-     *
-     * Where:
-     *     01 0C - the request sent (engine rpms)
-     *     41 0C - a response to the request sent
-     *     11 D0 - the data. (11: a-value, D0: b-value).
-     *
-     * The information is repeated as this is another response
-     * from a second ECU.
-     */
-    pub(crate) raw_response: Option<String>, // Hex Response from ECU
 
-    /// raw_response with '\r'
-    pub(crate) escaped_response: Option<String>,
+    /// Full response including request and
+    /// multiple responses from different ecus, if any.
+    /// Excludes escape characters, and ECU names. Formatted as hexadecimal.
+    /// 
+    /// (e.g: "01 0C 41 0C 11 D0 41 0C 11 D0")
+    /// 
+    /// Where:
+    ///     01 0C - the request sent (engine rpms)
+    ///     41 0C - a response to the request sent
+    ///     11 D0 - the data. (11: a-value, D0: b-value).
+    /// 
+    /// The information is repeated as this is another response
+    /// from a second ECU.
+    /// 
+    pub(crate) formatted_response: Option<String>, // Hex Response from ECU
 
-    /**
-     * Information pulled from the raw_response.
-     * This string is of size, 'payload_size'
-     *
-     * Includes the response to the request sent,
-     * and the data (a, b, c, d values...)
-     *
-     * A raw response may look like:
-     * 01 0C 41 0C 11 D0 41 0C 11 D0
-     *
-     * Where:
-     *     01 0C - the request sent (engine rpms)
-     *     41 0C - a response to the request sent
-     *     11 D0 - the data. (11: a-value, D0: b-value).
-     *
-     * Then the payload would be:
-     * 41 0C 11 D0
-     *
-     * Excluding the second response from a second ECU (41 0C 11 D0)
-     * and excluding the request sent from us.
-     */
+    /// Similiar to 'formatted_response', except that
+    /// this contains escape characters like '\n', '\r' and ECU names.
+    /// Formatted as hexidecimal.
+    /// 
+    /// (e.g: "E8 06 41 01 00 07 A1 00 \n\n"")
+    /// 
+    /// When printing, be sure to use String::escape_debug to avoid
+    /// unknown behaviour in the terminal caused by escape characters like '\r'
+    pub(crate) raw_response: Option<String>,
+
+    /// Information pulled from the raw_response.
+    /// This string is of size, 'payload_size'
+    ///
+    /// Includes the response to the request sent,
+    /// and the data (a, b, c, d values...)
+    ///
+    /// A raw response may look like:
+    /// 01 0C 41 0C 11 D0 41 0C 11 D0
+    ///
+    /// Where:
+    ///     01 0C - the request sent (engine rpms)
+    ///     41 0C - a response to the request sent
+    ///     11 D0 - the data. (11: a-value, D0: b-value).
+    ///
+    /// Then the payload would be:
+    /// 41 0C 11 D0
+    ///
+    /// Excluding the second response from a second ECU (41 0C 11 D0)
+    /// and excluding the request sent from us.
+    ///
     pub(crate) payload: Option<String>,
 
-    /* Original service num in request  */
+    /// Original service num in request
     pub(crate) service: [u8; 2],
 
+    /// A list of ECU names that replied with this response.
     pub(crate) responding_ecus: Vec<String>,
 
-    /**
-     * How many bytes in the response.
-     * Excluding request characters and duplicate ECU responses.
-     *
-     * (e.g: "01 0C 41 0C 11 D0 41 0C 11 D0")
-     *
-     * This above example would have a payload size of
-     * 4 bytes. (41 0C 11 D0)
-     */
+    /// How many 'components' in the response.
+    /// Excluding request characters and duplicate ECU responses.
+    ///
+    /// Take the formatted response for PID 010C
+    /// (e.g: "41 0C 11 D0")
+    ///
+    /// Where:
+    ///     41 0C - Positive response to PID 010C
+    ///
+    /// This above example would have a payload size of
+    /// 2 bytes, 'a' and 'b'. (11 D0)
     pub(crate) payload_size: usize,
 }
 
 impl Response {
     pub fn new(raw: String, escaped: String) -> Self {
         Self {
-            raw_response: Some(raw),
-            escaped_response: Some(escaped),
+            formatted_response: Some(raw),
+            raw_response: Some(escaped),
             payload: None,
             service: [0u8; 2],
             payload_size: 0,
@@ -92,8 +101,8 @@ impl Response {
 
     pub fn no_data() -> Self {
         Self {
+            formatted_response: Some("NO DATA".to_string()),
             raw_response: Some("NO DATA".to_string()),
-            escaped_response: Some("NO DATA".to_string()),
             ..Default::default()
         }
     }
@@ -110,7 +119,7 @@ impl Response {
     }
 
     pub fn full_response(&self) -> Option<String> {
-        self.raw_response.clone()
+        self.formatted_response.clone()
     }
 
     pub fn get_payload_size(&self) -> &usize {
@@ -118,8 +127,7 @@ impl Response {
     }
 
     pub fn get_payload(&self) -> Option<String> {
-        if self.payload.is_none() && self.raw_response.is_some() {
-            println!("from response");
+        if self.payload.is_none() && self.formatted_response.is_some() {
             // self.payload likely has not been updated. Update it now.
             return Some(self.payload_from_response());
         }
@@ -225,7 +233,7 @@ impl Response {
     }
 
     pub(crate) fn payload_from_response(&self) -> String {
-        let response = match &self.raw_response {
+        let response = match &self.formatted_response {
             Some(resp) => resp.to_owned(),
             None => return String::default(),
         };

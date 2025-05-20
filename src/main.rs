@@ -1,11 +1,32 @@
 use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
+use obdium::pid::diagnostics::Test;
+use std::fmt::Write;
+
+fn print_tests_table(title: &str, tests: &[Test]) {
+
+    let mut table = String::new();
+    writeln!(table, "{title}").unwrap();
+    writeln!(table, "{:<35} | {:<10} | {:<10}", "Test Name", "Available", "Complete").unwrap();
+    writeln!(table, "{:-<35}-+-{:-<10}-+-{:-<10}", "", "", "").unwrap();
+
+    for test in tests {
+        writeln!(
+            table,
+            "{:<35} | {:<10} | {:<10}",
+            test.name,
+            if test.available { "Yes" } else { "No" },
+            if test.complete { "Yes" } else { "No" },
+        )
+        .unwrap();
+    }
+
+    println!("{table}");
+}
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-
-    //obd.replay_requests(true);
-    obd.record_requests(true);
-
+    obd.replay_requests(true);
+    //obd.record_requests(true);
     obd.connect("COM4", 38400)?;
     if let Some(vin) = obd.get_vin() {
         println!("VIN: {}", vin.get_vin())
@@ -57,7 +78,11 @@ fn main() -> Result<(), OBDError> {
         obd.warm_ups_since_codes_cleared()
     );
 
-    println!("\n{} ENGINE {}", "=".repeat(24), "=".repeat(24));
+    println!();
+    print_tests_table("Common tests", &obd.get_common_tests_status());
+    print_tests_table("Advanced tests", &obd.get_advanced_tests_status());
+
+    println!("{} ENGINE {}", "=".repeat(24), "=".repeat(24));
     println!("Engine type: {}", obd.get_engine_type());
     println!("Engine speed: {}", obd.rpm());
     println!("Engine load: {}", obd.engine_load());
@@ -186,17 +211,20 @@ fn main() -> Result<(), OBDError> {
     }
 
     println!("\n{} AIR DATA {}", "=".repeat(24), "=".repeat(24));
-
     println!("Oxygen Sensors:");
     println!(
-        "{:<7} {:>11} {:>20} {:>20}",
+        "{:<8} | {:<10} | {:<22} | {:<22}",
         "Sensor", "Voltage", "Short Term Trim (%)", "AFR / Voltage"
     );
+    println!("{:-<8}-+-{:-<10}-+-{:-<22}-+-{:-<22}", "", "", "", "");
 
     for (sensor_id, v1, trim, afr, v2) in data {
         println!(
-            "{:<7} {:>10.3}v {:>20.2} {:>12.3} / {:<7.3}",
-            sensor_id, v1, trim, afr, v2
+            "{:<8} | {:<10} | {:<22} | {:<22}",
+            sensor_id,
+            format!("{v1}"),
+            format!("{trim}"),
+            format!("{afr} / {v2}")
         );
     }
 

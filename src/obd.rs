@@ -132,7 +132,7 @@ impl OBD {
                 self.save_request(&command, &response);
             }
 
-            match (command.get_at(), response.raw_response.as_deref()) {
+            match (command.get_at(), response.formatted_response.as_deref()) {
                 (b"ATZ", Some(data)) => {
                     self.elm_version = Some(data.to_owned());
                 }
@@ -221,8 +221,8 @@ impl OBD {
         let response = self.read_until(b'>')?;
 
         let meta_data = Response {
-            escaped_response: Some(response.clone()),
-            raw_response: Some(response.replace("\r", "")),
+            raw_response: Some(response.clone()),
+            formatted_response: Some(response.replace("\r", "")),
 
             ..Default::default()
         };
@@ -261,8 +261,8 @@ impl OBD {
 
         let mut meta_data = Response::no_data();
         meta_data.responding_ecus = ecu_names;
-        meta_data.raw_response = Some(parsed.clone());
-        meta_data.escaped_response = Some(escaped);
+        meta_data.formatted_response = Some(parsed.clone());
+        meta_data.raw_response = Some(escaped);
         meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
@@ -354,8 +354,6 @@ impl OBD {
                 None => String::default(),
             };
             let mut supported_pids: Vec<String> = Vec::new();
-
-            println!("ECU: {ecu}");
 
             // Loop through all characters in 'data'
             // Get the character as a number from the hex character 'ch'

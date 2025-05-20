@@ -75,13 +75,19 @@
     "played": true,
     "request": "0101",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
   },
   {
     "played": true,
     "request": "0101",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "played": true,
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
   },
   {
     "played": true,
@@ -99,7 +105,7 @@
     "played": true,
     "request": "0142",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 42 39 D6 \n\n"
+    "response": "7E8 04 41 42 39 73 \n\n"
   },
   {
     "played": true,
@@ -117,31 +123,49 @@
     "played": true,
     "request": "014E",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 4E 4C 69 \n\n"
+    "response": "7E8 04 41 4E 00 5D \n\n"
   },
   {
     "played": true,
     "request": "0130",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 30 04 \n\n"
   },
   {
     "played": true,
     "request": "0101",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "played": true,
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "played": true,
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "played": true,
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
   },
   {
     "played": true,
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 0A 50 \n7EA 04 41 0C 0A 50 \n\n"
+    "response": "7E8 04 41 0C 14 5F \n\n"
   },
   {
     "played": true,
     "request": "0104",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 00 \n\n"
+    "response": "7E8 03 41 04 FF \n\n"
   },
   {
     "played": true,
@@ -153,7 +177,7 @@
     "played": true,
     "request": "0105",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 05 7B \n\n"
+    "response": "7E8 03 41 05 44 \n\n"
   },
   {
     "played": true,
@@ -165,13 +189,13 @@
     "played": true,
     "request": "0101",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
   },
   {
     "played": true,
     "request": "011F",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 1F 00 8C \n\n"
+    "response": "7E8 04 41 1F 00 6A \n\n"
   },
   {
     "played": true,
@@ -237,7 +261,7 @@
     "played": true,
     "request": "0106",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 06 88 \n\n"
   },
   {
     "played": true,
@@ -249,7 +273,7 @@
     "played": true,
     "request": "0107",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 07 7E \n\n"
   },
   {
     "played": true,
@@ -261,7 +285,7 @@
     "played": true,
     "request": "0103",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 03 00 00 \n\n"
+    "response": "7E8 04 41 03 02 00 \n\n"
   },
   {
     "played": true,
@@ -309,7 +333,7 @@
     "played": true,
     "request": "012E",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 2E 00 \n\n"
   },
   {
     "played": true,
@@ -327,31 +351,31 @@
     "played": true,
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 0C \n7EA 03 41 0D 0C \n\n"
+    "response": "7E8 03 41 0D 37 \n\n"
   },
   {
     "played": true,
     "request": "010E",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 0E AB \n\n"
   },
   {
     "played": true,
     "request": "0111",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 FF \n\n"
+    "response": "7E8 03 41 11 32 \n\n"
   },
   {
     "played": true,
     "request": "0145",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 45 46 \n\n"
   },
   {
     "played": true,
     "request": "0147",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 03 41 47 7B \n\n"
   },
   {
     "played": true,
@@ -387,13 +411,13 @@
     "played": true,
     "request": "0124",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 06 41 24 84 32 70 29 \n\n"
   },
   {
     "played": true,
     "request": "0115",
     "request_type": "PIDCommand",
-    "response": "NO DATA"
+    "response": "7E8 04 41 15 94 FF \n\n"
   },
   {
     "played": true,
@@ -489,13 +513,13 @@
     "played": true,
     "request": "010F",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0F 44 \n\n"
+    "response": "7E8 03 41 0F 38 \n\n"
   },
   {
     "played": true,
     "request": "0110",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 05 1F \n\n"
+    "response": "7E8 04 41 10 18 1F \n\n"
   },
   {
     "played": true,
@@ -519,6 +543,6 @@
     "played": true,
     "request": "0133",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 65 \n\n"
+    "response": "7E8 03 41 33 61 \n\n"
   }
 ]

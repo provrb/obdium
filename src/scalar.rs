@@ -47,7 +47,7 @@ impl fmt::Display for Scalar {
         write!(f, "{}", self.value)?;
         match self.unit {
             Unit::Percent => write!(f, "%"),
-            Unit::Ratio => write!(f, "ratio"),
+            Unit::Ratio => write!(f, ""),
             Unit::Celsius => write!(f, "°C"),
             Unit::Fahrenheit => write!(f, "°F"),
             Unit::Degrees => write!(f, "°"),
@@ -91,10 +91,14 @@ impl Scalar {
             // Distance and speed
             (Kilometers, Meters) => Some(Scalar::new(self.value * 1000.0, Meters)),
             (Meters, Kilometers) => Some(Scalar::new(self.value / 1000.0, Kilometers)),
-            
-            (KilometersPerHour, MilesPerHour) | (Kilometers, Miles) => Some(Scalar::new(self.value / 1.609, Miles)),
-            (MilesPerHour, KilometersPerHour) | (Miles, Kilometers) => Some(Scalar::new(self.value * 1.609, Kilometers)),
-            
+
+            (KilometersPerHour, MilesPerHour) | (Kilometers, Miles) => {
+                Some(Scalar::new(self.value / 1.609, Miles))
+            }
+            (MilesPerHour, KilometersPerHour) | (Miles, Kilometers) => {
+                Some(Scalar::new(self.value * 1.609, Kilometers))
+            }
+
             (Kilometers, Feet) => Some(Scalar::new(self.value * 83281.0, Feet)),
             (Feet, Kilometers) => Some(Scalar::new(self.value / 83281.0, Kilometers)),
 
@@ -111,8 +115,12 @@ impl Scalar {
             (Hours, Minutes) => Some(Scalar::new(self.value * 60.0, Minutes)),
 
             // Volume
-            (LitresPerHour, GallonsPerHour) => Some(Scalar::new(self.value * 0.264172, GallonsPerHour)),
-            (GallonsPerHour, LitresPerHour) => Some(Scalar::new(self.value / 0.264172, LitresPerHour)),
+            (LitresPerHour, GallonsPerHour) => {
+                Some(Scalar::new(self.value * 0.264172, GallonsPerHour))
+            }
+            (GallonsPerHour, LitresPerHour) => {
+                Some(Scalar::new(self.value / 0.264172, LitresPerHour))
+            }
 
             // Energy
             (NewtonMeters, FootPounds) => Some(Scalar::new(self.value * 0.73756, FootPounds)),

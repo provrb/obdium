@@ -1,7 +1,12 @@
 use sqlite::State;
 use std::fmt;
 
-use crate::{cmd::Command, obd::OBD, scalar::{Scalar, Unit}};
+use crate::pid::engine::EngineType;
+use crate::{
+    cmd::Command,
+    obd::OBD,
+    scalar::{Scalar, Unit},
+};
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
@@ -192,6 +197,43 @@ impl fmt::Display for TroubleCode {
     }
 }
 
+#[derive(Debug, Default, Clone, Copy)]
+pub struct Test {
+    pub name: &'static str,
+    pub available: bool,
+    pub complete: bool,
+}
+
+impl fmt::Display for Test {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "Test name: {}", self.name).unwrap();
+        writeln!(
+            f,
+            "Available: {}",
+            if self.available { "Yes" } else { "No" }
+        )
+        .unwrap();
+        write!(f, "Complete: {}", if self.complete { "Yes" } else { "No" })
+    }
+}
+
+impl Test {
+    pub fn new(name: &'static str, available: bool, complete: bool) -> Self {
+        Self {
+            name,
+            available,
+            complete,
+        }
+    }
+
+    fn no_data() -> Self {
+        Self {
+            name: "Unknown",
+            ..Default::default()
+        }
+    }
+}
+
 impl OBD {
     /// Get the DTC that caused the freeze frame.
     pub fn get_freeze_frame_dtc(&mut self) -> Vec<TroubleCode> {
@@ -216,9 +258,7 @@ impl OBD {
         }
 
         match self.read_until(b'>') {
-            Ok(mut raw_response) => {                
-                self.decode_trouble_codes(&mut raw_response)
-            }
+            Ok(mut raw_response) => self.decode_trouble_codes(&mut raw_response),
             Err(err) => {
                 println!("when getting dtc: {err}");
                 Vec::new()
@@ -226,8 +266,99 @@ impl OBD {
         }
     }
 
-    pub fn get_test_availabilities(&self) {}
-    pub fn get_test_completeness(&self) {}
+    // See https://en.wikipedia.org/wiki/OBD-II_PIDs#Service_01_PID_01
+    //
+    // Common tests incldue 'components, fuel system, misfire'"
+    // If a response is invalid, Tests will have the name "Unknown"
+    pub fn get_common_tests_status(&mut self) -> [Test; 3] {
+        let response = self.query(Command::new_pid(b"0101"));
+        if *response.get_payload_size() == 0 {
+            return [Test::no_data(); 3];
+        }
+
+        let byte = response.a_value() as u32;
+
+        // "For bits indicating test availability a bit set to 1
+        // indicates available, whilst for bits indicating test completeness
+        // a bit set to 0 indicates complete. "
+
+        let components = Test::new(
+            "Components",
+            (byte & 0b0000_0100) != 0,
+            // '== 0' instead of '!= 0'
+            // complete will be true if bit is equal to 0
+            (byte & 0b0100_0000) == 0,
+        );
+
+        let fuel_system = Test::new(
+            "Fuel System",
+            (byte & 0b0000_0010) != 0,
+            (byte & 0b0010_0000) == 0,
+        );
+
+        let misfire = Test::new(
+            "Misfire",
+            (byte & 0b0000_0001) != 0,
+            (byte & 0b0001_0000) == 0,
+        );
+
+        [components, fuel_system, misfire]
+    }
+
+    // These tests are engine-type specific
+    // Tests will differ if the engine type
+    // is compression vs. spark ignition
+    //
+    // For Compression engines, two tests are reserved.
+    // If a response is invalid, Tests will have the name "Unknown"
+    pub fn get_advanced_tests_status(&mut self) -> [Test; 8] {
+        let engine_type = self.get_engine_type();
+        let response = self.query(Command::new_pid(b"0101"));
+        if *response.get_payload_size() == 0 {
+            return [Test::no_data(); 8];
+        }
+
+        let c_byte = response.c_value() as u32;
+        let d_byte = response.d_value() as u32;
+
+        let mut tests: [Test; 8] = [Test::no_data(); 8];
+        for (index, test) in tests.iter_mut().enumerate() {
+            let bit = 1 << (7 - index);
+            let available = (c_byte & bit) != 0;
+
+            // Complete will only be able to be true if the test is available
+            let complete = if available { (d_byte & bit) == 0 } else { false };
+
+            let name = match engine_type {
+                EngineType::SparkIgnition => match index + 1 {
+                    1 => "EGR and/or VVT System",
+                    2 => "Oxygen Sensor Heater",
+                    3 => "Oxygen Sensor",
+                    4 => "Gasoline Particulate Filter",
+                    5 => "Secondary Air System",
+                    6 => "Evaporative System",
+                    7 => "Heated Catalyst",
+                    8 => "Catalyst",
+                    _ => unreachable!(),
+                },
+                EngineType::CompressionIgnition => match index + 1 {
+                    1 => "EGR and/or VVT System",
+                    2 => "PM filter monitoring",
+                    3 => "Exhaust Gas Sensor",
+                    4 | 6 => "Reserved",
+                    5 => "Boost Pressure",
+                    7 => "NOx/SCR Monitor ",
+                    8 => "NMHC Catalyst",
+                    _ => unreachable!(),
+                },
+                _ => "Unknown",
+            };
+
+            *test = Test::new(name, available, complete);
+        }
+
+        tests
+    }
 
     pub fn get_test_results(&mut self) {
         // TODO. Test and get a mode 06 response
@@ -236,7 +367,7 @@ impl OBD {
         }
 
         match self.read_until(b'>') {
-            Ok(raw_response) => {                
+            Ok(raw_response) => {
                 println!("< {}", raw_response.escape_default());
             }
             Err(err) => {

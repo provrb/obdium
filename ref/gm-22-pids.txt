@@ -18,3 +18,4 @@ N | 2225A9    | Main State                       | 22 25 A9       | Indicates th
 N | 2226A2    | Manufacture Date                 | 22 26 A2       | Provides the vehicle's manufacture date.                              |
 N | 2226A1    | Serial Number                    | 22 26 A1       | Returns the vehicle's serial number.                                  |
 N | 2226A3    | Operating System Version         | 22 26 A3       | Indicates the version of the vehicle's operating system.              |
+

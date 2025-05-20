@@ -44,7 +44,7 @@ impl OBD {
         let obj = json!({
             "request": request.as_string(),
             "request_type": request.command_type(),
-            "response": response.escaped_response.as_deref().unwrap_or(""),
+            "response": response.raw_response.as_deref().unwrap_or(""),
             "played": false
         });
 
