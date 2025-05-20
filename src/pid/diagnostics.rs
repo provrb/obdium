@@ -1,7 +1,7 @@
 use sqlite::State;
 use std::fmt;
 
-use crate::{cmd::Command, obd::OBD, scalar::Scalar, scalar::Unit};
+use crate::{cmd::Command, obd::OBD, scalar::{Scalar, Unit}};
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
@@ -209,6 +209,42 @@ impl OBD {
         }
     }
 
+    pub fn get_permanant_trouble_codes(&mut self) -> Vec<TroubleCode> {
+        if let Err(err) = self.send_command(&mut Command::new_svc(b"0A")) {
+            println!("when getting dtc: {err}");
+            return Vec::new();
+        }
+
+        match self.read_until(b'>') {
+            Ok(mut raw_response) => {                
+                self.decode_trouble_codes(&mut raw_response)
+            }
+            Err(err) => {
+                println!("when getting dtc: {err}");
+                Vec::new()
+            }
+        }
+    }
+
+    pub fn get_test_availabilities(&self) {}
+    pub fn get_test_completeness(&self) {}
+
+    pub fn get_test_results(&mut self) {
+        // TODO. Test and get a mode 06 response
+        if let Err(err) = self.send_command(&mut Command::new_svc(b"06")) {
+            println!("when sending test results. mode 06: {err}");
+        }
+
+        match self.read_until(b'>') {
+            Ok(raw_response) => {                
+                println!("< {}", raw_response.escape_default());
+            }
+            Err(err) => {
+                println!("when getting test results. mode 06: {err}");
+            }
+        }
+    }
+
     pub fn check_engine_light(&mut self) -> bool {
         let response = self.query(Command::new_pid(b"0101"));
         (response.a_value() as u32 & 0x80) != 0
@@ -231,11 +267,11 @@ impl OBD {
 
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
-        // let n_dtcs = self.get_num_trouble_codes();
-        // if n_dtcs == 0 {
-        //     // no trouble codes
-        //     return Vec::new();
-        // }
+        let n_dtcs = self.get_num_trouble_codes();
+        if n_dtcs == 0 {
+            // no trouble codes
+            return Vec::new();
+        }
 
         if let Err(err) = self.send_command(&mut Command::new_svc(b"03")) {
             println!("when getting dtc: {err}");

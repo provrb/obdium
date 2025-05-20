@@ -153,9 +153,8 @@ impl OBD {
     /// will be redirected to service 02 (freeze frame).
     ///
     /// Returns the updated value of `freeze_frame_query`.
-    pub fn toggle_freeze_frame_query(&mut self) -> bool {
-        self.freeze_frame_query = !self.freeze_frame_query;
-        self.freeze_frame_query
+    pub fn query_freeze_frame(&mut self, state: bool) {
+        self.freeze_frame_query = state
     }
 
     pub fn read_from_user_input(&mut self) {
