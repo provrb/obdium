@@ -1,6 +1,7 @@
 use sqlite::State;
 use std::fmt;
 
+use crate::obd::OBDError;
 use crate::pid::engine::EngineType;
 use crate::{
     cmd::Command,
@@ -263,6 +264,18 @@ impl OBD {
                 println!("when getting dtc: {err}");
                 Vec::new()
             }
+        }
+    }
+
+    pub fn clear_trouble_codes(&mut self) -> Result<(), OBDError> {
+        let response = self.query(Command::new_svc(b"04"));
+        let raw = response.formatted_response.unwrap_or_default();
+        
+        // positive response
+        if raw == "44" {
+            Ok(())
+        } else {
+            Err(OBDError::DTCClearFailed)
         }
     }
 

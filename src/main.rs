@@ -25,7 +25,7 @@ fn print_tests_table(title: &str, tests: &[Test]) {
 
 fn main() -> Result<(), OBDError> {
     let mut obd = OBD::new();
-    obd.replay_requests(true);
+    //obd.replay_requests(true);
     //obd.record_requests(true);
     obd.connect("COM4", 38400)?;
     if let Some(vin) = obd.get_vin() {
@@ -77,6 +77,7 @@ fn main() -> Result<(), OBDError> {
         "Warm-ups since codes cleared: {}",
         obd.warm_ups_since_codes_cleared()
     );
+    println!("Protocol: {}", obd.get_protocol().unwrap());
 
     println!();
     print_tests_table("Common tests", &obd.get_common_tests_status());

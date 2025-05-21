@@ -37,6 +37,7 @@ pub enum OBDError {
     InvalidResponse,
     InvalidCommand,
     NoData,
+    DTCClearFailed,
 
     ECUUnavailable,
     ELM327WriteError,
@@ -55,6 +56,7 @@ impl OBDError {
             OBDError::ELM327ReadError => "error reading through serial connection.",
             OBDError::ConnectionFailed => "failed to establish connection with elm327.",
             OBDError::InitFailed => "failed to initialize obd with ecu.",
+            OBDError::DTCClearFailed => "failed to clear diagnostic trouble codes.",
         }
     }
 }
@@ -590,5 +592,22 @@ impl OBD {
         }
 
         response
+    }
+
+    pub fn get_protocol(&mut self) -> Result<String, OBDError> {
+        let mut request = Command::new_at(b"AT DP");
+        self.send_command(&mut request)?;
+        
+        let response = if self.replay_requests {
+            self.get_recorded_response(&request)
+        } else {
+            self.get_at_response().unwrap_or(Response::no_data())
+        };
+
+        if self.record_requests {
+            self.save_request(&request, &response);
+        }
+
+        response.formatted_response.ok_or(OBDError::InvalidResponse)
     }
 }
