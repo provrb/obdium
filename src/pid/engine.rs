@@ -1,10 +1,10 @@
-use crate::cmd::Command;
-use crate::obd::SensorNumber;
-use crate::obd::Service;
-use crate::obd::OBD;
-use crate::scalar::Scalar;
-use crate::scalar::Unit;
 use std::fmt;
+
+use crate::{
+    Command,
+    SensorNumber, Service, OBD,
+    scalar::{Scalar, Unit},
+};
 
 #[derive(PartialEq, Eq)]
 pub enum EngineType {

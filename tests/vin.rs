@@ -1,4 +1,4 @@
-use obdium::vin::parser::VIN;
+use obdium::vin::VIN;
 
 // This shouldn't be changed.
 // All test outputs rely on accurate and reliabled tested outcomes for

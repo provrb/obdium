@@ -7,12 +7,11 @@ use std::str::{self, FromStr};
 use std::thread::sleep;
 use std::time::Duration;
 
-use crate::cmd::CommandType;
+use crate::cmd::{Command, CommandType};
+use crate::response::Response;
 use crate::scalar::{Scalar, Unit};
-use crate::vin::parser::VIN;
-use crate::{cmd::Command, response::Response};
-
-const MODE22_PIDS_DB_PATH: &str = "./data/model-pids.sqlite";
+use crate::vin::VIN;
+use crate::MODE22_PIDS_DB_PATH;
 
 #[derive(Debug)]
 pub enum BankNumber {
@@ -33,7 +32,7 @@ pub enum SensorNumber {
 }
 
 #[derive(Debug)]
-pub enum OBDError {
+pub enum Error {
     ConnectionFailed,
     NoConnection,
 
@@ -49,24 +48,24 @@ pub enum OBDError {
     ELM327ReadError,
 }
 
-impl OBDError {
+impl Error {
     pub fn as_str(&self) -> &str {
         match self {
-            OBDError::InvalidResponse => "invalid response from ecu.",
-            OBDError::InvalidCommand => "an invalid user command was going to be sent to the ecu.",
-            OBDError::NoConnection => "no serial connection active.",
-            OBDError::NoData => "'NO DATA' received from ECU.",
-            OBDError::ECUUnavailable => "ecu not available.",
-            OBDError::ELM327WriteError => "error writing through serial connection.",
-            OBDError::ELM327ReadError => "error reading through serial connection.",
-            OBDError::ConnectionFailed => "failed to establish connection with elm327.",
-            OBDError::InitFailed => "failed to initialize obd with ecu.",
-            OBDError::DTCClearFailed => "failed to clear diagnostic trouble codes.",
+            Error::InvalidResponse => "invalid response from ecu.",
+            Error::InvalidCommand => "an invalid user command was going to be sent to the ecu.",
+            Error::NoConnection => "no serial connection active.",
+            Error::NoData => "'NO DATA' received from ECU.",
+            Error::ECUUnavailable => "ecu not available.",
+            Error::ELM327WriteError => "error writing through serial connection.",
+            Error::ELM327ReadError => "error reading through serial connection.",
+            Error::ConnectionFailed => "failed to establish connection with elm327.",
+            Error::InitFailed => "failed to initialize obd with ecu.",
+            Error::DTCClearFailed => "failed to clear diagnostic trouble codes.",
         }
     }
 }
 
-impl fmt::Display for OBDError {
+impl fmt::Display for Error {
     #[inline(always)]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "obd error; {}", self.as_str())
@@ -93,7 +92,7 @@ impl OBD {
         Self::default()
     }
 
-    pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), OBDError> {
+    pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), Error> {
         if self.replay_requests {
             // No connection required
             return Ok(());
@@ -111,7 +110,7 @@ impl OBD {
         self.init()
     }
 
-    pub fn init(&mut self) -> Result<(), OBDError> {
+    pub fn init(&mut self) -> Result<(), Error> {
         // Initialization commands to send before
         // full communication can be established.
         // Without these, requests will always time out,
@@ -136,8 +135,8 @@ impl OBD {
                 self.get_recorded_response(&command)
             } else {
                 self.send_command(&mut command)
-                    .map_err(|_| OBDError::InitFailed)?;
-                self.get_at_response().map_err(|_| OBDError::InitFailed)?
+                    .map_err(|_| Error::InitFailed)?;
+                self.get_at_response().map_err(|_| Error::InitFailed)?
             };
 
             if self.record_requests {
@@ -151,7 +150,7 @@ impl OBD {
                 (_, Some(data)) if data.contains("OK") => {}
                 x => {
                     println!("{:?}", x);
-                    return Err(OBDError::InitFailed);
+                    return Err(Error::InitFailed);
                 }
             }
         }
@@ -202,7 +201,7 @@ impl OBD {
         }
     }
 
-    pub fn send_command(&mut self, req: &mut Command) -> Result<(), OBDError> {
+    pub fn send_command(&mut self, req: &mut Command) -> Result<(), Error> {
         // We don't need to send a command since we already
         // know what the respond will be.
         if self.replay_requests {
@@ -211,7 +210,7 @@ impl OBD {
 
         let stream = match &mut self.connection {
             Some(stream) => stream,
-            None => return Err(OBDError::NoConnection),
+            None => return Err(Error::NoConnection),
         };
 
         let _ = stream.clear(serialport::ClearBuffer::All);
@@ -224,12 +223,12 @@ impl OBD {
         cmd.push(b'\r');
         stream
             .write_all(&cmd)
-            .map_err(|_| OBDError::ELM327WriteError)?;
+            .map_err(|_| Error::ELM327WriteError)?;
 
         Ok(())
     }
 
-    pub fn get_at_response(&mut self) -> Result<Response, OBDError> {
+    pub fn get_at_response(&mut self) -> Result<Response, Error> {
         let response = self.read_until(b'>')?;
 
         let meta_data = Response {
@@ -242,12 +241,12 @@ impl OBD {
         Ok(meta_data)
     }
 
-    pub fn get_pid_response(&mut self) -> Result<Response, OBDError> {
+    pub fn get_pid_response(&mut self) -> Result<Response, Error> {
         let response = self.read_until(b'>')?;
         self.parse_pid_response(&response)
     }
 
-    pub(crate) fn parse_pid_response(&self, raw_response: &str) -> Result<Response, OBDError> {
+    pub(crate) fn parse_pid_response(&self, raw_response: &str) -> Result<Response, Error> {
         let mut response = raw_response.replace("SEARCHING...", "").replace("\r", "\n");
 
         let payload_size = self.extract_payload_size(&response);
@@ -262,9 +261,9 @@ impl OBD {
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
 
         if response.len() < 2 {
-            return Err(OBDError::InvalidResponse);
+            return Err(Error::InvalidResponse);
         } else if response.contains("NODATA") {
-            return Err(OBDError::NoData);
+            return Err(Error::NoData);
         }
 
         let parsed = Self::format_response(&response);
@@ -426,18 +425,18 @@ impl OBD {
         }
     }
 
-    pub(crate) fn read_until(&mut self, until: u8) -> Result<String, OBDError> {
+    pub(crate) fn read_until(&mut self, until: u8) -> Result<String, Error> {
         if self.replay_requests {
             return Ok(String::new());
         }
 
         let port = match &mut self.connection {
             Some(port) => port,
-            None => return Err(OBDError::NoConnection),
+            None => return Err(Error::NoConnection),
         };
 
         port.clear(serialport::ClearBuffer::All)
-            .map_err(|_| OBDError::ELM327ReadError)?;
+            .map_err(|_| Error::ELM327ReadError)?;
 
         let mut buffer = [0u8; 1];
         let mut response = String::new();
@@ -460,7 +459,7 @@ impl OBD {
 
         if response.contains("UNABLE TO CONNECT") {
             println!("unable to connect");
-            Err(OBDError::NoConnection)
+            Err(Error::NoConnection)
         } else {
             Ok(response)
         }
@@ -599,7 +598,7 @@ impl OBD {
         response
     }
 
-    pub fn get_protocol(&mut self) -> Result<String, OBDError> {
+    pub fn get_protocol(&mut self) -> Result<String, Error> {
         let mut request = Command::new_at(b"AT DP");
         self.send_command(&mut request)?;
 
@@ -613,7 +612,7 @@ impl OBD {
             self.save_request(&request, &response);
         }
 
-        response.formatted_response.ok_or(OBDError::InvalidResponse)
+        response.formatted_response.ok_or(Error::InvalidResponse)
     }
 
     /// Test and run Mode 22 pids from

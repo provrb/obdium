@@ -1,15 +1,14 @@
 use sqlite::State;
 use std::fmt;
 
-use crate::obd::OBDError;
-use crate::pid::engine::EngineType;
 use crate::{
-    cmd::Command,
-    obd::OBD,
+    Command,
+    OBD,
+    Error,
+    CODE_DESC_DB_PATH,
+    engine::EngineType,
     scalar::{Scalar, Unit},
 };
-
-const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 
 #[derive(Debug)]
 pub enum OBDStandard {
@@ -267,7 +266,7 @@ impl OBD {
         }
     }
 
-    pub fn clear_trouble_codes(&mut self) -> Result<(), OBDError> {
+    pub fn clear_trouble_codes(&mut self) -> Result<(), Error> {
         let response = self.query(Command::new_svc(b"04"));
         let raw = response.formatted_response.unwrap_or_default();
 
@@ -275,7 +274,7 @@ impl OBD {
         if raw == "44" {
             Ok(())
         } else {
-            Err(OBDError::DTCClearFailed)
+            Err(Error::DTCClearFailed)
         }
     }
 

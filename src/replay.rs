@@ -4,10 +4,9 @@ use crate::{
     cmd::{Command, CommandType},
     obd::OBD,
     response::Response,
+    RECORDED_REQEUSTS_DIR,
 };
 use serde_json::{json, Value};
-
-const RECORDED_REQEUSTS_DIR: &str = "./data/requests.json";
 
 impl OBD {
     pub fn record_requests(&mut self, state: bool) {

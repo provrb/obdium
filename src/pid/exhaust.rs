@@ -1,6 +1,8 @@
-use crate::cmd::Command;
-use crate::obd::{BankNumber, SensorNumber, OBD};
-use crate::scalar::{Scalar, Unit};
+use crate::{
+    Command,
+    BankNumber, SensorNumber, OBD,
+    scalar::{Scalar, Unit},
+};
 
 impl OBD {
     // Commanded exhaust gas recirculation

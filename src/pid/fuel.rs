@@ -1,8 +1,10 @@
 use std::fmt;
 
-use crate::cmd::Command;
-use crate::obd::{BankNumber, OBD};
-use crate::scalar::{Scalar, Unit};
+use crate::{
+    Command,
+    BankNumber, OBD,
+    scalar::{Scalar, Unit}
+};
 
 #[derive(Debug)]
 pub enum FuelType {

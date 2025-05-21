@@ -1,10 +1,9 @@
 use sqlite::State;
 
-use crate::vin::element_ids::ElementId;
-use crate::vin::parser::{VinError, VIN};
+use crate::vin::{ElementId, Error, VIN};
 
 impl VIN {
-    pub fn get_vin_schema_id(&self) -> Result<i64, VinError> {
+    pub fn get_vin_schema_id(&self) -> Result<i64, Error> {
         let model_year = self.get_model_year()?;
         let vin_schema_id = *self.vin_schema_id.get_or_init(|| {
             // The closure must return Result<i64, VinError>
@@ -79,21 +78,21 @@ impl VIN {
         });
 
         if vin_schema_id == -1 {
-            Err(VinError::InvalidVinSchemaId)
+            Err(Error::InvalidVinSchemaId)
         } else {
             Ok(vin_schema_id)
         }
     }
 
-    pub fn get_model_id(&self) -> Result<i64, VinError> {
+    pub fn get_model_id(&self) -> Result<i64, Error> {
         let key = self.as_key();
         let vin_schema_id = self.get_vin_schema_id()?;
         let data = self.query_pattern(vin_schema_id, ElementId::VehicleModel, key)?;
 
-        data.4.parse().map_err(|_| VinError::ParseError)
+        data.4.parse().map_err(|_| Error::ParseError)
     }
 
-    pub fn get_vspec_schema_id(&self) -> Result<i64, VinError> {
+    pub fn get_vspec_schema_id(&self) -> Result<i64, Error> {
         // query VehicleSpecSchema with MakeId
         // save all rows 'Id'
         // iterate through all rows 'Id' that matched with 'MakeId'
@@ -151,7 +150,7 @@ impl VIN {
         });
 
         if vspec_schema_id == -1 {
-            Err(VinError::InvalidVSpecSchemaId)
+            Err(Error::InvalidVSpecSchemaId)
         } else {
             Ok(vspec_schema_id)
         }

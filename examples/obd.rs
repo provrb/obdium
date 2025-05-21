@@ -1,6 +1,6 @@
-use obdium::obd::{OBDError, OBD};
+use obdium::obd::{Error, OBD};
 
-fn main() -> Result<(), OBDError> {
+fn main() -> Result<(), Error> {
     // Connecting via ELM327
     // OBD::connect takes two parameters
     // Port and baud_rate

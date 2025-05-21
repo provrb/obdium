@@ -2,12 +2,10 @@ use sqlite::Connection;
 use std::cell::OnceCell;
 use thiserror::Error;
 
-use super::element_ids::ElementId;
-
-const VPIC_DB_PATH: &str = "./data/vpic.sqlite";
+use crate::vin::{ElementId, VPIC_DB_PATH};
 
 #[derive(Debug, Error)]
-pub enum VinError {
+pub enum Error {
     #[error("connection to vpic db failed.")]
     VPICConnectFailed,
     #[error("not connected to vpic db")]
@@ -66,13 +64,13 @@ impl PartialEq for VIN {
 }
 
 impl VIN {
-    pub fn new<T>(vin: T) -> Result<Self, VinError>
+    pub fn new<T>(vin: T) -> Result<Self, Error>
     where
         T: Into<String> + std::fmt::Debug,
     {
         let vin_string = vin.into();
         if vin_string.len() != 17 {
-            return Err(VinError::InvalidVinLength);
+            return Err(Error::InvalidVinLength);
         }
 
         let mut _vin = Self::default();
@@ -101,7 +99,7 @@ impl VIN {
         }
     }
 
-    fn get_transliteration(ch: &char) -> Result<u8, VinError> {
+    fn get_transliteration(ch: &char) -> Result<u8, Error> {
         // Numeric digits use their own digits as transliteration
         if ch.is_numeric() {
             return Ok(ch.to_digit(10).unwrap() as u8);
@@ -117,7 +115,7 @@ impl VIN {
             'G' | 'P' | 'X' => Ok(7),
             'H' | 'Y' => Ok(8),
             'R' | 'Z' => Ok(9),
-            _ => Err(VinError::InvalidCharacter {
+            _ => Err(Error::InvalidCharacter {
                 ch: *ch,
                 pos: None,
                 msg: "unexpected character when transliterating.",
@@ -141,7 +139,7 @@ impl VIN {
         }
     }
 
-    pub fn checksum(&self) -> Result<char, VinError> {
+    pub fn checksum(&self) -> Result<char, Error> {
         // transliterate
         // multiply each number by its weight
         // sum the products
@@ -182,7 +180,7 @@ impl VIN {
         if check_char_from_vin == check_char {
             Ok(check_char_from_vin)
         } else {
-            Err(VinError::InvalidCheckDigit {
+            Err(Error::InvalidCheckDigit {
                 expected: check_char,
                 found: check_char_from_vin,
             })
@@ -219,13 +217,13 @@ impl VIN {
         self.vpic_db_con.is_some()
     }
 
-    pub(crate) fn vpic_connection(&self) -> Result<&Connection, VinError> {
-        self.vpic_db_con.as_ref().ok_or(VinError::VPICConnectFailed)
+    pub(crate) fn vpic_connection(&self) -> Result<&Connection, Error> {
+        self.vpic_db_con.as_ref().ok_or(Error::VPICConnectFailed)
     }
 
-    pub(crate) fn connect_to_vpic_db(&mut self) -> Result<&Connection, VinError> {
+    pub(crate) fn connect_to_vpic_db(&mut self) -> Result<&Connection, Error> {
         if self.vpic_db_con.is_none() {
-            let conn = Connection::open(VPIC_DB_PATH).map_err(|_| VinError::VPICConnectFailed);
+            let conn = Connection::open(VPIC_DB_PATH).map_err(|_| Error::VPICConnectFailed);
             self.vpic_db_con = conn.ok();
         }
 

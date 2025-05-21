@@ -1,5 +1,5 @@
-use obdium::obd::{BankNumber, OBDError, SensorNumber, Service, OBD};
-use obdium::pid::diagnostics::Test;
+use obdium::obd::{BankNumber, Error, SensorNumber, Service, OBD};
+use obdium::diagnostics::Test;
 use std::fmt::Write;
 
 fn print_tests_table(title: &str, tests: &[Test]) {
@@ -27,7 +27,7 @@ fn print_tests_table(title: &str, tests: &[Test]) {
     println!("{table}");
 }
 
-fn main() -> Result<(), OBDError> {
+fn main() -> Result<(), Error> {
     let mut obd = OBD::new();
     //obd.replay_requests(true);
     //obd.record_requests(true);
