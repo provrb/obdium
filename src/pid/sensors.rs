@@ -1,6 +1,8 @@
-use crate::cmd::Command;
-use crate::obd::{SensorNumber, OBD};
-use crate::scalar::{Scalar, Unit};
+use crate::{
+    Command,
+    SensorNumber, OBD,
+    scalar::{Scalar, Unit}
+};
 
 impl OBD {
     pub fn vehicle_speed(&mut self) -> Scalar {

@@ -1,5 +1,14 @@
-use obdium::obd::{BankNumber, Error, SensorNumber, Service, OBD};
-use obdium::diagnostics::Test;
+use obdium::{
+    obd::{
+        BankNumber, 
+        Error,
+        SensorNumber,
+        Service,
+        OBD
+    },
+    diagnostics::Test
+};
+
 use std::fmt::Write;
 
 fn print_tests_table(title: &str, tests: &[Test]) {
