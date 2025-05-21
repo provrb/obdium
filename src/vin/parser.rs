@@ -97,7 +97,7 @@ impl VIN {
     pub fn get_vin(&self) -> &str {
         match self.vin.get() {
             Some(vin) => vin,
-            _ => unreachable!(),
+            _ => panic!("tried getting gin on 'none' type."),
         }
     }
 

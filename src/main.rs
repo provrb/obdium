@@ -3,10 +3,14 @@ use obdium::pid::diagnostics::Test;
 use std::fmt::Write;
 
 fn print_tests_table(title: &str, tests: &[Test]) {
-
     let mut table = String::new();
     writeln!(table, "{title}").unwrap();
-    writeln!(table, "{:<35} | {:<10} | {:<10}", "Test Name", "Available", "Complete").unwrap();
+    writeln!(
+        table,
+        "{:<35} | {:<10} | {:<10}",
+        "Test Name", "Available", "Complete"
+    )
+    .unwrap();
     writeln!(table, "{:-<35}-+-{:-<10}-+-{:-<10}", "", "", "").unwrap();
 
     for test in tests {
@@ -28,9 +32,6 @@ fn main() -> Result<(), OBDError> {
     //obd.replay_requests(true);
     //obd.record_requests(true);
     obd.connect("COM4", 38400)?;
-    if let Some(vin) = obd.get_vin() {
-        println!("VIN: {}", vin.get_vin())
-    }
 
     println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
     let supported_pids = obd.get_service_supported_pids("01");
@@ -260,6 +261,11 @@ fn main() -> Result<(), OBDError> {
         "=".repeat(24),
         "=".repeat(24)
     );
+
+    if let Some(vin) = obd.get_vin() {
+        obd.test_mode_22_pids(&vin);
+    }
+
     obd.read_from_user_input();
 
     Ok(())

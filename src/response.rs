@@ -18,29 +18,28 @@ impl PayloadComponent {
 
 #[derive(Debug, Default, Clone)]
 pub struct Response {
-
     /// Full response including request and
     /// multiple responses from different ecus, if any.
     /// Excludes escape characters, and ECU names. Formatted as hexadecimal.
-    /// 
+    ///
     /// (e.g: "01 0C 41 0C 11 D0 41 0C 11 D0")
-    /// 
+    ///
     /// Where:
     ///     01 0C - the request sent (engine rpms)
     ///     41 0C - a response to the request sent
     ///     11 D0 - the data. (11: a-value, D0: b-value).
-    /// 
+    ///
     /// The information is repeated as this is another response
     /// from a second ECU.
-    /// 
+    ///
     pub(crate) formatted_response: Option<String>, // Hex Response from ECU
 
     /// Similiar to 'formatted_response', except that
     /// this contains escape characters like '\n', '\r' and ECU names.
     /// Formatted as hexidecimal.
-    /// 
+    ///
     /// (e.g: "E8 06 41 01 00 07 A1 00 \n\n"")
-    /// 
+    ///
     /// When printing, be sure to use String::escape_debug to avoid
     /// unknown behaviour in the terminal caused by escape characters like '\r'
     pub(crate) raw_response: Option<String>,

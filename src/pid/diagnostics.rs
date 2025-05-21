@@ -270,7 +270,7 @@ impl OBD {
     pub fn clear_trouble_codes(&mut self) -> Result<(), OBDError> {
         let response = self.query(Command::new_svc(b"04"));
         let raw = response.formatted_response.unwrap_or_default();
-        
+
         // positive response
         if raw == "44" {
             Ok(())
@@ -340,7 +340,11 @@ impl OBD {
             let available = (c_byte & bit) != 0;
 
             // Complete will only be able to be true if the test is available
-            let complete = if available { (d_byte & bit) == 0 } else { false };
+            let complete = if available {
+                (d_byte & bit) == 0
+            } else {
+                false
+            };
 
             let name = match engine_type {
                 EngineType::SparkIgnition => match index + 1 {

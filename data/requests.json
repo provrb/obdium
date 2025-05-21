@@ -1,30 +1,30 @@
 [
   {
-    "played": true,
+    "played": false,
     "request": "ATZ",
     "request_type": "ATCommand",
     "response": "\r\rELM327 v1.5\r\r"
   },
   {
-    "played": true,
+    "played": false,
     "request": "ATE0",
     "request_type": "ATCommand",
     "response": "ATE0\rOK\r\r"
   },
   {
-    "played": true,
+    "played": false,
     "request": "ATL0",
     "request_type": "ATCommand",
     "response": "OK\r\r"
   },
   {
-    "played": true,
+    "played": false,
     "request": "ATH1",
     "request_type": "ATCommand",
     "response": "OK\r\r"
   },
   {
-    "played": true,
+    "played": false,
     "request": "ATSP0",
     "request_type": "ATCommand",
     "response": "OK\r\r"
@@ -105,7 +105,7 @@
     "played": true,
     "request": "0142",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 42 39 73 \n\n"
+    "response": "7E8 04 41 42 39 C1 \n\n"
   },
   {
     "played": true,
@@ -123,13 +123,19 @@
     "played": true,
     "request": "014E",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 4E 00 5D \n\n"
+    "response": "7E8 04 41 4E 00 5C \n\n"
   },
   {
     "played": true,
     "request": "0130",
     "request_type": "PIDCommand",
     "response": "7E8 03 41 30 04 \n\n"
+  },
+  {
+    "played": true,
+    "request": "AT DP",
+    "request_type": "ATCommand",
+    "response": "AUTO, ISO 15765-4 (CAN 11/500) \r\r"
   },
   {
     "played": true,
@@ -159,13 +165,13 @@
     "played": true,
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 5F \n\n"
+    "response": "7E8 04 41 0C 00 00 \n\n"
   },
   {
     "played": true,
     "request": "0104",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 FF \n\n"
+    "response": "7E8 03 41 04 57 \n\n"
   },
   {
     "played": true,
@@ -195,7 +201,7 @@
     "played": true,
     "request": "011F",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 1F 00 6A \n\n"
+    "response": "7E8 04 41 1F 00 26 \n\n"
   },
   {
     "played": true,
@@ -261,7 +267,7 @@
     "played": true,
     "request": "0106",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 06 88 \n\n"
+    "response": "7E8 03 41 06 80 \n\n"
   },
   {
     "played": true,
@@ -273,7 +279,7 @@
     "played": true,
     "request": "0107",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 07 7E \n\n"
+    "response": "7E8 03 41 07 79 \n\n"
   },
   {
     "played": true,
@@ -285,7 +291,7 @@
     "played": true,
     "request": "0103",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 03 02 00 \n\n"
+    "response": "7E8 04 41 03 04 00 \n\n"
   },
   {
     "played": true,
@@ -357,25 +363,25 @@
     "played": true,
     "request": "010E",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0E AB \n\n"
+    "response": "7E8 03 41 0E 75 \n\n"
   },
   {
     "played": true,
     "request": "0111",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 32 \n\n"
+    "response": "7E8 03 41 11 70 \n\n"
   },
   {
     "played": true,
     "request": "0145",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 45 46 \n\n"
+    "response": "7E8 03 41 45 19 \n\n"
   },
   {
     "played": true,
     "request": "0147",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 47 7B \n\n"
+    "response": "7E8 03 41 47 92 \n\n"
   },
   {
     "played": true,
@@ -411,13 +417,13 @@
     "played": true,
     "request": "0124",
     "request_type": "PIDCommand",
-    "response": "7E8 06 41 24 84 32 70 29 \n\n"
+    "response": "7E8 06 41 24 7B A8 65 D9 \n\n"
   },
   {
     "played": true,
     "request": "0115",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 15 94 FF \n\n"
+    "response": "7E8 04 41 15 07 FF \n\n"
   },
   {
     "played": true,
@@ -513,13 +519,13 @@
     "played": true,
     "request": "010F",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0F 38 \n\n"
+    "response": "7E8 03 41 0F 3C \n\n"
   },
   {
     "played": true,
     "request": "0110",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 18 1F \n\n"
+    "response": "7E8 04 41 10 01 46 \n\n"
   },
   {
     "played": true,

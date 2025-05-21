@@ -1,6 +1,6 @@
-use std::fmt;
+use std::{fmt, str::FromStr};
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum Unit {
     Percent,
     Ratio,
@@ -29,13 +29,86 @@ pub enum Unit {
     KilogramsPerSecond,
     PartsPerMillion,
     MiligramsPerStroke,
+    PSI,
+    Unknown,
     NoData,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
+pub struct ParseUnitError;
+
+impl FromStr for Unit {
+    type Err = ParseUnitError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "%" => Ok(Unit::Percent),
+            "" => Ok(Unit::Ratio),
+            "°C" => Ok(Unit::Celsius),
+            "°F" => Ok(Unit::Fahrenheit),
+            "°" => Ok(Unit::Degrees),
+            "kPa" => Ok(Unit::KiloPascal),
+            "Pa" => Ok(Unit::Pascal),
+            "RPM" => Ok(Unit::RPM),
+            "km/h" => Ok(Unit::KilometersPerHour),
+            "g/s" => Ok(Unit::GramsPerSecond),
+            "V" => Ok(Unit::Volts),
+            "s" => Ok(Unit::Seconds),
+            "h" => Ok(Unit::Hours),
+            "mins" => Ok(Unit::Minutes),
+            "km" => Ok(Unit::Kilometers),
+            "mA" => Ok(Unit::Milliampere),
+            "L/h" => Ok(Unit::LitresPerHour),
+            "Nm" => Ok(Unit::NewtonMeters),
+            "Kg/s" => Ok(Unit::KilogramsPerSecond),
+            "ppm" => Ok(Unit::PartsPerMillion),
+            "mg/stroke" => Ok(Unit::MiligramsPerStroke),
+            "PSI" => Ok(Unit::PSI),
+            _ => Err(ParseUnitError),
+        }
+    }
+}
+
+impl Default for Unit {
+    fn default() -> Self {
+        Self::NoData
+    }
+}
+
+impl Unit {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Unit::Percent => "%",
+            Unit::Ratio => "",
+            Unit::Celsius => "°C",
+            Unit::Fahrenheit => "°F",
+            Unit::Degrees => "°",
+            Unit::KiloPascal => "kPa",
+            Unit::Pascal => "Pa",
+            Unit::RPM => "RPM",
+            Unit::KilometersPerHour => "km/h",
+            Unit::GramsPerSecond => "g/s",
+            Unit::Volts => "V",
+            Unit::Seconds => "s",
+            Unit::Hours => "h",
+            Unit::Minutes => "mins",
+            Unit::Kilometers => "km",
+            Unit::Milliampere => "mA",
+            Unit::LitresPerHour => "L/h",
+            Unit::NewtonMeters => "Nm",
+            Unit::KilogramsPerSecond => "Kg/s",
+            Unit::PartsPerMillion => "ppm",
+            Unit::MiligramsPerStroke => "mg/stroke",
+            Unit::PSI => "PSI",
+            _ => "",
+        }
+    }
+}
+
+#[derive(Clone, Default, Debug)]
 pub struct Scalar {
-    value: f32,
-    unit: Unit,
+    pub value: f32,
+    pub unit: Unit,
 }
 
 impl fmt::Display for Scalar {
@@ -44,31 +117,7 @@ impl fmt::Display for Scalar {
             return write!(f, "NO DATA");
         }
 
-        write!(f, "{}", self.value)?;
-        match self.unit {
-            Unit::Percent => write!(f, "%"),
-            Unit::Ratio => write!(f, ""),
-            Unit::Celsius => write!(f, "°C"),
-            Unit::Fahrenheit => write!(f, "°F"),
-            Unit::Degrees => write!(f, "°"),
-            Unit::KiloPascal => write!(f, "kPa"),
-            Unit::Pascal => write!(f, "Pa"),
-            Unit::RPM => write!(f, "RPM"),
-            Unit::KilometersPerHour => write!(f, "Kmh"),
-            Unit::GramsPerSecond => write!(f, "g/s"),
-            Unit::Volts => write!(f, "V"),
-            Unit::Seconds => write!(f, "s"),
-            Unit::Hours => write!(f, "h"),
-            Unit::Minutes => write!(f, "mins"),
-            Unit::Kilometers => write!(f, "km"),
-            Unit::Milliampere => write!(f, "mA"),
-            Unit::LitresPerHour => write!(f, "L/h"),
-            Unit::NewtonMeters => write!(f, "Nm"),
-            Unit::KilogramsPerSecond => write!(f, "Kg/s"),
-            Unit::PartsPerMillion => write!(f, "ppm"),
-            Unit::MiligramsPerStroke => write!(f, "mg/stroke"),
-            _ => write!(f, ""),
-        }
+        write!(f, "{}{}", self.value, self.unit.as_str())
     }
 }
 

@@ -1,13 +1,18 @@
 use serialport::SerialPort;
+use sqlite::State;
 use std::collections::HashMap;
 use std::fmt;
 use std::io::{Read, Write};
-use std::str;
+use std::str::{self, FromStr};
+use std::thread::sleep;
 use std::time::Duration;
 
 use crate::cmd::CommandType;
+use crate::scalar::{Scalar, Unit};
 use crate::vin::parser::VIN;
 use crate::{cmd::Command, response::Response};
+
+const MODE22_PIDS_DB_PATH: &str = "./data/model-pids.sqlite";
 
 #[derive(Debug)]
 pub enum BankNumber {
@@ -93,7 +98,7 @@ impl OBD {
             // No connection required
             return Ok(());
         }
-        
+
         if self.connection.is_some() {
             return Ok(());
         }
@@ -597,7 +602,7 @@ impl OBD {
     pub fn get_protocol(&mut self) -> Result<String, OBDError> {
         let mut request = Command::new_at(b"AT DP");
         self.send_command(&mut request)?;
-        
+
         let response = if self.replay_requests {
             self.get_recorded_response(&request)
         } else {
@@ -609,5 +614,127 @@ impl OBD {
         }
 
         response.formatted_response.ok_or(OBDError::InvalidResponse)
+    }
+
+    /// Test and run Mode 22 pids from
+    /// /data/model-pids.sqlite
+    pub fn test_mode_22_pids(&mut self, vin: &VIN) {
+        // This does not work when replaying requests
+        if self.replay_requests {
+            return;
+        }
+
+        // Get a Mode 22 pids for the model from the vin
+        // Run them all, see if the output is valid.
+        // Calculate equation and display
+        // Sleep for a short period of time.
+        // Repeat
+        let model = match vin.get_engine_manufacturer() {
+            Ok(em) => em,
+            Err(_) => return,
+        };
+
+        // connect to mode 22 database
+        let con = match sqlite::Connection::open(MODE22_PIDS_DB_PATH) {
+            Ok(con) => con,
+            Err(err) => {
+                println!("when connecting to mode22 database: {err}");
+                return;
+            }
+        };
+
+        let query = "SELECT * FROM vehicle_pids WHERE model = ?";
+        let mut statement = match con.prepare(query) {
+            Ok(statement) => statement,
+            Err(err) => {
+                println!("when sanitizing statement {query}: {err}");
+                return;
+            }
+        };
+
+        match statement.bind((1, model.as_str())) {
+            Ok(_) => {}
+            Err(err) => {
+                println!("when binding model '{}' to query {query}: {err}", model);
+                return;
+            }
+        };
+
+        while let Ok(State::Row) = statement.next() {
+            let pid = statement
+                .read::<String, _>("pid")
+                .expect("reading column pid");
+            let equation = statement
+                .read::<String, _>("equation")
+                .expect("reading column equation");
+            let unit = statement
+                .read::<String, _>("unit")
+                .expect("reading column unit");
+            let description = statement
+                .read::<String, _>("description")
+                .expect("reading description");
+
+            let command = Command::new_arb(&pid);
+            self.query(command).map_no_data(|response| {
+                match self.calculate_dynamic_equation(&equation, &unit, &response) {
+                    Ok(value) => {
+                        println!("successfully calculated pid {pid}. equation: {equation}. unit {unit}");
+                        println!("description: {description}");
+                        println!("calculated: {value}");
+                        value
+                    },
+                    Err(err) => {
+                        println!("error trying to calculate pid {pid}. equation: {equation}. unit {unit}");
+                        println!("description: {description}");
+                        println!("error: {err}");
+                        Scalar::no_data()
+                    }
+                }
+            });
+
+            sleep(Duration::from_millis(500));
+        }
+    }
+
+    pub(crate) fn calculate_dynamic_equation(
+        &mut self,
+        equation: &str,
+        unit: &str,
+        response: &Response,
+    ) -> Result<Scalar, Box<dyn std::error::Error>> {
+        use evalexpr::*;
+
+        if *response.get_payload_size() == 0 {
+            return Ok(Scalar::no_data());
+        }
+
+        // TODO: fix this ugly code.
+        let mut context: HashMapContext<DefaultNumericTypes> = HashMapContext::new();
+        if equation.contains("A") {
+            context.set_value("A".into(), Value::from_float(response.a_value() as f64))?;
+        }
+        if equation.contains("B") {
+            context.set_value("B".into(), Value::from_float(response.b_value() as f64))?;
+        }
+        if equation.contains("C") {
+            context.set_value("C".into(), Value::from_float(response.c_value() as f64))?;
+        }
+        if equation.contains("D") {
+            context.set_value("D".into(), Value::from_float(response.d_value() as f64))?;
+        }
+        if equation.contains("E") {
+            context.set_value("E".into(), Value::from_float(response.e_value() as f64))?;
+        }
+
+        match eval_float_with_context(equation, &context) {
+            Ok(res) => Ok(Scalar::new(
+                res as f32,
+                Unit::from_str(unit).unwrap_or(Unit::Unknown),
+            )),
+            Err(err) => {
+                println!("when evaluating dynamic equation {equation}. {err}");
+                Err(Box::new(err))
+            }
+        }
     }
 }

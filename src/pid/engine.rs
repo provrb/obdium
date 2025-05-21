@@ -207,7 +207,7 @@ impl OBD {
         match response.b_value() as u32 & 0b00001000 {
             0 => EngineType::SparkIgnition,
             1 => EngineType::CompressionIgnition,
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 }
