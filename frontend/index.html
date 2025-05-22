@@ -25,11 +25,11 @@
     .sidebar {
       width: 60px;
       background-color: #0F0F0F;
-      padding: 5px 0;
+      padding: 12px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 10px;
     }
 
     .sidebar img {
@@ -78,7 +78,7 @@
     }
 
     .search::placeholder {
-      color: #49454F;  
+      color: #49454F;
       opacity: 1;
     }
 
@@ -151,16 +151,40 @@
       margin-left: 2px;
       font-weight: 500;
     }
+
+    .sidebar-button {
+      width: 40px;
+      height: 40px;
+      background-color: #121212;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar-button:hover {
+      background-color: #2c2c2c;
+    }
+
+    .sidebar-button img {
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      color: #ff5353;
+    }
   </style>
 </head>
 
 <body>
   <div class="sidebar">
-    <img src="/assets/table.png" alt="Dashboard">
-    <img src="/assets/cpu.png" alt="Settings">
-    <img src="/assets/db.png" alt="Diagnostics">
-    <img src="/assets/save.png" alt="Logs">
-    <img src="/assets/slider.png" alt="PIDs">
+    <button class="sidebar-button"><img src="/assets/table.png" alt="Dashboard"></button>
+    <button class="sidebar-button"><img src="/assets/edit.png" alt="Edit PIDs"></button>
+    <button class="sidebar-button"><img src="/assets/graphs.png" alt="View Graphs"></button>
+    <button class="sidebar-button"><img src="/assets/vin-decoding.png" alt="Decode Vin"></button>
+    <button class="sidebar-button"><img src="/assets/settings.png" alt="Settings"></button>
   </div>
   <div class="main">
     <div class="header">

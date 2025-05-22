@@ -1,4 +1,5 @@
 /backend/target/
+target/
 
 # Logs
 logs
