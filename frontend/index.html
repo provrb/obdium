@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBDII Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #121212;
+      color: #f0e9f9;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 60px;
+      background-color: #0F0F0F;
+      padding: 5px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sidebar img {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header .info {
+      font-size: 1.2rem;
+    }
+
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background-color: #151515;
+      border-radius: 10px;
+    }
+
+    .search {
+      font-size: 1rem;
+      background-color: #151515;
+      border-radius: 10px;
+      padding: 6px 20px;
+      width: 500px;
+      height: 35px;
+      border: none;
+      outline: none;
+      color: #ff5353;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .search::placeholder {
+      color: #49454F;  
+      opacity: 1;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #151515;
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .card h3 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .card .value {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .card .unit {
+      font-size: 1.2rem;
+      font-weight: 200;
+      color: #D4DADF;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .connection {
+      font-size: 0.95rem;
+      color: #F7F3FF;
+      font-weight: 500;
+    }
+
+    .car-model {
+      font-size: 1.5rem;
+      color: #F7F3FF;
+      font-weight: 600;
+    }
+
+    .vin {
+      font-size: 0.85rem;
+      color: #dfdfdf;
+      margin-left: 2px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <img src="/assets/table.png" alt="Dashboard">
+    <img src="/assets/cpu.png" alt="Settings">
+    <img src="/assets/db.png" alt="Diagnostics">
+    <img src="/assets/save.png" alt="Logs">
+    <img src="/assets/slider.png" alt="PIDs">
+  </div>
+  <div class="main">
+    <div class="header">
+      <div class="info">
+        <div class="connection">
+          <img src="/assets/connection.png" alt="Connectivity">
+          ELM327 CONNECTED VIA COM4
+        </div>
+        <div class="car-model">TOYOTA CAMRY</div>
+        <div class="vin">VIN: XXXXXXXXXXXXXXXXX</div>
+      </div>
+      <div class="search-container">
+        <input class="search" type="text" placeholder="Search">
+        <img src="/assets/search.png" alt="Search" class="search-icon">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>ENGINE RPM</h3>
+        <div class="value">2440 <span class="unit"></span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL INJECTION TIMING</h3>
+        <div class="value">6<span class="unit">°</span></div>
+      </div>
+      <div class="card">
+        <h3>VEHICLE SPEED</h3>
+        <div class="value">55 <span class="unit">KMH</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE LOAD</h3>
+        <div class="value">43 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL TANK LEVEL</h3>
+        <div class="value">67 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>THROTTLE POSITION</h3>
+        <div class="value">33 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE RUNTIME</h3>
+        <div class="value">1204 <span class="unit">secs</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL RAIL PRESSURE</h3>
+        <div class="value">1942 <span class="unit">kPa</span></div>
+      </div>
+      <div class="card">
+        <h3>INTAKE AIR TEMPERATURE</h3>
+        <div class="value">20 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COOLANT TEMPERATURE</h3>
+        <div class="value">78 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COMMANDED EVAP PURGE</h3>
+        <div class="value">26 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>AMBIENT AIR TEMPERATURE</h3>
+        <div class="value">27 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE RPM</h3>
+        <div class="value">2440 <span class="unit"></span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL INJECTION TIMING</h3>
+        <div class="value">6<span class="unit">°</span></div>
+      </div>
+      <div class="card">
+        <h3>VEHICLE SPEED</h3>
+        <div class="value">55 <span class="unit">KMH</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE LOAD</h3>
+        <div class="value">43 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL TANK LEVEL</h3>
+        <div class="value">67 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>THROTTLE POSITION</h3>
+        <div class="value">33 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE RUNTIME</h3>
+        <div class="value">1204 <span class="unit">secs</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL RAIL PRESSURE</h3>
+        <div class="value">1942 <span class="unit">kPa</span></div>
+      </div>
+      <div class="card">
+        <h3>INTAKE AIR TEMPERATURE</h3>
+        <div class="value">20 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COOLANT TEMPERATURE</h3>
+        <div class="value">78 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COMMANDED EVAP PURGE</h3>
+        <div class="value">26 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>AMBIENT AIR TEMPERATURE</h3>
+        <div class="value">27 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE RPM</h3>
+        <div class="value">2440 <span class="unit"></span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL INJECTION TIMING</h3>
+        <div class="value">6<span class="unit">°</span></div>
+      </div>
+      <div class="card">
+        <h3>VEHICLE SPEED</h3>
+        <div class="value">55 <span class="unit">KMH</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE LOAD</h3>
+        <div class="value">43 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL TANK LEVEL</h3>
+        <div class="value">67 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>THROTTLE POSITION</h3>
+        <div class="value">33 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>ENGINE RUNTIME</h3>
+        <div class="value">1204 <span class="unit">secs</span></div>
+      </div>
+      <div class="card">
+        <h3>FUEL RAIL PRESSURE</h3>
+        <div class="value">1942 <span class="unit">kPa</span></div>
+      </div>
+      <div class="card">
+        <h3>INTAKE AIR TEMPERATURE</h3>
+        <div class="value">20 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COOLANT TEMPERATURE</h3>
+        <div class="value">78 <span class="unit">°C</span></div>
+      </div>
+      <div class="card">
+        <h3>COMMANDED EVAP PURGE</h3>
+        <div class="value">26 <span class="unit">%</span></div>
+      </div>
+      <div class="card">
+        <h3>AMBIENT AIR TEMPERATURE</h3>
+        <div class="value">27 <span class="unit">°C</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
