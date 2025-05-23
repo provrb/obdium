@@ -256,7 +256,7 @@ impl OBD {
         response = response
             .replace(" ", "")
             .replace("\n", "")
-            .replace(format!("{:02X}", payload_size).as_str(), "");
+            .replacen(format!("{:02X}", payload_size).as_str(), "", 1);
 
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
 
@@ -277,6 +277,8 @@ impl OBD {
         meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
+
+        println!("raw response: {meta_data:?}");
 
         Ok(meta_data)
     }
