@@ -110,6 +110,20 @@ impl OBD {
         self.init()
     }
 
+    pub fn serial_port_name(&self) -> Option<String> {
+        match &self.connection {
+            Some(connection) => connection.name(),
+            None => None,
+        }
+    }
+
+    pub fn serial_port_baud_rate(&self) -> Option<u32> {
+        match &self.connection {
+            Some(connection) => connection.baud_rate().ok(),
+            None => None,
+        }
+    }
+
     pub fn init(&mut self) -> Result<(), Error> {
         // Initialization commands to send before
         // full communication can be established.
@@ -253,10 +267,11 @@ impl OBD {
         let ecu_names = self.extract_ecu_names(&response);
         let escaped = response.clone();
 
-        response = response
-            .replace(" ", "")
-            .replace("\n", "")
-            .replacen(format!("{:02X}", payload_size).as_str(), "", 1);
+        response = response.replace(" ", "").replace("\n", "").replacen(
+            format!("{:02X}", payload_size).as_str(),
+            "",
+            1,
+        );
 
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
 
@@ -277,6 +292,8 @@ impl OBD {
         meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
+
+        println!("Raw response: {:?}", meta_data);
 
         Ok(meta_data)
     }

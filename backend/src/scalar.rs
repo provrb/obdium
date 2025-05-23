@@ -1,5 +1,9 @@
 use serde::{Deserialize, Serialize};
-use std::{fmt, ops::{Add, Sub}, str::FromStr};
+use std::{
+    fmt,
+    ops::{Add, Sub},
+    str::FromStr,
+};
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Unit {
@@ -126,7 +130,7 @@ impl fmt::Display for Scalar {
 // Doesn't matter what unit you are using.
 impl Sub for Scalar {
     type Output = Scalar;
-    
+
     fn sub(self, other: Self) -> Self::Output {
         Scalar::new(self.value - other.value, self.unit)
     }
@@ -135,7 +139,7 @@ impl Sub for Scalar {
 // Doesn't matter what unit you are using.
 impl Add for Scalar {
     type Output = Scalar;
-    
+
     fn add(self, other: Self) -> Self::Output {
         Scalar::new(self.value + other.value, self.unit)
     }

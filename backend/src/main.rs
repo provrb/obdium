@@ -1,13 +1,16 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{sync::{Arc, Mutex}, thread::{sleep}, time::Duration};
-use std::sync::atomic::{AtomicBool, Ordering};
-
-use obdium::{
-    obd::OBD, scalar::Scalar, vin::VIN, BankNumber, SensorNumber, Service
-};
+use obdium::{obd::OBD, scalar::Scalar, BankNumber, SensorNumber, Service};
 use serde::{Deserialize, Serialize};
+use std::{
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
+    thread::sleep,
+    time::Duration,
+};
 use tauri::{async_runtime::spawn, Manager, Window};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -24,7 +27,13 @@ struct VehicleInfo {
     model: String,
 }
 
-#[tauri::command]
+#[derive(Serialize, Deserialize, Clone)]
+struct ConnectionStatus {
+    connected: bool,
+    message: String,
+    serial_port: String,
+}
+
 fn update_card<T>(window: &Window, name: T, scalar: Scalar)
 where
     T: Into<String> + std::fmt::Debug,
@@ -41,12 +50,12 @@ where
 fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     // Very High frequency calls
     {
-        let window = Arc::clone(&window);
-        let obd = Arc::clone(&obd);
+        let window = Arc::clone(window);
+        let obd = Arc::clone(obd);
         spawn(async move {
             loop {
                 sleep(Duration::from_millis(100));
-                
+
                 let mut obd = obd.lock().unwrap();
                 let rpm = obd.rpm();
                 let engine_load = obd.engine_load();
@@ -74,8 +83,8 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
     // High frequency calls
     {
-        let window = Arc::clone(&window);
-        let obd = Arc::clone(&obd);
+        let window = Arc::clone(window);
+        let obd = Arc::clone(obd);
         spawn(async move {
             loop {
                 sleep(Duration::from_millis(200));
@@ -101,12 +110,20 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 update_card(&window, "Vehicle Speed", vehicle_speed);
                 update_card(&window, "Engine Fuel Rate", engine_fuel_rate);
                 update_card(&window, "Engine Oil Pressure", engine_oil_pressure);
-                update_card(&window, "Drivers Demand Engine Torque", drivers_demand_engine_torque);
+                update_card(
+                    &window,
+                    "Drivers Demand Engine Torque",
+                    drivers_demand_engine_torque,
+                );
                 update_card(&window, "Actual Engine Torque", actual_engine_torque);
                 update_card(&window, "Reference Engine Torque", ref_engine_torque);
                 update_card(&window, "Fuel Pressure", fuel_pressure);
                 update_card(&window, "Fuel Rail Pressure", fuel_rail_pressure);
-                update_card(&window, "Fuel Rail Gauge Pressure", fuel_rail_gauge_pressure);
+                update_card(
+                    &window,
+                    "Fuel Rail Gauge Pressure",
+                    fuel_rail_gauge_pressure,
+                );
                 update_card(&window, "Cylinder Fuel Rate", cylinder_fuel_rate);
                 update_card(&window, "MAF Airflow Rate", maf_air_flow_rate);
                 update_card(&window, "MAF Maximum Airflow Rate", max_air_flow_rate_maf);
@@ -124,8 +141,8 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
     // Frequent calls
     {
-        let window = Arc::clone(&window);
-        let obd = Arc::clone(&obd);
+        let window = Arc::clone(window);
+        let obd = Arc::clone(obd);
         spawn(async move {
             loop {
                 sleep(Duration::from_millis(500));
@@ -165,32 +182,32 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 update_card(&window, "O2 Sensor (2) Voltage (2)", o2_sensor_af_ratio_2.1);
                 update_card(&window, "O2 Sensor (2) Voltage (1)", o2_sensor_2.0);
                 update_card(&window, "O2 Sensor (2) STFT", o2_sensor_2.1);
-                
+
                 update_card(&window, "O2 Sensor (3) AFR", o2_sensor_af_ratio_3.0);
                 update_card(&window, "O2 Sensor (3) Voltage (2)", o2_sensor_af_ratio_3.1);
                 update_card(&window, "O2 Sensor (3) Voltage (1)", o2_sensor_3.0);
                 update_card(&window, "O2 Sensor (3) STFT", o2_sensor_3.1);
-                
+
                 update_card(&window, "O2 Sensor (4) AFR", o2_sensor_af_ratio_4.0);
                 update_card(&window, "O2 Sensor (4) Voltage (2)", o2_sensor_af_ratio_4.1);
                 update_card(&window, "O2 Sensor (4) Voltage (1)", o2_sensor_4.0);
                 update_card(&window, "O2 Sensor (4) STFT", o2_sensor_4.1);
-                
+
                 update_card(&window, "O2 Sensor (5) AFR", o2_sensor_af_ratio_5.0);
                 update_card(&window, "O2 Sensor (5) Voltage (2)", o2_sensor_af_ratio_5.1);
                 update_card(&window, "O2 Sensor (5) Voltage (1)", o2_sensor_5.0);
                 update_card(&window, "O2 Sensor (5) STFT", o2_sensor_5.1);
-                
+
                 update_card(&window, "O2 Sensor (6) AFR", o2_sensor_af_ratio_6.0);
                 update_card(&window, "O2 Sensor (6) Voltage (2)", o2_sensor_af_ratio_6.1);
                 update_card(&window, "O2 Sensor (6) Voltage (1)", o2_sensor_6.0);
                 update_card(&window, "O2 Sensor (6) STFT", o2_sensor_6.1);
-                
+
                 update_card(&window, "O2 Sensor (7) AFR", o2_sensor_af_ratio_7.0);
                 update_card(&window, "O2 Sensor (7) Voltage (2)", o2_sensor_af_ratio_7.1);
                 update_card(&window, "O2 Sensor (7) Voltage (1)", o2_sensor_7.0);
                 update_card(&window, "O2 Sensor (7) STFT", o2_sensor_7.1);
-                
+
                 update_card(&window, "O2 Sensor (8) AFR", o2_sensor_af_ratio_8.0);
                 update_card(&window, "O2 Sensor (8) Voltage (2)", o2_sensor_af_ratio_8.1);
                 update_card(&window, "O2 Sensor (8) Voltage (1)", o2_sensor_8.0);
@@ -201,8 +218,8 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
     // Less frequent calls
     {
-        let window = Arc::clone(&window);
-        let obd = Arc::clone(&obd);
+        let window = Arc::clone(window);
+        let obd = Arc::clone(obd);
         spawn(async move {
             loop {
                 sleep(Duration::from_secs(1));
@@ -217,11 +234,15 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 let engine_oil_temp_sensors = obd.engine_oil_temp_sensors();
                 let commanded_egr = obd.commanded_egr();
                 let egr_error = obd.egr_error();
-                
-                let catalyst_temp_b1_s1 = obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor1);
-                let catalyst_temp_b1_s2 = obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor2);
-                let catalyst_temp_b2_s1 = obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor1);
-                let catalyst_temp_b2_s2 = obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor2);
+
+                let catalyst_temp_b1_s1 =
+                    obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor1);
+                let catalyst_temp_b1_s2 =
+                    obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor2);
+                let catalyst_temp_b2_s1 =
+                    obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor1);
+                let catalyst_temp_b2_s2 =
+                    obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor2);
 
                 let barometric_pressure = obd.abs_barometric_pressure();
                 let ambient_air_temp = obd.ambient_air_temp();
@@ -241,23 +262,59 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 update_card(&window, "Long Term Fuel Trim (Bank 1)", ltft_bank_1);
                 update_card(&window, "Long Term Fuel Trim (Bank 2)", ltft_bank_2);
                 update_card(&window, "Coolant Temp.", coolant_temp);
-                update_card(&window, "Coolant Temp. (Sensors: A)", coolant_temp_sensors.0);
-                update_card(&window, "Coolant Temp. (Sensors: B)", coolant_temp_sensors.1);
+                update_card(
+                    &window,
+                    "Coolant Temp. (Sensors: A)",
+                    coolant_temp_sensors.0,
+                );
+                update_card(
+                    &window,
+                    "Coolant Temp. (Sensors: B)",
+                    coolant_temp_sensors.1,
+                );
                 update_card(&window, "Engine Oil Temp. (Mode 01)", engine_oil_temp);
                 update_card(&window, "Engine Oil Temp. (Mode 22)", engine_oil_temp_ext);
-                update_card(&window, "Engine Oil Temp. (Sensors: A)", engine_oil_temp_sensors.0);
-                update_card(&window, "Engine Oil Temp. (Sensors: B)", engine_oil_temp_sensors.1);
+                update_card(
+                    &window,
+                    "Engine Oil Temp. (Sensors: A)",
+                    engine_oil_temp_sensors.0,
+                );
+                update_card(
+                    &window,
+                    "Engine Oil Temp. (Sensors: B)",
+                    engine_oil_temp_sensors.1,
+                );
                 update_card(&window, "Commanded EGR", commanded_egr);
                 update_card(&window, "EGR Error", egr_error);
-                update_card(&window, "Catalyst Temp. (Bank 1: Sensor 1)", catalyst_temp_b1_s1);
-                update_card(&window, "Catalyst Temp. (Bank 1: Sensor 2)", catalyst_temp_b1_s2);
-                update_card(&window, "Catalyst Temp. (Bank 2: Sensor 1)", catalyst_temp_b2_s1);
-                update_card(&window, "Catalyst Temp. (Bank 2: Sensor 2)", catalyst_temp_b2_s2);
+                update_card(
+                    &window,
+                    "Catalyst Temp. (Bank 1: Sensor 1)",
+                    catalyst_temp_b1_s1,
+                );
+                update_card(
+                    &window,
+                    "Catalyst Temp. (Bank 1: Sensor 2)",
+                    catalyst_temp_b1_s2,
+                );
+                update_card(
+                    &window,
+                    "Catalyst Temp. (Bank 2: Sensor 1)",
+                    catalyst_temp_b2_s1,
+                );
+                update_card(
+                    &window,
+                    "Catalyst Temp. (Bank 2: Sensor 2)",
+                    catalyst_temp_b2_s2,
+                );
                 update_card(&window, "Absolute Barometric Pressure", barometric_pressure);
                 update_card(&window, "Ambient Air Temp.", ambient_air_temp);
                 update_card(&window, "Fuel Injection Timing", fuel_injection_timing);
                 update_card(&window, "Commanded EVAP Purge", commanded_evap_purge);
-                update_card(&window, "EVAP System Vapor Pressure", evap_sys_vapor_pressure);
+                update_card(
+                    &window,
+                    "EVAP System Vapor Pressure",
+                    evap_sys_vapor_pressure,
+                );
                 update_card(&window, "Control Module Voltage", control_mod_voltage);
                 update_card(&window, "Engine Runtime (Session)", engine_runtime);
             }
@@ -266,8 +323,8 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
     // Rare calls
     {
-        let window = Arc::clone(&window);
-        let obd = Arc::clone(&obd);
+        let window = Arc::clone(window);
+        let obd = Arc::clone(obd);
         spawn(async move {
             loop {
                 sleep(Duration::from_secs(5));
@@ -280,7 +337,7 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 let time_with = obd.time_run_with_mil();
                 let odometer = obd.odometer();
                 let ethanol_fuel_percent = obd.ethanol_fuel_percentage();
-                
+
                 drop(obd);
 
                 update_card(&window, "Warm-Ups Since Codes Cleared", warm_ups);
@@ -296,8 +353,8 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 }
 
 fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
-    let obd = Arc::clone(&obd);
-    let window = Arc::clone(&window);
+    let obd = Arc::clone(obd);
+    let window = Arc::clone(window);
     spawn(async move {
         let mut obd = obd.lock().unwrap();
 
@@ -309,7 +366,7 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                     make: vin.get_vehicle_make().unwrap_or("??".to_string()),
                     model: vin.get_vehicle_model().unwrap_or("??".to_string()),
                 };
-                
+
                 window.emit("vehicle-details", v_info).unwrap();
             }
             None => {
@@ -319,15 +376,42 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
+fn connect_obd(window: &Window) -> OBD {
+    // Try to connect obd
+    let mut obd = OBD::new();
+
+    let conn_status = match obd.connect("COM4", 38400) {
+        Ok(()) => {
+            let port = obd.serial_port_name().unwrap_or_default();
+            let band = obd.serial_port_baud_rate().unwrap_or_default();
+            ConnectionStatus {
+                connected: true,
+                message: format!("Connected to port {port} on {band} band"),
+                serial_port: port,
+            }
+        }
+        Err(error) => ConnectionStatus {
+            connected: false,
+            message: format!("Failed to connect. Error: {error}"),
+            serial_port: "".to_string(),
+        },
+    };
+
+    window.emit("connection-status", conn_status).unwrap();
+    obd
+}
+
 fn main() {
     tauri::Builder::default()
-        .setup(|app| {            
+        .setup(|app| {
             let window = app.get_window("main").unwrap();
-
             let frontend_ready = Arc::new(AtomicBool::new(false));
+
             spawn(async move {
+
+                // Detect when the frontend is loaded
                 let frontend_ready_listener = Arc::clone(&frontend_ready);
-                let _events = window.listen("frontend-loaded", move |_| {
+                window.listen("frontend-loaded", move |_| {
                     frontend_ready_listener.store(true, Ordering::SeqCst);
                 });
 
@@ -335,15 +419,13 @@ fn main() {
                     sleep(Duration::from_millis(100));
                 }
 
-                let mut obd = OBD::new();
-                obd.connect("COM4", 38400).unwrap();
+                let obd = connect_obd(&window);
 
                 // Arc's
                 let obd = Arc::new(Mutex::new(obd));
                 let window = Arc::new(window);
-
-                track_data(&window, &obd);
                 send_vehicle_details(&window, &obd);
+                track_data(&window, &obd);
             });
 
             Ok(())

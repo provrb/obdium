@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.__TAURI__.event.emit('frontend-loaded');
 });
 
-listen("update-card", (event) => {
+listen('update-card', (event) => {
     const cards = document.querySelectorAll('.card');
     const exists = Array.from(cards).some(card => {
         return card.textContent.includes(event.payload.name);
@@ -75,10 +75,24 @@ listen("update-card", (event) => {
     });
 });
 
-listen("vehicle-details", (event) => {
+listen('vehicle-details', (event) => {
     const vin = document.querySelector(".vin")
     const makeModel = document.querySelector(".car-model");
     
     vin.textContent = event.payload.vin.toUpperCase();
     makeModel.textContent = (event.payload.make + " " + event.payload.model).toUpperCase();
+});
+
+listen('connection-status', (event) => {
+    const connection_label = document.getElementById("connection-label");
+    const connection_icon = document.getElementById("connection-icon");
+
+    if (event.payload.connected) {
+        connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port;
+        connection_icon.src = "/assets/connected.png";
+    } else {
+        connection_label.textContent = "ELM327 NOT CONNECTED";
+    }
+
+    console.log(event.payload.message);
 });

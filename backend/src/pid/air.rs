@@ -32,9 +32,8 @@ impl OBD {
     }
 
     pub fn intake_manifold_abs_pressure(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010B")).map_no_data(|r| {
-            Scalar::new(r.a_value(), Unit::KiloPascal)
-        })
+        self.query(Command::new_pid(b"010B"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KiloPascal))
     }
 
     pub fn maf_air_flow_rate(&mut self) -> Scalar {
@@ -92,7 +91,7 @@ impl OBD {
     // AB (AB Bytes) - Air-Fuel equivalance ratio
     // CD (CD Bytes) - Voltage
     //
-    // Unlike read_oxygen_sensor, this doesn't return the 
+    // Unlike read_oxygen_sensor, this doesn't return the
     // short term fuel trim.
     pub fn read_oxygen_sensor_abcd(&mut self, sensor: &SensorNumber) -> (Scalar, Scalar) {
         let command = match sensor {
