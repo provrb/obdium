@@ -1,9 +1,8 @@
 use std::fmt;
 
 use crate::{
-    Command,
-    BankNumber, OBD,
-    scalar::{Scalar, Unit}
+    scalar::{Scalar, Unit},
+    BankNumber, Command, OBD,
 };
 
 #[derive(Debug)]

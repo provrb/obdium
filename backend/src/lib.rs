@@ -1,15 +1,15 @@
-pub mod obd;
-pub mod vin;
 mod cmd;
+pub mod obd;
 mod pid;
 mod replay;
 mod response;
-mod scalar;
+pub mod scalar;
+pub mod vin;
 
-pub use pid::*;
-pub use response::*;
 pub use cmd::*;
 pub use obd::*;
+pub use pid::*;
+pub use response::*;
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 const MODE22_PIDS_DB_PATH: &str = "./data/model-pids.sqlite";

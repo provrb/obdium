@@ -2,12 +2,9 @@ use sqlite::State;
 use std::fmt;
 
 use crate::{
-    Command,
-    OBD,
-    Error,
-    CODE_DESC_DB_PATH,
     engine::EngineType,
     scalar::{Scalar, Unit},
+    Command, Error, CODE_DESC_DB_PATH, OBD,
 };
 
 #[derive(Debug)]

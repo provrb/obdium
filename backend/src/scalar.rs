@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::{fmt, str::FromStr};
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Unit {
     Percent,
     Ratio,
@@ -100,6 +101,7 @@ impl Unit {
             Unit::PartsPerMillion => "ppm",
             Unit::MiligramsPerStroke => "mg/stroke",
             Unit::PSI => "PSI",
+            Unit::NoData => "NO DATA",
             _ => "",
         }
     }

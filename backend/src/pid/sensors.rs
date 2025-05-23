@@ -1,7 +1,6 @@
 use crate::{
-    Command,
-    SensorNumber, OBD,
-    scalar::{Scalar, Unit}
+    scalar::{Scalar, Unit},
+    Command, SensorNumber, OBD,
 };
 
 impl OBD {

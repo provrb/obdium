@@ -1,9 +1,8 @@
 use std::fmt;
 
 use crate::{
-    Command,
-    SensorNumber, Service, OBD,
     scalar::{Scalar, Unit},
+    Command, SensorNumber, Service, OBD,
 };
 
 #[derive(PartialEq, Eq)]
