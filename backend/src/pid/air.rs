@@ -31,6 +31,12 @@ impl OBD {
             .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
     }
 
+    pub fn intake_manifold_abs_pressure(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"010B")).map_no_data(|r| {
+            Scalar::new(r.a_value(), Unit::KiloPascal)
+        })
+    }
+
     pub fn maf_air_flow_rate(&mut self) -> Scalar {
         self.query(Command::new_pid(b"0110")).map_no_data(|r| {
             Scalar::new(
@@ -50,6 +56,9 @@ impl OBD {
             .map_no_data(|r| Scalar::new(r.a_value() * 10.0, Unit::GramsPerSecond))
     }
 
+    // Returns 2 values
+    // Voltage being given to the sensor
+    // Short term fuel trim
     pub fn read_oxygen_sensor(&mut self, sensor: &SensorNumber) -> (Scalar, Scalar) {
         let command = match sensor {
             SensorNumber::Sensor1 => Command::new_pid(b"0114"),
@@ -76,7 +85,16 @@ impl OBD {
         )
     }
 
-    pub fn o2_sensor_air_fuel_ratio(&mut self, sensor: &SensorNumber) -> (Scalar, Scalar) {
+    // Returns 2 values
+    // ABCD stands for the bytes in the payload and
+    // what they represent.
+    //
+    // AB (AB Bytes) - Air-Fuel equivalance ratio
+    // CD (CD Bytes) - Voltage
+    //
+    // Unlike read_oxygen_sensor, this doesn't return the 
+    // short term fuel trim.
+    pub fn read_oxygen_sensor_abcd(&mut self, sensor: &SensorNumber) -> (Scalar, Scalar) {
         let command = match sensor {
             SensorNumber::Sensor1 => Command::new_pid(b"0124"),
             SensorNumber::Sensor2 => Command::new_pid(b"0125"),

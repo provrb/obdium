@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{fmt, str::FromStr};
+use std::{fmt, ops::{Add, Sub}, str::FromStr};
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Unit {
@@ -123,6 +123,24 @@ impl fmt::Display for Scalar {
     }
 }
 
+// Doesn't matter what unit you are using.
+impl Sub for Scalar {
+    type Output = Scalar;
+    
+    fn sub(self, other: Self) -> Self::Output {
+        Scalar::new(self.value - other.value, self.unit)
+    }
+}
+
+// Doesn't matter what unit you are using.
+impl Add for Scalar {
+    type Output = Scalar;
+    
+    fn add(self, other: Self) -> Self::Output {
+        Scalar::new(self.value + other.value, self.unit)
+    }
+}
+
 impl Scalar {
     pub fn new(value: f32, unit: Unit) -> Self {
         Self { value, unit }
@@ -176,6 +194,12 @@ impl Scalar {
             // Energy
             (NewtonMeters, FootPounds) => Some(Scalar::new(self.value * 0.73756, FootPounds)),
             (FootPounds, NewtonMeters) => Some(Scalar::new(self.value / 0.73756, NewtonMeters)),
+
+            // Pressure
+            (KiloPascal, PSI) => Some(Scalar::new(self.value / 6.895, Unit::PSI)),
+            (PSI, KiloPascal) => Some(Scalar::new(self.value * 6.895, Unit::KiloPascal)),
+            (KiloPascal, Pascal) => Some(Scalar::new(self.value * 1000.0, Unit::Pascal)),
+            (Pascal, KiloPascal) => Some(Scalar::new(self.value / 1000.0, Unit::KiloPascal)),
 
             (_, _) => None,
         }

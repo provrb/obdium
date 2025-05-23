@@ -278,8 +278,6 @@ impl OBD {
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
 
-        println!("raw response: {meta_data:?}");
-
         Ok(meta_data)
     }
 
@@ -545,12 +543,13 @@ impl OBD {
             );
         }
 
-        println!("vin: {vin}");
+        // TODO:
+        vin = "KL4CJASB6JB660929".to_string();
 
-        match VIN::new(vin) {
+        match VIN::new(&vin) {
             Ok(vin) => Some(vin),
             Err(err) => {
-                println!("error when getting vin. {err}");
+                println!("error when getting vin {vin}. {err}");
                 None
             }
         }

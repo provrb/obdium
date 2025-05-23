@@ -79,7 +79,7 @@ impl OBD {
             .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Seconds))
     }
 
-    pub fn engine_runtime_diesel(&mut self) -> Scalar {
+    fn engine_runtime_diesel(&mut self) -> Scalar {
         let response = self.query(Command::new_pid(b"017F"));
         if *response.get_payload_size() == 0 {
             return Scalar::no_data();
@@ -170,6 +170,12 @@ impl OBD {
             .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::NewtonMeters))
     }
 
+    // Returns 5 values.
+    // idle - torque at idle
+    // engine_point_1 - torque at engine point 1
+    // engine_point_2 - torque at engine point 2
+    // engine_point_3 - torque at engine point 3
+    // engine_point_4 - torque at engine point 4
     pub fn engine_percent_torque_data(&mut self) -> (Scalar, Scalar, Scalar, Scalar, Scalar) {
         let response = self.query(Command::new_pid(b"0164"));
         if *response.get_payload_size() == 0 {

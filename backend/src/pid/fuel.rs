@@ -70,7 +70,7 @@ impl FuelSystemStatus {
 }
 
 impl OBD {
-    pub fn short_term_fuel_trim(&mut self, bank: BankNumber) -> Scalar {
+    pub fn short_term_fuel_trim(&mut self, bank: &BankNumber) -> Scalar {
         let mut command = Command::default();
 
         match bank {
@@ -82,7 +82,7 @@ impl OBD {
             .map_no_data(|r| Scalar::new((r.a_value() / 1.28) - 100.0, Unit::Percent))
     }
 
-    pub fn long_term_fuel_trim(&mut self, bank: BankNumber) -> Scalar {
+    pub fn long_term_fuel_trim(&mut self, bank: &BankNumber) -> Scalar {
         let command = match bank {
             BankNumber::Bank1 => Command::new_pid(b"0107"),
             BankNumber::Bank2 => Command::new_pid(b"0109"),

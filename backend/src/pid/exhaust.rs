@@ -36,23 +36,26 @@ impl OBD {
         })
     }
 
-    pub fn boost_pressure_control(&self) -> f32 {
-        todo!()
+    pub fn boost_guage_pressure(&mut self) -> Scalar {
+        let map = self.intake_manifold_abs_pressure();
+        let baro = self.abs_barometric_pressure();
+        
+        // result in kPa, gets converted to PSI. if conversion fails, do no data
+        // conversion never fail. map and baro will always be Unit::Kilopascal 
+        (map - baro).to(Unit::PSI).unwrap_or(Scalar::no_data())
     }
 
-    pub fn turbocharger_rpm(&self) -> f32 {
-        todo!()
+    pub fn turbocharger_rpm(&mut self) -> Scalar {
+        self.query(Command::new_pid(b"0174")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::RPM
+            )
+        })
     }
 
-    pub fn turbocharger_temp(&self) -> f32 {
-        todo!()
-    }
-
-    pub fn exhaust_pressure(&self) -> f32 {
-        todo!()
-    }
-
-    pub fn exhaust_gas_temp(&self) -> f32 {
-        todo!()
+    // TODO!
+    pub fn exhaust_gas_temp(&self) -> Scalar {
+        Scalar::no_data()
     }
 }

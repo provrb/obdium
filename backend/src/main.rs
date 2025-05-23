@@ -1,11 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{thread::{sleep}, time::Duration};
+use std::{sync::{Arc, Mutex}, thread::{sleep}, time::Duration};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use obdium::{
-    obd::{OBD},
-    scalar::{Scalar},
+    obd::OBD, scalar::Scalar, vin::VIN, BankNumber, SensorNumber, Service
 };
 use serde::{Deserialize, Serialize};
 use tauri::{async_runtime::spawn, Manager, Window};
@@ -15,6 +15,13 @@ struct Card {
     name: String,
     unit: String,
     value: f32,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct VehicleInfo {
+    vin: String,
+    make: String,
+    model: String,
 }
 
 #[tauri::command]
@@ -31,292 +38,316 @@ where
     window.emit("update-card", card).unwrap();
 }
 
+fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    // Very High frequency calls
+    {
+        let window = Arc::clone(&window);
+        let obd = Arc::clone(&obd);
+        spawn(async move {
+            loop {
+                sleep(Duration::from_millis(100));
+                
+                let mut obd = obd.lock().unwrap();
+                let rpm = obd.rpm();
+                let engine_load = obd.engine_load();
+                let throttle_pos = obd.throttle_position();
+                let relative_throttle_pos = obd.relative_throttle_pos();
+                let abs_throttle_pos_b = obd.abs_throttle_position_b();
+                let abs_throttle_pos_c = obd.abs_throttle_position_c();
+                let acc_pedal_pos_d = obd.acc_pedal_position_d();
+                let acc_pedal_pos_e = obd.acc_pedal_position_e();
+                let acc_pedal_pos_f = obd.acc_pedal_position_f();
+                drop(obd);
+
+                update_card(&window, "Engine Speed", rpm);
+                update_card(&window, "Engine Load", engine_load);
+                update_card(&window, "Throttle Pos.", throttle_pos);
+                update_card(&window, "Relative Throttle Pos.", relative_throttle_pos);
+                update_card(&window, "Abs. Throttle Pos. (D)", abs_throttle_pos_b);
+                update_card(&window, "Abs. Throttle Pos. (C)", abs_throttle_pos_c);
+                update_card(&window, "Accelerator Pedal Pos. (D)", acc_pedal_pos_d);
+                update_card(&window, "Accelerator Pedal Pos. (E)", acc_pedal_pos_e);
+                update_card(&window, "Accelerator Pedal Pos. (F)", acc_pedal_pos_f);
+            }
+        });
+    }
+
+    // High frequency calls
+    {
+        let window = Arc::clone(&window);
+        let obd = Arc::clone(&obd);
+        spawn(async move {
+            loop {
+                sleep(Duration::from_millis(200));
+                let mut obd = obd.lock().unwrap();
+                let vehicle_speed = obd.vehicle_speed();
+                let engine_fuel_rate = obd.engine_fuel_rate();
+                let engine_oil_pressure = obd.engine_oil_pressure();
+                let drivers_demand_engine_torque = obd.drivers_demand_engine_torque();
+                let actual_engine_torque = obd.actual_engine_torque();
+                let ref_engine_torque = obd.reference_engine_torque();
+                let engine_torque_data = obd.engine_percent_torque_data();
+                let fuel_pressure = obd.fuel_pressure();
+                let fuel_rail_pressure = obd.fuel_rail_pressure();
+                let fuel_rail_gauge_pressure = obd.fuel_rail_guage_pressure();
+                let cylinder_fuel_rate = obd.cylinder_fuel_rate();
+                let maf_air_flow_rate = obd.maf_air_flow_rate();
+                let max_air_flow_rate_maf = obd.max_air_flow_rate_from_maf();
+                let timing_advance = obd.timing_advance();
+                let boost_guage_pressure = obd.boost_guage_pressure();
+                let turbocharger_rpm = obd.turbocharger_rpm();
+                drop(obd);
+
+                update_card(&window, "Vehicle Speed", vehicle_speed);
+                update_card(&window, "Engine Fuel Rate", engine_fuel_rate);
+                update_card(&window, "Engine Oil Pressure", engine_oil_pressure);
+                update_card(&window, "Drivers Demand Engine Torque", drivers_demand_engine_torque);
+                update_card(&window, "Actual Engine Torque", actual_engine_torque);
+                update_card(&window, "Reference Engine Torque", ref_engine_torque);
+                update_card(&window, "Fuel Pressure", fuel_pressure);
+                update_card(&window, "Fuel Rail Pressure", fuel_rail_pressure);
+                update_card(&window, "Fuel Rail Gauge Pressure", fuel_rail_gauge_pressure);
+                update_card(&window, "Cylinder Fuel Rate", cylinder_fuel_rate);
+                update_card(&window, "MAF Airflow Rate", maf_air_flow_rate);
+                update_card(&window, "MAF Maximum Airflow Rate", max_air_flow_rate_maf);
+                update_card(&window, "Timing Advance", timing_advance);
+                update_card(&window, "Boost Gauge Pressure", boost_guage_pressure);
+                update_card(&window, "Turbocharger RPM", turbocharger_rpm);
+                update_card(&window, "Idle Engine Torque", engine_torque_data.0);
+                update_card(&window, "Engine Point 1 Torque", engine_torque_data.1);
+                update_card(&window, "Engine Point 2 Torque", engine_torque_data.2);
+                update_card(&window, "Engine Point 3 Torque", engine_torque_data.3);
+                update_card(&window, "Engine Point 4 Torque", engine_torque_data.4);
+            }
+        });
+    }
+
+    // Frequent calls
+    {
+        let window = Arc::clone(&window);
+        let obd = Arc::clone(&obd);
+        spawn(async move {
+            loop {
+                sleep(Duration::from_millis(500));
+
+                let mut obd = obd.lock().unwrap();
+                let stft_bank_1 = obd.short_term_fuel_trim(&BankNumber::Bank1);
+                let stft_bank_2 = obd.short_term_fuel_trim(&BankNumber::Bank2);
+
+                let o2_sensor_1 = obd.read_oxygen_sensor(&SensorNumber::Sensor1);
+                let o2_sensor_2 = obd.read_oxygen_sensor(&SensorNumber::Sensor2);
+                let o2_sensor_3 = obd.read_oxygen_sensor(&SensorNumber::Sensor3);
+                let o2_sensor_4 = obd.read_oxygen_sensor(&SensorNumber::Sensor4);
+                let o2_sensor_5 = obd.read_oxygen_sensor(&SensorNumber::Sensor5);
+                let o2_sensor_6 = obd.read_oxygen_sensor(&SensorNumber::Sensor6);
+                let o2_sensor_7 = obd.read_oxygen_sensor(&SensorNumber::Sensor7);
+                let o2_sensor_8 = obd.read_oxygen_sensor(&SensorNumber::Sensor8);
+
+                let o2_sensor_af_ratio_1 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor1);
+                let o2_sensor_af_ratio_2 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor2);
+                let o2_sensor_af_ratio_3 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor3);
+                let o2_sensor_af_ratio_4 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor4);
+                let o2_sensor_af_ratio_5 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor5);
+                let o2_sensor_af_ratio_6 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor6);
+                let o2_sensor_af_ratio_7 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor7);
+                let o2_sensor_af_ratio_8 = obd.read_oxygen_sensor_abcd(&SensorNumber::Sensor8);
+
+                drop(obd);
+
+                update_card(&window, "Short Term Fuel Trim (Bank 1)", stft_bank_1);
+                update_card(&window, "Short Term Fuel Trim (Bank 2)", stft_bank_2);
+                update_card(&window, "O2 Sensor (1) AFR", o2_sensor_af_ratio_1.0);
+                update_card(&window, "O2 Sensor (1) Voltage (2)", o2_sensor_af_ratio_1.1);
+                update_card(&window, "O2 Sensor (1) Voltage (1)", o2_sensor_1.0);
+                update_card(&window, "O2 Sensor (1) STFT", o2_sensor_1.1);
+
+                update_card(&window, "O2 Sensor (2) AFR", o2_sensor_af_ratio_2.0);
+                update_card(&window, "O2 Sensor (2) Voltage (2)", o2_sensor_af_ratio_2.1);
+                update_card(&window, "O2 Sensor (2) Voltage (1)", o2_sensor_2.0);
+                update_card(&window, "O2 Sensor (2) STFT", o2_sensor_2.1);
+                
+                update_card(&window, "O2 Sensor (3) AFR", o2_sensor_af_ratio_3.0);
+                update_card(&window, "O2 Sensor (3) Voltage (2)", o2_sensor_af_ratio_3.1);
+                update_card(&window, "O2 Sensor (3) Voltage (1)", o2_sensor_3.0);
+                update_card(&window, "O2 Sensor (3) STFT", o2_sensor_3.1);
+                
+                update_card(&window, "O2 Sensor (4) AFR", o2_sensor_af_ratio_4.0);
+                update_card(&window, "O2 Sensor (4) Voltage (2)", o2_sensor_af_ratio_4.1);
+                update_card(&window, "O2 Sensor (4) Voltage (1)", o2_sensor_4.0);
+                update_card(&window, "O2 Sensor (4) STFT", o2_sensor_4.1);
+                
+                update_card(&window, "O2 Sensor (5) AFR", o2_sensor_af_ratio_5.0);
+                update_card(&window, "O2 Sensor (5) Voltage (2)", o2_sensor_af_ratio_5.1);
+                update_card(&window, "O2 Sensor (5) Voltage (1)", o2_sensor_5.0);
+                update_card(&window, "O2 Sensor (5) STFT", o2_sensor_5.1);
+                
+                update_card(&window, "O2 Sensor (6) AFR", o2_sensor_af_ratio_6.0);
+                update_card(&window, "O2 Sensor (6) Voltage (2)", o2_sensor_af_ratio_6.1);
+                update_card(&window, "O2 Sensor (6) Voltage (1)", o2_sensor_6.0);
+                update_card(&window, "O2 Sensor (6) STFT", o2_sensor_6.1);
+                
+                update_card(&window, "O2 Sensor (7) AFR", o2_sensor_af_ratio_7.0);
+                update_card(&window, "O2 Sensor (7) Voltage (2)", o2_sensor_af_ratio_7.1);
+                update_card(&window, "O2 Sensor (7) Voltage (1)", o2_sensor_7.0);
+                update_card(&window, "O2 Sensor (7) STFT", o2_sensor_7.1);
+                
+                update_card(&window, "O2 Sensor (8) AFR", o2_sensor_af_ratio_8.0);
+                update_card(&window, "O2 Sensor (8) Voltage (2)", o2_sensor_af_ratio_8.1);
+                update_card(&window, "O2 Sensor (8) Voltage (1)", o2_sensor_8.0);
+                update_card(&window, "O2 Sensor (8) STFT", o2_sensor_8.1);
+            }
+        });
+    }
+
+    // Less frequent calls
+    {
+        let window = Arc::clone(&window);
+        let obd = Arc::clone(&obd);
+        spawn(async move {
+            loop {
+                sleep(Duration::from_secs(1));
+
+                let mut obd = obd.lock().unwrap();
+                let ltft_bank_1 = obd.long_term_fuel_trim(&BankNumber::Bank1);
+                let ltft_bank_2 = obd.long_term_fuel_trim(&BankNumber::Bank2);
+                let coolant_temp = obd.coolant_temp();
+                let coolant_temp_sensors = obd.coolant_temp_sensors();
+                let engine_oil_temp = obd.engine_oil_temp(Service::Mode01);
+                let engine_oil_temp_ext = obd.engine_oil_temp(Service::Mode22);
+                let engine_oil_temp_sensors = obd.engine_oil_temp_sensors();
+                let commanded_egr = obd.commanded_egr();
+                let egr_error = obd.egr_error();
+                
+                let catalyst_temp_b1_s1 = obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor1);
+                let catalyst_temp_b1_s2 = obd.catalyst_temp(BankNumber::Bank1, SensorNumber::Sensor2);
+                let catalyst_temp_b2_s1 = obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor1);
+                let catalyst_temp_b2_s2 = obd.catalyst_temp(BankNumber::Bank2, SensorNumber::Sensor2);
+
+                let barometric_pressure = obd.abs_barometric_pressure();
+                let ambient_air_temp = obd.ambient_air_temp();
+                let max_values_for = obd.max_values_for();
+                let fuel_injection_timing = obd.fuel_injection_timing();
+                let commanded_evap_purge = obd.commanded_evap_purge();
+                let evap_sys_vapor_pressure = obd.evap_system_vapor_pressure();
+                let control_mod_voltage = obd.control_module_voltage();
+                let engine_runtime = obd.engine_runtime();
+
+                drop(obd);
+
+                update_card(&window, "Maximum AFR Value", max_values_for.0);
+                update_card(&window, "Maximum O2 Sensor Voltage", max_values_for.1);
+                update_card(&window, "Maximum O2 Sensor Current", max_values_for.2);
+                update_card(&window, "Maximum Intake Abs. Pressure", max_values_for.3);
+                update_card(&window, "Long Term Fuel Trim (Bank 1)", ltft_bank_1);
+                update_card(&window, "Long Term Fuel Trim (Bank 2)", ltft_bank_2);
+                update_card(&window, "Coolant Temp.", coolant_temp);
+                update_card(&window, "Coolant Temp. (Sensors: A)", coolant_temp_sensors.0);
+                update_card(&window, "Coolant Temp. (Sensors: B)", coolant_temp_sensors.1);
+                update_card(&window, "Engine Oil Temp. (Mode 01)", engine_oil_temp);
+                update_card(&window, "Engine Oil Temp. (Mode 22)", engine_oil_temp_ext);
+                update_card(&window, "Engine Oil Temp. (Sensors: A)", engine_oil_temp_sensors.0);
+                update_card(&window, "Engine Oil Temp. (Sensors: B)", engine_oil_temp_sensors.1);
+                update_card(&window, "Commanded EGR", commanded_egr);
+                update_card(&window, "EGR Error", egr_error);
+                update_card(&window, "Catalyst Temp. (Bank 1: Sensor 1)", catalyst_temp_b1_s1);
+                update_card(&window, "Catalyst Temp. (Bank 1: Sensor 2)", catalyst_temp_b1_s2);
+                update_card(&window, "Catalyst Temp. (Bank 2: Sensor 1)", catalyst_temp_b2_s1);
+                update_card(&window, "Catalyst Temp. (Bank 2: Sensor 2)", catalyst_temp_b2_s2);
+                update_card(&window, "Absolute Barometric Pressure", barometric_pressure);
+                update_card(&window, "Ambient Air Temp.", ambient_air_temp);
+                update_card(&window, "Fuel Injection Timing", fuel_injection_timing);
+                update_card(&window, "Commanded EVAP Purge", commanded_evap_purge);
+                update_card(&window, "EVAP System Vapor Pressure", evap_sys_vapor_pressure);
+                update_card(&window, "Control Module Voltage", control_mod_voltage);
+                update_card(&window, "Engine Runtime (Session)", engine_runtime);
+            }
+        });
+    }
+
+    // Rare calls
+    {
+        let window = Arc::clone(&window);
+        let obd = Arc::clone(&obd);
+        spawn(async move {
+            loop {
+                sleep(Duration::from_secs(5));
+
+                let mut obd = obd.lock().unwrap();
+                let warm_ups = obd.warm_ups_since_codes_cleared();
+                let dist_since = obd.distance_traveled_since_codes_cleared();
+                let dist_with = obd.distance_traveled_with_mil();
+                let time_since = obd.time_since_codes_cleared();
+                let time_with = obd.time_run_with_mil();
+                let odometer = obd.odometer();
+                let ethanol_fuel_percent = obd.ethanol_fuel_percentage();
+                
+                drop(obd);
+
+                update_card(&window, "Warm-Ups Since Codes Cleared", warm_ups);
+                update_card(&window, "Dist. Since Codes Cleared", dist_since);
+                update_card(&window, "Dist. With Check Engine Light", dist_with);
+                update_card(&window, "Time Since Codes Cleared", time_since);
+                update_card(&window, "Time With Check Engine Light", time_with);
+                update_card(&window, "Odometer", odometer);
+                update_card(&window, "Ethanol Fuel Percentage", ethanol_fuel_percent);
+            }
+        });
+    }
+}
+
+fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd = Arc::clone(&obd);
+    let window = Arc::clone(&window);
+    spawn(async move {
+        let mut obd = obd.lock().unwrap();
+
+        // send the vin and vehicle details to the frontend
+        match obd.get_vin() {
+            Some(vin) => {
+                let v_info = VehicleInfo {
+                    vin: vin.get_vin().to_string(),
+                    make: vin.get_vehicle_make().unwrap_or("??".to_string()),
+                    model: vin.get_vehicle_model().unwrap_or("??".to_string()),
+                };
+                
+                window.emit("vehicle-details", v_info).unwrap();
+            }
+            None => {
+                println!("error: getting vin. vin is none.");
+            }
+        };
+    });
+}
+
 fn main() {
     tauri::Builder::default()
-        .setup(|app| {
+        .setup(|app| {            
             let window = app.get_window("main").unwrap();
-            let mut obd = OBD::new();
-            obd.connect("COM4", 38400).unwrap();
 
-            sleep(Duration::from_secs(1));
-
-            // High frequency calls
+            let frontend_ready = Arc::new(AtomicBool::new(false));
             spawn(async move {
-                loop {
-                    let rpm = obd.rpm();
-                    let engine_load = obd.engine_load();
-                    let throttle_pos = obd.throttle_position();
-                    let relative_throttle_pos = obd.relative_throttle_pos();
-                    let abs_throttle_pos_b = obd.abs_throttle_position_b();
-                    let abs_throttle_pos_c = obd.abs_throttle_position_c();
-                    let acc_pedal_pos_d = obd.acc_pedal_position_d();
-                    let acc_pedal_pos_e = obd.acc_pedal_position_e();
-                    let acc_pedal_pos_f = obd.acc_pedal_position_f();
-                    let vehicle_speed = obd.vehicle_speed();
-                    update_card(&window, "Engine Speed", rpm);
-                    update_card(&window, "Engine Load", engine_load);
-                    update_card(&window, "Throttle Pos.", throttle_pos);
-                    update_card(&window, "Abs. Throttle Pos. (D)", abs_throttle_pos_b);
-                    update_card(&window, "Abs. Throttle Pos. (C)", abs_throttle_pos_c);
-                    update_card(&window, "Accelerator Pedal Pos. (D)", acc_pedal_pos_d);
-                    update_card(&window, "Accelerator Pedal Pos. (E)", acc_pedal_pos_e);
-                    update_card(&window, "Accelerator Pedal Pos. (F)", acc_pedal_pos_f);
-                    update_card(&window, "Vehicle Speed", vehicle_speed);
-                    
-                    sleep(Duration::from_millis(400));
+                let frontend_ready_listener = Arc::clone(&frontend_ready);
+                let _events = window.listen("frontend-loaded", move |_| {
+                    frontend_ready_listener.store(true, Ordering::SeqCst);
+                });
 
+                while !frontend_ready.load(Ordering::SeqCst) {
+                    sleep(Duration::from_millis(100));
                 }
+
+                let mut obd = OBD::new();
+                obd.connect("COM4", 38400).unwrap();
+
+                // Arc's
+                let obd = Arc::new(Mutex::new(obd));
+                let window = Arc::new(window);
+
+                track_data(&window, &obd);
+                send_vehicle_details(&window, &obd);
             });
 
-            spawn(async move {
-                loop {
-                    sleep(Duration::from_secs(1));
-                }
-            });
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
-// let mut obd = OBD::new();
-// //obd.replay_requests(true);
-// //obd.record_requests(true);
-// obd.connect("COM4", 38400)?;
-
-// println!("\n{} DIAGNOSTICS {}", "=".repeat(24), "=".repeat(24));
-// let supported_pids = obd.get_service_supported_pids("01");
-
-// println!("Supported pids for ECUs");
-// for (ecu_name, pids) in supported_pids.iter() {
-//     print!("ECU {ecu_name}:");
-//     for (index, pid) in pids.iter().enumerate() {
-//         if index % 10 == 0 {
-//             print!("\n\t");
-//         }
-
-//         print!("{pid} ");
-//         if index == pids.len() - 1 {
-//             println!()
-//         }
-//     }
-// }
-
-// println!("Check engine light: {}", obd.check_engine_light());
-// println!("Number of trouble codes: {}", obd.get_num_trouble_codes());
-
-// let codes = obd.get_trouble_codes();
-// for code in codes {
-//     println!("{}\n", code);
-// }
-
-// println!("OBD standard: {}", obd.obd_standards());
-// println!("Auxiliary input status: {}", obd.aux_input_status());
-// println!("Control module voltage: {}", obd.control_module_voltage());
-// println!(
-//     "Distance traveled with malfunction indicator lamp: {}",
-//     obd.distance_traveled_with_mil()
-// );
-// println!(
-//     "TIme run with malfunction indicator lamp: {}",
-//     obd.time_run_with_mil()
-// );
-// println!(
-//     "Time since codes cleared: {}",
-//     obd.time_since_codes_cleared()
-// );
-// println!(
-//     "Warm-ups since codes cleared: {}",
-//     obd.warm_ups_since_codes_cleared()
-// );
-// println!("Protocol: {}", obd.get_protocol().unwrap());
-
-// println!();
-// print_tests_table("Common tests", &obd.get_common_tests_status());
-// print_tests_table("Advanced tests", &obd.get_advanced_tests_status());
-
-// println!("{} ENGINE {}", "=".repeat(24), "=".repeat(24));
-// println!("Engine type: {}", obd.get_engine_type());
-// println!("Engine speed: {}", obd.rpm());
-// println!("Engine load: {}", obd.engine_load());
-
-// let coolant_temp = obd.coolant_temp_sensors();
-// println!("Coolant temperature: {}", obd.coolant_temp());
-// println!(
-//     "Coolant temperatue from sensors - Sensor 1: {} - Sensor 2: {} ",
-//     coolant_temp.0, coolant_temp.1
-// );
-// println!("Engine fuel rate: {}", obd.engine_fuel_rate());
-// println!("Engine runtime: {}", obd.engine_runtime());
-// println!("Engine runtime (diesel): {}", obd.engine_runtime_diesel());
-// println!("Engine mileage: {}", obd.odometer());
-
-// let oil_temp = obd.engine_oil_temp_sensors();
-// println!(
-//     "Engine oil temperature (Mode 1): {}",
-//     obd.engine_oil_temp(Service::Mode01)
-// );
-// println!(
-//     "Engine oil temperature (Mode 22): {}",
-//     obd.engine_oil_temp(Service::Mode22)
-// );
-// println!(
-//     "Engine oil temperatue from sensors - Sensor 1: {} - Sensor 2: {} ",
-//     oil_temp.0, oil_temp.1
-// );
-// println!("Engine oil pressure: {}", obd.engine_oil_pressure()); // Mode 22 PID
-
-// println!(
-//     "Drivers demand engine torque: {}",
-//     obd.drivers_demand_engine_torque()
-// );
-// println!("Actual engine torque: {}", obd.actual_engine_torque());
-// println!("Reference engine torque: {}", obd.reference_engine_torque());
-
-// let percent_torque_data = obd.engine_percent_torque_data();
-// println!("Engine percent torque data:");
-// println!("\tIdle: {}", percent_torque_data.0);
-// println!("\tEngine point 1: {}", percent_torque_data.1);
-// println!("\tEngine point 2: {}", percent_torque_data.2);
-// println!("\tEngine point 3: {}", percent_torque_data.3);
-// println!("\tEngine point 4: {}", percent_torque_data.4);
-
-// println!("\n{} FUEL SYSTEM {}", "=".repeat(24), "=".repeat(24));
-
-// println!("Short term fuel trim:");
-// println!("\tBank 1: {}", obd.short_term_fuel_trim(BankNumber::Bank1));
-// println!("\tBank 2: {}", obd.short_term_fuel_trim(BankNumber::Bank2));
-
-// println!("Long term fuel trim:");
-// println!("\tBank 1: {}", obd.long_term_fuel_trim(BankNumber::Bank1));
-// println!("\tBank 2: {}", obd.long_term_fuel_trim(BankNumber::Bank2));
-
-// let fuel_system_status = obd.fuel_system_status();
-// println!("Fuel system status:");
-// println!("Fuel system 1: {:?}", fuel_system_status.0);
-// println!("Fuel system 2: {:?}", fuel_system_status.1);
-
-// println!("Fuel pressure: {}", obd.fuel_pressure());
-// println!("Fuel tank level: {}", obd.fuel_tank_level());
-// println!("Fuel rail pressure: {}", obd.fuel_rail_pressure());
-// println!(
-//     "Fuel rail gauge pressure: {}",
-//     obd.fuel_rail_guage_pressure()
-// );
-// println!("Fuel type: {:?}", obd.fuel_type());
-// println!("Ethanol fuel percentage: {}", obd.ethanol_fuel_percentage());
-// println!("Fuel injection timing: {}", obd.fuel_injection_timing());
-// println!("Commanded EVAP purge: {}", obd.commanded_evap_purge());
-// println!(
-//     "EVAP system vapor pressure: {}",
-//     obd.evap_system_vapor_pressure()
-// );
-// println!("Cylinder fuel rate: {}", obd.cylinder_fuel_rate());
-
-// println!("\n{} SENSOR DATA {}", "=".repeat(24), "=".repeat(24));
-// println!("Vehicle speed: {}", obd.vehicle_speed());
-// println!("Timing advance: {}", obd.timing_advance());
-
-// println!("Throttle position: {}", obd.throttle_position());
-// println!(
-//     "Relative throttle position: {}",
-//     obd.relative_throttle_pos()
-// );
-// println!(
-//     "Absolute throttle position B: {}",
-//     obd.abs_throttle_position_b()
-// );
-// println!(
-//     "Absolute throttle position C: {}",
-//     obd.abs_throttle_position_c()
-// );
-// println!(
-//     "Accelerator pedal position D: {}",
-//     obd.acc_pedal_position_d()
-// );
-// println!(
-//     "Accelerator pedal position E: {}",
-//     obd.acc_pedal_position_e()
-// );
-// println!(
-//     "Accelerator pedal position F: {}",
-//     obd.acc_pedal_position_f()
-// );
-
-// // Read oxcygen sensors 1-8
-// let sensors = [
-//     SensorNumber::Sensor1,
-//     SensorNumber::Sensor2,
-//     SensorNumber::Sensor3,
-//     SensorNumber::Sensor4,
-//     SensorNumber::Sensor5,
-//     SensorNumber::Sensor6,
-//     SensorNumber::Sensor7,
-//     SensorNumber::Sensor8,
-// ];
-
-// let mut data = Vec::new();
-
-// for (i, sensor) in sensors.iter().enumerate() {
-//     let (voltage1, trim) = obd.read_oxygen_sensor(sensor);
-//     let (afr, voltage2) = obd.o2_sensor_air_fuel_ratio(sensor);
-//     data.push((i + 1, voltage1, trim, afr, voltage2));
-// }
-
-// println!("\n{} AIR DATA {}", "=".repeat(24), "=".repeat(24));
-// println!("Oxygen Sensors:");
-// println!(
-//     "{:<8} | {:<10} | {:<22} | {:<22}",
-//     "Sensor", "Voltage", "Short Term Trim (%)", "AFR / Voltage"
-// );
-// println!("{:-<8}-+-{:-<10}-+-{:-<22}-+-{:-<22}", "", "", "", "");
-
-// for (sensor_id, v1, trim, afr, v2) in data {
-//     println!(
-//         "{:<8} | {:<10} | {:<22} | {:<22}",
-//         sensor_id,
-//         format!("{v1}"),
-//         format!("{trim}"),
-//         format!("{afr} / {v2}")
-//     );
-// }
-
-// let maf = obd.read_mass_air_flow_sensor();
-// println!("Mass air flow sensor:");
-// println!("\tSensor A: {}", maf.0);
-// println!("\tSensor B: {}", maf.1);
-
-// let max_values_for = obd.max_values_for();
-// println!("Maximum values for:");
-// println!("\tFuel-air equivalance ratio: {}", max_values_for.0);
-// println!("\tOxygen sensor voltage: {}", max_values_for.1);
-// println!("\tOxygen sensor current: {}", max_values_for.2);
-// println!("\tIntake manifold absolute pressure: {}", max_values_for.3);
-
-// println!("Intake air temperature: {}", obd.intake_air_temp());
-// println!("Mass air-flow sensor rate: {}", obd.maf_air_flow_rate());
-// println!("Ambient air temperature: {}", obd.ambient_air_temp());
-// println!(
-//     "Maximum air-flow rate from mass air-flow sensor: {}",
-//     obd.max_air_flow_rate_from_maf()
-// );
-
-// println!("Secondary air status: {:?}", obd.secondary_air_status());
-// println!(
-//     "Absolute barometric pressure: {}",
-//     obd.abs_barometric_pressure()
-// );
-
-// println!(
-//     "\n{} SENDING MANUAL COMMANDS {}",
-//     "=".repeat(24),
-//     "=".repeat(24)
-// );
-
-// if let Some(vin) = obd.get_vin() {
-//     obd.test_mode_22_pids(&vin);
-// }
-
-// obd.read_from_user_input();
-
-// Ok(())

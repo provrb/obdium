@@ -1,6 +1,10 @@
-const { listen } = window.__TAURI__.event;
+const { listen, emit } = window.__TAURI__.event;
 
-console.log("hello");
+// When frontend gets loaded
+// alert the backend with an event.
+window.addEventListener('DOMContentLoaded', () => {
+    window.__TAURI__.event.emit('frontend-loaded');
+});
 
 listen("update-card", (event) => {
     const cards = document.querySelectorAll('.card');
@@ -69,4 +73,12 @@ listen("update-card", (event) => {
             }
         }
     });
+});
+
+listen("vehicle-details", (event) => {
+    const vin = document.querySelector(".vin")
+    const makeModel = document.querySelector(".car-model");
+    
+    vin.textContent = event.payload.vin.toUpperCase();
+    makeModel.textContent = (event.payload.make + " " + event.payload.model).toUpperCase();
 });
