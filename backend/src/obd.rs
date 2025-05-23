@@ -543,9 +543,6 @@ impl OBD {
             );
         }
 
-        // TODO:
-        vin = "KL4CJASB6JB660929".to_string();
-
         match VIN::new(&vin) {
             Ok(vin) => Some(vin),
             Err(err) => {
