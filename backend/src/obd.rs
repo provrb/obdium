@@ -588,7 +588,7 @@ impl OBD {
         }
 
         match self.send_command(&mut request) {
-            Ok(_) => {}
+            Ok(_) => (),
             Err(err) => {
                 println!(
                     "{}\tAT: '{}' - PID: '{}' ",
