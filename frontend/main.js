@@ -52,6 +52,11 @@ listen('update-card', (event) => {
     }
 
     cards.forEach(card => {
+        // Don't update card data.
+        if (card.classList.contains('dimmed')) {
+            return;
+        }
+
         const h3 = card.querySelector('h3');
         if (!h3) return;
 

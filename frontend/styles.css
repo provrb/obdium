@@ -1,0 +1,231 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #121212;
+    color: #f0e9f9;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 60px;
+    background-color: #0F0F0F;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.main {
+    flex: 1;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header .info {
+    font-size: 1.2rem;
+}
+
+.search-container {
+    position: relative;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    background-color: #151515;
+    border-radius: 10px;
+}
+
+.search {
+    position: relative;
+    font-size: .95rem;
+    background-color: #151515;
+    border-radius: 10px;
+    padding: 6px 20px;
+    width: 100%;
+    height: 35px;
+    border: none;
+    outline: none;
+    color: #F7F3FF;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.search::placeholder {
+    color: #49454F;
+    opacity: 1;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: #151515;
+    border-radius: 12px;
+    padding: 28px 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.card:hover {
+    background-color: #1d1d1d;
+    box-shadow: 0 4px 20px #1d1d1d;
+}
+
+.card h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    color: #D4DADF;
+}
+
+.card .value {
+    font-size: 3.4rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    color: #F7F3FF;
+}
+
+.card .unit {
+    font-size: 1.3rem;
+    font-weight: 200;
+    color: #D4DADF;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.connection {
+    font-size: 0.95rem;
+    color: #F7F3FF;
+    font-weight: 500;
+}
+
+.car-model {
+    font-size: 1.5rem;
+    color: #F7F3FF;
+    font-weight: 600;
+}
+
+.vin {
+    font-size: 0.85rem;
+    color: #BDBDBD;
+    margin-left: 2px;
+    font-weight: 500;
+}
+
+.sidebar-button {
+    width: 40px;
+    height: 40px;
+    background-color: #101010;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-button:hover {
+    background-color: #2c2c2c;
+}
+
+.sidebar-button img {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    flex: 1;
+
+    overflow-y: auto;
+
+    align-content: start;
+}
+
+.grid::-webkit-scrollbar {
+    width: 13px;
+}
+
+.grid::-webkit-scrollbar-track {
+    background: #0F0F0F;
+    border-radius: 10px;
+}
+
+.grid::-webkit-scrollbar-thumb {
+    background-color: #29272c;
+    border-radius: 10px;
+    border: 2px solid #0F0F0F;
+}
+
+.grid::-webkit-scrollbar-thumb:hover {
+    background-color: #49454F;
+}
+
+.connection {
+    font-size: 0.95rem;
+    color: #F7F3FF;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+#connection-icon {
+    width: 1em;
+    height: 1em;
+    object-fit: contain;
+}
+
+.sidebar-button.active-button {
+    background-color: #2c2c2c;
+}
+
+.card.dimmed * {
+  opacity: 0.15 !important;
+}
