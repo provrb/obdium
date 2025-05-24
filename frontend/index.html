@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="sidebar">
     <button class="sidebar-button" data-screen="dashboard"><img src="/assets/table.png" alt="Dashboard"></button>
@@ -32,8 +33,14 @@
         <img src="/assets/search.png" alt="Search" class="search-icon">
       </div>
     </div>
+    <!-- <div id="dashboard" class="screen" style="display: grid-row;">
+      <div class="pid-row">
+        <button class="arrow-icon"><img src="/assets/arrow-icon.png"> </button>
+        <span class="name">ENGINE RPM</span>
+      </div>
+    </div> -->
     <div id="dashboard" class="grid" style="display: grid;"></div>
-    <div id="edit" class="screen" style="display: none;">Edit PIDs</div>
+    <div id="edit" class="screen" style="display: none;"></div>
     <div id="graphs" class="screen" style="display: none;">Graphs</div>
     <div id="vin" class="screen" style="display: none;">VIN Decoder</div>
     <div id="settings" class="screen" style="display: none;">Settings</div>
@@ -44,7 +51,7 @@
 <script>
 
   /// Search bar functionality for dashboard
-  
+
   const searchInput = document.querySelector('.search');
 
   searchInput.addEventListener('input', () => {
@@ -59,10 +66,10 @@
   });
 
   /// Toggle different screens when sidebar buttons are clicked
-  
+
   const screens = document.querySelectorAll('.screen, .grid');
   const buttons = document.querySelectorAll('.sidebar-button');
-  
+
   buttons.forEach(button => {
     // Default screen is dashboard
     if (button.dataset.screen == 'dashboard') {
@@ -71,7 +78,7 @@
 
     button.addEventListener('click', () => {
       const target = button.dataset.screen;
-      
+
       screens.forEach(screen => {
         screen.style.display = screen.id === target ? (screen.classList.contains('grid') ? 'grid' : 'block') : 'none';
       });

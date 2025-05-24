@@ -34,7 +34,6 @@ struct ConnectionStatus {
 }
 
 fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
-    // High frequency calls
     critical_frequency_calls(window, obd);
     high_frequency_calls(window, obd);
     frequent_calls(window, obd);
@@ -67,29 +66,32 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-fn connect_obd(window: &Window) -> OBD {
+fn connect_obd(window: &Window) -> Option<OBD> {
     // Try to connect obd
     let mut obd = OBD::new();
 
-    let conn_status = match obd.connect("COM4", 38400) {
+    match obd.connect("COM4", 38400) {
         Ok(()) => {
             let port = obd.serial_port_name().unwrap_or_default();
             let band = obd.serial_port_baud_rate().unwrap_or_default();
-            ConnectionStatus {
+            let conn_status = ConnectionStatus {
                 connected: true,
                 message: format!("Connected to port {port} on {band} band"),
                 serial_port: port,
-            }
+            };
+            let _ = window.emit("connection-status", conn_status);
+            Some(obd)
         }
-        Err(error) => ConnectionStatus {
-            connected: false,
-            message: format!("Failed to connect. Error: {error}"),
-            serial_port: "".to_string(),
-        },
-    };
-
-    window.emit("connection-status", conn_status).unwrap();
-    obd
+        Err(error) => {
+            let conn_status = ConnectionStatus {
+                connected: false,
+                message: format!("Failed to connect. Error: {error}"),
+                serial_port: "".to_string(),
+            };
+            let _ = window.emit("connection-status", conn_status);
+            None
+        }
+    }
 }
 
 fn main() {
@@ -110,12 +112,13 @@ fn main() {
                 }
 
                 let obd = connect_obd(&window);
-
-                // Arc's
-                let obd = Arc::new(Mutex::new(obd));
-                let window = Arc::new(window);
-                send_vehicle_details(&window, &obd);
-                track_data(&window, &obd);
+                if let Some(obd) = obd {
+                    // Arc's
+                    let obd = Arc::new(Mutex::new(obd));
+                    let window = Arc::new(window);
+                    send_vehicle_details(&window, &obd);
+                    track_data(&window, &obd);
+                }
             });
 
             Ok(())

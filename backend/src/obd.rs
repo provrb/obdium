@@ -107,7 +107,15 @@ impl OBD {
             .open()
             .ok();
 
-        self.init()
+        if self.connected() {
+            self.init()
+        } else {
+            Err(Error::ConnectionFailed)
+        }
+    }
+
+    pub fn connected(&self) -> bool {
+        self.connection.is_some()
     }
 
     pub fn serial_port_name(&self) -> Option<String> {

@@ -35,6 +35,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
 }
 
 .header {
@@ -99,6 +100,7 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 8px;
+    user-select: none;
 }
 
 .card:hover {
@@ -127,6 +129,36 @@ body {
     font-size: 1.3rem;
     font-weight: 200;
     color: #D4DADF;
+}
+
+.pid-row {
+    background-color: #151515;
+    height: 10px;
+    border-radius: 12px;
+    padding: 22px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.pid-row .name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding-left: 24px;
+    color: #D4DADF;
+}
+
+.arrow-icon {
+    width: 12px;
+    height: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+    
+.pid-row.expanded .arrow-icon {
+    transform: rotate(45deg);
 }
 
 .info {
