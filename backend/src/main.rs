@@ -52,10 +52,28 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         // send the vin and vehicle details to the frontend
         match obd.get_vin() {
             Some(vin) => {
+                let make = match vin.get_vehicle_make() {
+                    Ok(make) => make,
+                    Err(err) => {
+                        println!("failed to resolve vehicle make from vin: {}", vin.get_vin());
+                        println!("error: {err}");
+                        "??".to_string()
+                    }
+                };
+
+                let model = match vin.get_vehicle_model() {
+                    Ok(model) => model,
+                    Err(err) => {
+                        println!("failed to resolve vehicle model from vin: {}", vin.get_vin());
+                        println!("error: {err}");
+                        "??".to_string()
+                    }
+                };
+
                 let v_info = VehicleInfo {
                     vin: vin.get_vin().to_string(),
-                    make: vin.get_vehicle_make().unwrap_or("??".to_string()),
-                    model: vin.get_vehicle_model().unwrap_or("??".to_string()),
+                    make,
+                    model,
                 };
 
                 window.emit("vehicle-details", v_info).unwrap();

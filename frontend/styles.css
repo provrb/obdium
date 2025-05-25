@@ -196,7 +196,7 @@ body {
     margin-top: -12px;
     margin-bottom: 10px;
     transform: translateY(-10px);
-    box-shadow: 0 5px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 7px 0px rgba(0, 0, 0, 0.3);
     border-radius: 0 0 12px 12px;
     font-size: 0.95rem;
     color: #ccc;

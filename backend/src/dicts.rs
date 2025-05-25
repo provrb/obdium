@@ -14,7 +14,7 @@ pub const PID_INFOS: &[PidInfo] = &[
     PidInfo { pid: "02", mode: "01", unit: "", pid_name: "DTC that caused freeze frame to be stored", formula: "", },
     PidInfo { pid: "03", mode: "01", unit: "", pid_name: "Fuel system status", formula: "", },
     PidInfo { pid: "04", mode: "01", unit: "%", pid_name: "Calculated engine load", formula: "100/255 * A", },
-    PidInfo { pid: "05", mode: "01", unit: "C", pid_name: "Engine coolant temperature", formula: "A - 40", },
+    PidInfo { pid: "05", mode: "01", unit: "°C", pid_name: "Engine coolant temperature", formula: "A - 40", },
     PidInfo { pid: "06", mode: "01", unit: "%", pid_name: "Short term fuel trim Bank 1", formula: "(100/128 * A) - 100", },
     PidInfo { pid: "07", mode: "01", unit: "%", pid_name: "Long term fuel trim Bank 1", formula: "(100/128 * A) - 100", },
     PidInfo { pid: "08", mode: "01", unit: "%", pid_name: "Short term fuel trim Bank 2", formula: "(100/128 * A) - 100", },
