@@ -7,7 +7,9 @@
   <title>OBDII Dashboard</title>
   <script type="module" src="main.js"></script>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;@0,550;@0,600;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
@@ -33,18 +35,18 @@
         <img src="/assets/search.png" alt="Search" class="search-icon">
       </div>
     </div>
-    <!-- <div id="dashboard" class="screen" style="display: grid-row;">
-      <div class="pid-row">
-        <button class="arrow-icon"><img src="/assets/arrow-icon.png"> </button>
-        <span class="name">ENGINE RPM</span>
+    <div id="dashboard" class="screen" style="display: flex;">
+      <div id="dashboard-header" class="screen-label">DASHBOARD (0)</div>
+      <div class="grid" id="dashboard-cards" style="display: grid;">
       </div>
-    </div> -->
-    <div id="dashboard" class="grid" style="display: grid;"></div>
-    <div id="edit" class="screen" style="display: none;"></div>
+    </div>
+    <div id="edit" class="screen" style="display: none;">
+      <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
+      <div id="pid-list" class="pid-row-scroll"></div>
+    </div>
     <div id="graphs" class="screen" style="display: none;">Graphs</div>
     <div id="vin" class="screen" style="display: none;">VIN Decoder</div>
     <div id="settings" class="screen" style="display: none;">Settings</div>
-  </div>
   </div>
 </body>
 
@@ -57,17 +59,27 @@
   searchInput.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase();
     const cards = document.querySelectorAll('.card');
+    const rows = document.querySelectorAll('.pid-row');
 
+    // Filter cards in dashboard
     cards.forEach(card => {
       const title = card.querySelector('h3').textContent.toLowerCase();
       const match = title.includes(query);
       card.style.display = match ? 'flex' : 'none';
     });
+
+    // Filter PID rows in edit screen
+    rows.forEach(row => {
+      const name = row.querySelector('.name').textContent.toLowerCase();
+      const match = name.includes(query);
+      const group = row.closest('.pid-group');
+      group.style.display = match ? 'block' : 'none';
+    });
   });
 
   /// Toggle different screens when sidebar buttons are clicked
 
-  const screens = document.querySelectorAll('.screen, .grid');
+  const screens = document.querySelectorAll('.screen');
   const buttons = document.querySelectorAll('.sidebar-button');
 
   buttons.forEach(button => {
@@ -80,7 +92,7 @@
       const target = button.dataset.screen;
 
       screens.forEach(screen => {
-        screen.style.display = screen.id === target ? (screen.classList.contains('grid') ? 'grid' : 'block') : 'none';
+        screen.style.display = screen.id === target ? (screen.classList.contains('grid') ? 'flex' : 'flex') : 'none';
       });
 
       // Show different background color for clicked button
@@ -91,7 +103,7 @@
 
   /// Clicking cards makes them not report data and dims them
 
-  const dashboard = document.getElementById('dashboard');
+  const dashboard = document.getElementById('dashboard-cards');
 
   dashboard.addEventListener('click', (e) => {
     const card = e.target.closest('.card');

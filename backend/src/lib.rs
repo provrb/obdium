@@ -1,4 +1,5 @@
 mod cmd;
+pub mod dicts;
 pub mod obd;
 mod pid;
 mod replay;

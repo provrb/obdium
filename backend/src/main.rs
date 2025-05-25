@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use obdium::dicts::PID_INFOS;
 use obdium::obd::OBD;
 use serde::{Deserialize, Serialize};
 use stats::{
@@ -63,6 +64,15 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 println!("error: getting vin. vin is none.");
             }
         };
+    }); 
+}
+
+fn send_pids(window: &Arc<Window>) {
+    let window = Arc::clone(window);
+    spawn(async move {
+        for pid in PID_INFOS {
+            let _ = window.emit("add-pid-info", pid);
+        }
     });
 }
 
@@ -111,13 +121,19 @@ fn main() {
                     sleep(Duration::from_millis(100));
                 }
 
-                let obd = connect_obd(&window);
+                let window_arc = Arc::new(window);
+                send_pids(&window_arc);
+
+                let obd = connect_obd(&window_arc);
                 if let Some(obd) = obd {
                     // Arc's
                     let obd = Arc::new(Mutex::new(obd));
-                    let window = Arc::new(window);
-                    send_vehicle_details(&window, &obd);
-                    track_data(&window, &obd);
+
+                    // Usually called once
+                    send_vehicle_details(&window_arc, &obd);
+
+                    // Live tracking data
+                    track_data(&window_arc, &obd);
                 }
             });
 
