@@ -243,9 +243,12 @@ impl OBD {
         }
 
         cmd.push(b'\r');
-        stream
-            .write_all(&cmd)
-            .map_err(|_| Error::ELM327WriteError)?;
+        match stream.write_all(&cmd) {
+            Ok(()) => (),
+
+            // Connection dropped
+            Err(_) => self.connection = None,
+        }
 
         Ok(())
     }

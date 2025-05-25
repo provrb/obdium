@@ -93,10 +93,11 @@ listen('connection-status', (event) => {
     const connection_icon = document.getElementById("connection-icon");
 
     if (event.payload.connected) {
-        connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port;
+        connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port.toUpperCase();
         connection_icon.src = "/assets/connected.png";
     } else {
         connection_label.textContent = "ELM327 NOT CONNECTED";
+        connection_icon.src = "/assets/not-connected.png";
     }
 
     console.log(event.payload.message);

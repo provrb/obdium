@@ -64,7 +64,10 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 let model = match vin.get_vehicle_model() {
                     Ok(model) => model,
                     Err(err) => {
-                        println!("failed to resolve vehicle model from vin: {}", vin.get_vin());
+                        println!(
+                            "failed to resolve vehicle model from vin: {}",
+                            vin.get_vin()
+                        );
                         println!("error: {err}");
                         "??".to_string()
                     }
@@ -82,7 +85,7 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 println!("error: getting vin. vin is none.");
             }
         };
-    }); 
+    });
 }
 
 fn send_pids(window: &Arc<Window>) {
@@ -94,29 +97,43 @@ fn send_pids(window: &Arc<Window>) {
     });
 }
 
+fn send_connection_status(window: &Window, obd: &OBD, message: String, connected: bool) {
+    let port = obd.serial_port_name().unwrap_or_default();
+    let conn_status = ConnectionStatus {
+        connected,
+        message,
+        serial_port: port,
+    };
+
+    let _ = window.emit("connection-status", conn_status);
+}
+
 fn connect_obd(window: &Window) -> Option<OBD> {
     // Try to connect obd
     let mut obd = OBD::new();
 
     match obd.connect("COM4", 38400) {
         Ok(()) => {
-            let port = obd.serial_port_name().unwrap_or_default();
             let band = obd.serial_port_baud_rate().unwrap_or_default();
-            let conn_status = ConnectionStatus {
-                connected: true,
-                message: format!("Connected to port {port} on {band} band"),
-                serial_port: port,
-            };
-            let _ = window.emit("connection-status", conn_status);
+            let port = obd.serial_port_name().unwrap_or_default();
+
+            send_connection_status(
+                window,
+                &obd,
+                format!("Connected to port {port} on {band} band"),
+                true,
+            );
+
             Some(obd)
         }
         Err(error) => {
-            let conn_status = ConnectionStatus {
-                connected: false,
-                message: format!("Failed to connect. Error: {error}"),
-                serial_port: "".to_string(),
-            };
-            let _ = window.emit("connection-status", conn_status);
+            send_connection_status(
+                window,
+                &obd,
+                format!("Failed to connect. Error: {error}"),
+                false,
+            );
+
             None
         }
     }
@@ -152,6 +169,23 @@ fn main() {
 
                     // Live tracking data
                     track_data(&window_arc, &obd);
+
+                    // spawn thread to keep checking if obd disconnects
+                    spawn(async move {
+                        loop {
+                            sleep(Duration::from_secs(1));
+                            let obd = obd.lock().unwrap();
+                            if !obd.connected() {
+                                send_connection_status(
+                                    &window_arc,
+                                    &obd,
+                                    "Connection dropped".to_string(),
+                                    false,
+                                );
+                                break;
+                            }
+                        }
+                    });
                 }
             });
 
