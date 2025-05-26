@@ -71,6 +71,7 @@ struct VehicleInfoExtended {
     airbag_locations_curtain: String,
     backup_camera: String,
     body_style: String,
+    vehicle_manufacturer: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -245,6 +246,7 @@ fn listen_decode_vin(window: &Window) {
             airbag_locations_curtain: vin.airbag_locations_curtain().unwrap_or("N/A".into()),
             backup_camera: vin.backup_camera().unwrap_or("N/A".into()),
             drive_type: vin.get_drive_type().unwrap_or("N/A".into()),
+            vehicle_manufacturer: vin.get_vehicle_manufacturer().unwrap_or("N/A".into())
         };
 
         let _ = window_arc.emit("decode-vin", v_info);
