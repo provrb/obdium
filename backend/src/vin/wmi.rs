@@ -101,15 +101,15 @@ impl VIN {
     }
 
     pub fn get_make_id(&self) -> Result<i64, Error> {
-        let wmi = self.get_wmi();
+        let wmi_id = self.get_wmi_id()?;
         let con = self.vpic_connection()?;
-        let query = "SELECT MakeId FROM Wmi WHERE Wmi = ?";
+        let query = "SELECT MakeId FROM Wmi_Make WHERE WmiId = ?";
         let mut statement = con
             .prepare(query)
             .map_err(|_| Error::VPICQueryError(query))?;
 
         statement
-            .bind((1, wmi))
+            .bind((1, wmi_id))
             .map_err(|_| Error::VPICQueryError(query))?;
 
         match statement.next() {

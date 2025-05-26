@@ -89,7 +89,33 @@ impl VIN {
         key_chars.next().is_none()
     }
 
-    /// Returns a row from Pattern table
+    pub fn get_organization_id(&self) -> Result<i64, Error> {
+        let con = self.vpic_connection()?;
+        let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and VinSchemaId = ?";
+        let wmi_id = self.get_wmi_id()?;
+        let vin_schema_id = self.get_vin_schema_id()?;
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        statement
+            .bind((1, wmi_id))
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        statement
+            .bind((2, vin_schema_id))
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        if let Ok(State::Row) = statement.next() {
+            statement
+                .read::<i64, _>("OrgId")
+                .map_err(|_| Error::VPICQueryError(query))
+        } else {
+            Err(Error::NoResultsFound(query))
+        }
+    }
+
+ /// Returns a row from Pattern table
     /// that matches conditions:
     /// 1. Schema ID
     /// 2. Element Id
@@ -102,34 +128,41 @@ impl VIN {
     ) -> Result<(i64, i64, String, i64, String), Error> {
         let con = self.vpic_connection()?;
 
-        let query = "SELECT * FROM Pattern WHERE VinSchemaId = ? and ElementId = ?";
+        let possible_vin_schema_ids = self.get_similiar_vin_schema_ids()?;
+        let placeholders = possible_vin_schema_ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
+        let query = format!(
+            "SELECT * FROM Pattern WHERE VinSchemaId IN ({}) AND ElementId = ?",
+            placeholders
+        );
         let mut statement = con
             .prepare(query)
-            .map_err(|_| Error::VPICQueryError(query))?;
+            .map_err(|_| Error::VPICQueryError("query pattern"))?;
+
+        for (i, id) in possible_vin_schema_ids.iter().enumerate() {
+            statement
+                .bind((i as usize + 1, *id))
+                .map_err(|_| Error::VPICQueryError("query pattern"))?;
+        }
 
         statement
-            .bind((1, vin_schema_id))
-            .map_err(|_| Error::VPICQueryError(query))?;
-
-        statement
-            .bind((2, element_id.as_i64()))
-            .map_err(|_| Error::VPICQueryError(query))?;
+            .bind((possible_vin_schema_ids.len() + 1, element_id.as_i64()))
+            .map_err(|_| Error::VPICQueryError("query pattern"))?;
 
         while let Ok(State::Row) = statement.next() {
             let pattern = statement
                 .read::<String, _>("Keys")
-                .map_err(|_| Error::VPICQueryError(query))?;
+                .map_err(|_| Error::VPICQueryError("query pattern"))?;
 
             let pattern_sql_like = pattern.replace("*", "_") + "%"; // simulate MSSQL logic
 
             if VIN::match_pattern(key, &pattern_sql_like) {
                 let pattern_id = statement
                     .read::<i64, _>("Id")
-                    .map_err(|_| Error::VPICQueryError(query))?;
+                    .map_err(|_| Error::VPICQueryError("query pattern"))?;
 
                 let attribute_id = statement
                     .read::<String, _>("AttributeId")
-                    .map_err(|_| Error::VPICQueryError(query))?;
+                    .map_err(|_| Error::VPICQueryError("query pattern"))?;
 
                 return Ok((
                     pattern_id,
@@ -141,7 +174,24 @@ impl VIN {
             }
         }
 
-        Err(Error::NoResultsFound(query))
+        // // Do not try any other possible vin_schema_ids
+        // if !retry {
+        //     return Err(Error::NoResultsFound(query))
+        // }
+
+        // // WORST CASE - VIN_SCHEMA_ID PROVIDED WILL YIELD 0 RESULTS
+        // // WE SHOULD ATLEAST TRY ANY OTHER VIN_SCHEMA_ID THAT HAVE THE
+        // // SAME ORGID
+
+        // // retry for every possible vin_schema_id
+        // for possible_vin_schema_id in possible_vin_schema_ids {
+        //     if let Ok(row) = self.query_pattern(possible_vin_schema_id, element_id, key, false) {
+        //         return Ok(row);
+        //     }
+        // }
+
+
+        Err(Error::NoResultsFound("query pattern"))
     }
 
     pub(crate) fn query_vspec_pattern(
@@ -276,6 +326,28 @@ impl VIN {
 
             if statement.bind((1, vspec_schema_id)).is_err() {
                 return -1;
+            }
+
+            // Check if vspec_schema_id yields only one row.
+            // If so, this is the only option, return it.
+            let mut rows = 0;
+            let mut last_pattern_id = 0;
+            while let Ok(State::Row) = statement.next() {
+                rows+=1;
+                if rows > 1 {
+                    break;
+                } else {
+                    last_pattern_id = match statement.read::<i64, _>("Id") {
+                        Ok(id) => id,
+                        Err(_) => continue,
+                    };
+                }
+            }
+
+            if rows == 1 {
+                return last_pattern_id;
+            } else {
+                statement.reset().ok();
             }
 
             while let Ok(State::Row) = statement.next() {

@@ -81,7 +81,6 @@ impl VIN {
             }
         }
 
-        _vin.get_model_year()?;
         _vin.checksum()?;
         _vin.get_wmi();
 
@@ -223,8 +222,16 @@ impl VIN {
 
     pub(crate) fn connect_to_vpic_db(&mut self) -> Result<&Connection, Error> {
         if self.vpic_db_con.is_none() {
-            let conn = Connection::open(VPIC_DB_PATH).map_err(|_| Error::VPICConnectFailed);
-            self.vpic_db_con = conn.ok();
+            match Connection::open(VPIC_DB_PATH) {
+                Ok(con) => {
+                    self.vpic_db_con = Some(con);
+                    return self.vpic_connection();
+                },
+                Err(err) => {
+                    println!("error: {err}");
+                    return Err(Error::VPICConnectFailed);
+                }
+            }
         }
 
         self.vpic_connection()

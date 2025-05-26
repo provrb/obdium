@@ -286,12 +286,18 @@
 
     // show all fields
     for (const key in data) {
-      console.log(key)
       const name = key.replaceAll("_", "-")
       const label = document.getElementById(name);
       if (label) {
         const value = label.querySelector(".value")
+        console.log(name, data[key]);
         value.textContent = data[key].toUpperCase();
+        if (value.textContent == "N/A" || value.textContent == "-1") {
+          label.style.display = "none"
+        } else {
+          label.style.display = "block"
+        }
+
       }
     }
     

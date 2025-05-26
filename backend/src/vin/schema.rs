@@ -50,6 +50,10 @@ impl VIN {
                 }
             }
 
+            println!("wmi id: {}", wmi_id);
+            println!("model year: {}", model_year);
+            println!("matched: {:?}", matched_schema_ids);
+
             let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and ? BETWEEN YearFrom and IFNULL(YearTo, 2999)";
             let mut statement = match con.prepare(query) {
                 Ok(stmt) => stmt,
@@ -70,6 +74,7 @@ impl VIN {
                 };
 
                 if matched_schema_ids.contains(&schema_id) {
+                    println!("contains");
                     return schema_id;
                 }
             }
@@ -87,9 +92,40 @@ impl VIN {
     pub fn get_model_id(&self) -> Result<i64, Error> {
         let key = self.as_key();
         let vin_schema_id = self.get_vin_schema_id()?;
+        println!("schema id in model id: {}", vin_schema_id);
         let data = self.query_pattern(vin_schema_id, ElementId::VehicleModel, key)?;
 
         data.4.parse().map_err(|_| Error::ParseError)
+    }
+
+    /// Similiar means they have the same OrgId as each other
+    pub fn get_similiar_vin_schema_ids(&self) -> Result<Vec<i64>, Error> {
+        let org_id = self.get_organization_id()?;
+        let wmi_id = self.get_wmi_id()?;
+        
+        let con = self.vpic_connection()?;
+        let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and OrgId = ?";
+        let mut statement = con
+            .prepare(query)
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        statement
+            .bind((1, wmi_id))
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        statement
+            .bind((2, org_id))
+            .map_err(|_| Error::VPICQueryError(query))?;
+
+        let mut schema_ids = Vec::new();
+        while let Ok(State::Row) = statement.next() {
+            let vin_schema_id = statement
+                .read::<i64, _>("VinSchemaId")
+                .map_err(|_| Error::VPICQueryError(query))?;
+            schema_ids.push(vin_schema_id);
+        }
+
+        Ok(schema_ids)
     }
 
     pub fn get_vspec_schema_id(&self) -> Result<i64, Error> {
@@ -103,6 +139,7 @@ impl VIN {
         let con = self.vpic_connection()?;
         let make_id = self.get_make_id()?;
         let model_id = self.get_model_id()?;
+        println!("model id: {}", model_id);
         let mut matched_spec_schema_ids = Vec::new();
 
         let vspec_schema_id = *self.vspec_schema_id.get_or_init(|| {
