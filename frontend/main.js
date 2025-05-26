@@ -94,10 +94,10 @@ listen('connection-status', (event) => {
 
     if (event.payload.connected) {
         connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port.toUpperCase();
-        connection_icon.src = "/assets/connected.png";
+        connection_icon.src = "/assets/icons/connected.png";
     } else {
         connection_label.textContent = "ELM327 NOT CONNECTED";
-        connection_icon.src = "/assets/not-connected.png";
+        connection_icon.src = "/assets/icons/not-connected.png";
     }
 
     console.log(event.payload.message);
@@ -110,7 +110,7 @@ listen('add-pid-info', (event) => {
 
     pidGroup.innerHTML = `
     <div class="pid-row">
-      <button class="arrow-icon"><img src="/assets/arrow-icon.png"></button>
+      <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
       <span class="name">${event.payload.pid_name.toUpperCase()}</span>
     </div>
     <div class="pid-details" style="display: none; height: 0;">
@@ -129,11 +129,11 @@ listen('add-pid-info', (event) => {
         </div>
         <div class="pid-column">
           <div class="pid-label">EQUATION</div>
-          <div class="pid-value">${ event.payload.formula == "" ? "??" : event.payload.formula }</div>
+          <div class="pid-value">${event.payload.formula == "" ? "??" : event.payload.formula}</div>
         </div>
         <div class="pid-column">
           <div class="pid-label">UNIT</div>
-          <div class="pid-value">${event.payload.unit == "" ? "??" : event.payload.unit.toUpperCase() }</div>
+          <div class="pid-value">${event.payload.unit == "" ? "??" : event.payload.unit.toUpperCase()}</div>
         </div>
       </div>
       <button class="pid-button">DETAILS</button>
