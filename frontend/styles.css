@@ -407,6 +407,7 @@ body {
     bottom: 0;
     width: 3px;
     background-color: #f3f3f2;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .sidebar-button:hover::after {
