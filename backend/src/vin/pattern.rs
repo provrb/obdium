@@ -115,21 +115,24 @@ impl VIN {
         }
     }
 
- /// Returns a row from Pattern table
+    /// Returns a row from Pattern table
     /// that matches conditions:
     /// 1. Schema ID
     /// 2. Element Id
     /// 3. Key matches pattern 'Keys'
     pub(crate) fn query_pattern(
         &self,
-        vin_schema_id: i64,
         element_id: ElementId,
         key: &str,
     ) -> Result<(i64, i64, String, i64, String), Error> {
         let con = self.vpic_connection()?;
 
         let possible_vin_schema_ids = self.get_similiar_vin_schema_ids()?;
-        let placeholders = possible_vin_schema_ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
+        let placeholders = possible_vin_schema_ids
+            .iter()
+            .map(|_| "?")
+            .collect::<Vec<_>>()
+            .join(", ");
         let query = format!(
             "SELECT * FROM Pattern WHERE VinSchemaId IN ({}) AND ElementId = ?",
             placeholders
@@ -140,7 +143,7 @@ impl VIN {
 
         for (i, id) in possible_vin_schema_ids.iter().enumerate() {
             statement
-                .bind((i as usize + 1, *id))
+                .bind((i + 1, *id))
                 .map_err(|_| Error::VPICQueryError("query pattern"))?;
         }
 
@@ -162,6 +165,10 @@ impl VIN {
 
                 let attribute_id = statement
                     .read::<String, _>("AttributeId")
+                    .map_err(|_| Error::VPICQueryError("query pattern"))?;
+
+                let vin_schema_id = statement
+                    .read::<i64, _>("VinSchemaId")
                     .map_err(|_| Error::VPICQueryError("query pattern"))?;
 
                 return Ok((
@@ -189,7 +196,6 @@ impl VIN {
         //         return Ok(row);
         //     }
         // }
-
 
         Err(Error::NoResultsFound("query pattern"))
     }
@@ -309,10 +315,6 @@ impl VIN {
                 Ok(id) => id,
                 Err(_) => return -1,
             };
-            let vin_schema_id = match self.get_vin_schema_id() {
-                Ok(id) => id,
-                Err(_) => return -1,
-            };
             let con = match self.vpic_connection() {
                 Ok(c) => c,
                 Err(_) => return -1,
@@ -382,7 +384,7 @@ impl VIN {
                     // query pattern with schema id and key_element_id
                     // compare key_attribute to the attribute from schema_id
                     if let Ok(element_id) = ElementId::try_from(key_element_id as u16) {
-                        if let Ok(data) = self.query_pattern(vin_schema_id, element_id, vin_key) {
+                        if let Ok(data) = self.query_pattern(element_id, vin_key) {
                             if data.4 == key_attribute {
                                 return pattern_id;
                             }

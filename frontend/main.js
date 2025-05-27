@@ -3,7 +3,9 @@ const { listen, emit } = window.__TAURI__.event;
 // When frontend gets loaded
 // alert the backend with an event.
 window.addEventListener('DOMContentLoaded', () => {
-    window.__TAURI__.event.emit('frontend-loaded');
+    emit('frontend-loaded');
+    // Load pid list
+    emit('get-pids')
 });
 
 listen('update-card', (event) => {
@@ -103,81 +105,87 @@ listen('connection-status', (event) => {
     console.log(event.payload.message);
 });
 
-listen('add-pid-info', (event) => {
+listen('update-pids', (event) => {
+    const pids = event.payload;
     const pidList = document.getElementById('pid-list');
-    const pidGroup = document.createElement('div');
-    pidGroup.className = 'pid-group';
-
-    pidGroup.innerHTML = `
-    <div class="pid-row">
-      <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-      <span class="name">${event.payload.pid_name.toUpperCase()}</span>
-    </div>
-    <div class="pid-details" style="display: none; height: 0;">
-      <div class="pid-data-columns">
-        <div class="pid-column">
-          <div class="pid-label">MODE</div>
-          <div class="pid-value">$${event.payload.mode}</div>
+    
+    for (const pidInfo of pids) {
+        const pidGroup = document.createElement('div');
+        pidGroup.className = 'pid-group';
+    
+        pidGroup.innerHTML = `
+        <div class="pid-container">
+            <div class="pid-row">
+            <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
+            <span class="name">${pidInfo.pid_name.toUpperCase()}</span>
+            </div>
+            <div class="pid-details" style="display: none; height: 0;">
+            <div class="pid-data-columns">
+                <div class="pid-column">
+                <div class="pid-label">MODE</div>
+                <div class="pid-value">$${pidInfo.mode}</div>
+                </div>
+                <div class="pid-column">
+                <div class="pid-label">PID</div>
+                <div class="pid-value">${pidInfo.pid}</div>
+                </div>
+                <div class="pid-column">
+                <div class="pid-label">COMMAND</div>
+                <div class="pid-value">${pidInfo.mode + pidInfo.pid}</div>
+                </div>
+                <div class="pid-column">
+                <div class="pid-label">EQUATION</div>
+                <div class="pid-value">${pidInfo.formula == "" ? "??" : pidInfo.formula}</div>
+                </div>
+                <div class="pid-column">
+                <div class="pid-label">UNIT</div>
+                <div class="pid-value">${pidInfo.unit == "" ? "??" : pidInfo.unit.toUpperCase()}</div>
+                </div>
+            </div>
+            <button class="pid-button">DETAILS</button>
+            </div>
         </div>
-        <div class="pid-column">
-          <div class="pid-label">PID</div>
-          <div class="pid-value">${event.payload.pid}</div>
-        </div>
-        <div class="pid-column">
-          <div class="pid-label">COMMAND</div>
-          <div class="pid-value">${event.payload.mode + event.payload.pid}</div>
-        </div>
-        <div class="pid-column">
-          <div class="pid-label">EQUATION</div>
-          <div class="pid-value">${event.payload.formula == "" ? "??" : event.payload.formula}</div>
-        </div>
-        <div class="pid-column">
-          <div class="pid-label">UNIT</div>
-          <div class="pid-value">${event.payload.unit == "" ? "??" : event.payload.unit.toUpperCase()}</div>
-        </div>
-      </div>
-      <button class="pid-button">DETAILS</button>
-    </div>
-  `;
-
-    pidList.appendChild(pidGroup);
-
-    // Increment results counter
-    const header = document.getElementById('pid-list-header');
-    header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
-
-    // Add expand/collapse event listener
-    const row = pidGroup.querySelector('.pid-row');
-    const details = pidGroup.querySelector('.pid-details');
-
-    row.addEventListener('click', () => {
-        const expanded = row.classList.contains('expanded');
-
-        if (expanded) {
-            details.style.height = details.scrollHeight + 'px';
-            requestAnimationFrame(() => {
+      `;
+    
+        pidList.appendChild(pidGroup);
+    
+        // Increment results counter
+        const header = document.getElementById('pid-list-header');
+        header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
+    
+        // Add expand/collapse event listener
+        const row = pidGroup.querySelector('.pid-row');
+        const details = pidGroup.querySelector('.pid-details');
+    
+        row.addEventListener('click', () => {
+            const expanded = row.classList.contains('expanded');
+    
+            if (expanded) {
+                details.style.height = details.scrollHeight + 'px';
+                requestAnimationFrame(() => {
+                    details.style.height = '0px';
+                });
+                row.classList.remove('expanded');
+            } else {
+                details.style.display = 'block';
+                const height = details.scrollHeight + 'px';
                 details.style.height = '0px';
-            });
-            row.classList.remove('expanded');
-        } else {
-            details.style.display = 'block';
-            const height = details.scrollHeight + 'px';
-            details.style.height = '0px';
-            requestAnimationFrame(() => {
-                details.style.height = height;
-            });
-            row.classList.add('expanded');
-        }
-
-        details.addEventListener('transitionend', function handler(e) {
-            if (e.propertyName === 'height') {
-                if (!row.classList.contains('expanded')) {
-                    details.style.display = 'none';
-                } else {
-                    details.style.height = 'auto';
-                }
-                details.removeEventListener('transitionend', handler);
+                requestAnimationFrame(() => {
+                    details.style.height = height;
+                });
+                row.classList.add('expanded');
             }
+    
+            details.addEventListener('transitionend', function handler(e) {
+                if (e.propertyName === 'height') {
+                    if (!row.classList.contains('expanded')) {
+                        details.style.display = 'none';
+                    } else {
+                        details.style.height = 'auto';
+                    }
+                    details.removeEventListener('transitionend', handler);
+                }
+            });
         });
-    });
+    }
 });

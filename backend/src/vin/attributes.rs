@@ -12,9 +12,8 @@ impl VIN {
     where
         T::Err: std::fmt::Debug,
     {
-        let schema_id = self.get_vin_schema_id()?;
         let key = self.as_key();
-        let data = self.query_pattern(schema_id, element_id, key)?;
+        let data = self.query_pattern(element_id, key)?;
 
         data.4.parse::<T>().map_err(|_| Error::ParseError)
     }

@@ -226,7 +226,7 @@ impl VIN {
                 Ok(con) => {
                     self.vpic_db_con = Some(con);
                     return self.vpic_connection();
-                },
+                }
                 Err(err) => {
                     println!("error: {err}");
                     return Err(Error::VPICConnectFailed);

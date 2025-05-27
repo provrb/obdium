@@ -50,10 +50,6 @@ impl VIN {
                 }
             }
 
-            println!("wmi id: {}", wmi_id);
-            println!("model year: {}", model_year);
-            println!("matched: {:?}", matched_schema_ids);
-
             let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and ? BETWEEN YearFrom and IFNULL(YearTo, 2999)";
             let mut statement = match con.prepare(query) {
                 Ok(stmt) => stmt,
@@ -91,9 +87,7 @@ impl VIN {
 
     pub fn get_model_id(&self) -> Result<i64, Error> {
         let key = self.as_key();
-        let vin_schema_id = self.get_vin_schema_id()?;
-        println!("schema id in model id: {}", vin_schema_id);
-        let data = self.query_pattern(vin_schema_id, ElementId::VehicleModel, key)?;
+        let data = self.query_pattern(ElementId::VehicleModel, key)?;
 
         data.4.parse().map_err(|_| Error::ParseError)
     }
@@ -102,7 +96,7 @@ impl VIN {
     pub fn get_similiar_vin_schema_ids(&self) -> Result<Vec<i64>, Error> {
         let org_id = self.get_organization_id()?;
         let wmi_id = self.get_wmi_id()?;
-        
+
         let con = self.vpic_connection()?;
         let query = "SELECT * FROM Wmi_VinSchema WHERE WmiId = ? and OrgId = ?";
         let mut statement = con

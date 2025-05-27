@@ -12,12 +12,58 @@
 
 <body>
   <div class="sidebar">
-    <button class="sidebar-button" data-screen="dashboard"><img src="/assets/icons/table.png" alt="Dashboard"></button>
-    <button class="sidebar-button" data-screen="edit"><img src="/assets/icons/edit.png" alt="Edit PIDs"></button>
-    <button class="sidebar-button" data-screen="graphs"><img src="/assets/icons/graphs.png" alt="View Graphs"></button>
-    <button class="sidebar-button" data-screen="vin"><img src="/assets/icons/vin-decoding.png"
-        alt="Decode Vin"></button>
-    <button class="sidebar-button" data-screen="settings"><img src="/assets/icons/settings.png" alt="Settings"></button>
+    <button class="sidebar-button" data-tooltip="Connect" data-screen="connect-settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <circle cx="10" cy="7" r="1" />
+        <circle cx="4" cy="20" r="1" />
+        <path d="M4.7 19.3 19 5" />
+        <path d="m21 3-3 1 2 2Z" />
+        <path d="M9.26 7.68 5 12l2 5" />
+        <path d="m10 14 5 2 3.5-3.5" />
+        <path d="m18 12 1-1 1 1-1 1Z" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="OBD Dashboard" data-screen="dashboard">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path d="m12 14 4-4" />
+        <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="View PIDs" data-screen="edit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <path d="M21 9H3" />
+        <path d="M21 15H3" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="View Graphs" data-screen="graphs">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="none" viewBox="0 0 24 24" stroke-width="1.9"
+        stroke="currentColor" class="sidebar-button-img">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="VIN Decoding" data-screen="vin">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6" />
+        <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7" />
+        <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1" />
+        <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1" />
+        <path d="M9 6v12" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-screen="settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path
+          d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </button>
   </div>
   <div class="main">
     <div class="header">
@@ -33,6 +79,34 @@
         <input class="search" type="text" placeholder="Search">
         <img src="/assets/icons/search.png" alt="Search" class="search-icon">
       </div>
+    </div>
+    <div id="connect-settings" class="screen" style="display: none;">
+      <div id="connect-header" class="screen-label">CONNECTION SETTINGS</div>
+
+      <div class="form-row">
+        
+        <select id="protocol" class="input-group">
+          <option>Test</option>
+          <option>Test1</option>
+        </select>
+
+        <div class="input-group">
+          <label for="port">Serial Port COM</label>
+          <select id="port">
+            <option>Test</option>
+            <option>Test1</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="baud">Baud Rate</label>
+          <select id="baud">
+            <option>Test</option>
+            <option>Test1</option>
+          </select>
+        </div>
+      </div>
+
     </div>
     <div id="dashboard" class="screen" style="display: flex;">
       <div id="dashboard-header" class="screen-label">OBD OVERVIEW</div>
@@ -231,7 +305,9 @@
         </div>
       </div>
     </div>
-    <div id="settings" class="screen" style="display: none;">Settings</div>
+    <div id="settings" class="screen" style="display: none;">
+      <div id="settings-header" class="screen-label">SETTINGS</div>
+    </div>
   </div>
 </body>
 
@@ -304,7 +380,7 @@
 
       }
     }
-    
+
     // show vin
     const vinFull = vinLabel.querySelector('.value');
     if (vinFull) {
@@ -325,7 +401,7 @@
 
   buttons.forEach(button => {
     // Default screen is dashboard
-    if (button.dataset.screen == 'dashboard') {
+    if (button.dataset.screen == 'connect-settings') {
       button.classList.add('active-button');
     }
 

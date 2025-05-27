@@ -1,8 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use obdium::{dicts::PID_INFOS, vin::VIN};
 use obdium::obd::OBD;
+use obdium::{dicts::PID_INFOS, vin::VIN};
 use serde::{Deserialize, Serialize};
 use stats::{
     critical_frequency_calls, frequent_calls, high_frequency_calls, less_frequent_calls,
@@ -135,12 +135,12 @@ fn send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-fn send_pids(window: &Arc<Window>) {
-    let window = Arc::clone(window);
-    spawn(async move {
-        for pid in PID_INFOS {
-            let _ = window.emit("add-pid-info", pid);
-        }
+fn listen_send_pids(window: &Arc<Window>) {
+    let window_arc = Arc::new(window.clone());
+    let window_clone = Arc::clone(&window_arc);
+    window_clone.listen("get-pids", move |_| {
+        println!("received event");
+        let _ = window_arc.emit("update-pids", PID_INFOS);
     });
 }
 
@@ -186,7 +186,7 @@ fn connect_obd(window: &Window) -> Option<OBD> {
     }
 }
 
-// TODO: This is an eye sore. 
+// TODO: This is an eye sore.
 fn listen_decode_vin(window: &Window) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
@@ -195,8 +195,10 @@ fn listen_decode_vin(window: &Window) {
             Ok(vin) => vin,
             Err(err) => {
                 // emit error
-                let mut v_info = VehicleInfoExtended::default();
-                v_info.error_msg = format!("{}", err);
+                let v_info = VehicleInfoExtended {
+                    error_msg: format!("{}", err),
+                    ..Default::default()
+                };
 
                 let _ = window_arc.emit("decode-vin", v_info);
                 return;
@@ -216,7 +218,9 @@ fn listen_decode_vin(window: &Window) {
             plant_country: vin.get_plant_country().unwrap_or("N/A".into()),
             plant_city: vin.get_plant_city().unwrap_or("N/A".into()),
             plant_state: vin.get_plant_state().unwrap_or("N/A".into()),
-            semi_auto_headlamp_beam_switching: vin.semiauto_headlamp_beam_switching().unwrap_or("N/A".into()),
+            semi_auto_headlamp_beam_switching: vin
+                .semiauto_headlamp_beam_switching()
+                .unwrap_or("N/A".into()),
             dynamic_brake_support: vin.dynamic_brake_support().unwrap_or("N/A".into()),
             airbag_locations_knee: vin.airbag_locations_knee().unwrap_or("N/A".into()),
             airbag_locations_side: vin.airbag_locations_side().unwrap_or("N/A".into()),
@@ -234,7 +238,9 @@ fn listen_decode_vin(window: &Window) {
             airbag_locations_front: vin.airbag_locations_front().unwrap_or("N/A".into()),
             front_wheel_size: vin.get_front_wheel_size().unwrap_or(-1).to_string(),
             rear_wheel_size: vin.get_rear_wheel_size().unwrap_or(-1).to_string(),
-            automatic_crash_notification: vin.automatic_crash_notification().unwrap_or("N/A".into()),
+            automatic_crash_notification: vin
+                .automatic_crash_notification()
+                .unwrap_or("N/A".into()),
             trim: vin.vehicle_trim().unwrap_or("N/A".into()),
             transmission_speeds: vin.get_transmission_speeds().unwrap_or(-1).to_string(),
             vehicle_base_price: vin.get_vehicle_base_price().unwrap_or(-1.0).to_string(),
@@ -246,7 +252,7 @@ fn listen_decode_vin(window: &Window) {
             airbag_locations_curtain: vin.airbag_locations_curtain().unwrap_or("N/A".into()),
             backup_camera: vin.backup_camera().unwrap_or("N/A".into()),
             drive_type: vin.get_drive_type().unwrap_or("N/A".into()),
-            vehicle_manufacturer: vin.get_vehicle_manufacturer().unwrap_or("N/A".into())
+            vehicle_manufacturer: vin.get_vehicle_manufacturer().unwrap_or("N/A".into()),
         };
 
         let _ = window_arc.emit("decode-vin", v_info);
@@ -260,20 +266,21 @@ fn main() {
             let frontend_ready = Arc::new(AtomicBool::new(false));
 
             spawn(async move {
+                listen_decode_vin(&window);
+
                 // Detect when the frontend is loaded
                 let frontend_ready_listener = Arc::clone(&frontend_ready);
                 window.listen("frontend-loaded", move |_| {
                     frontend_ready_listener.store(true, Ordering::SeqCst);
                 });
 
-                listen_decode_vin(&window);
-                
+                let window_arc = Arc::new(window);
+                listen_send_pids(&window_arc);
+
                 while !frontend_ready.load(Ordering::SeqCst) {
                     sleep(Duration::from_millis(100));
                 }
 
-                let window_arc = Arc::new(window);
-                send_pids(&window_arc);
 
                 let obd = connect_obd(&window_arc);
                 if let Some(obd) = obd {
