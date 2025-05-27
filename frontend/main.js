@@ -108,11 +108,11 @@ listen('connection-status', (event) => {
 listen('update-pids', (event) => {
     const pids = event.payload;
     const pidList = document.getElementById('pid-list');
-    
+
     for (const pidInfo of pids) {
         const pidGroup = document.createElement('div');
         pidGroup.className = 'pid-group';
-    
+
         pidGroup.innerHTML = `
         <div class="pid-container">
             <div class="pid-row">
@@ -146,20 +146,20 @@ listen('update-pids', (event) => {
             </div>
         </div>
       `;
-    
+
         pidList.appendChild(pidGroup);
-    
+
         // Increment results counter
         const header = document.getElementById('pid-list-header');
         header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
-    
+
         // Add expand/collapse event listener
         const row = pidGroup.querySelector('.pid-row');
         const details = pidGroup.querySelector('.pid-details');
-    
+
         row.addEventListener('click', () => {
             const expanded = row.classList.contains('expanded');
-    
+
             if (expanded) {
                 details.style.height = details.scrollHeight + 'px';
                 requestAnimationFrame(() => {
@@ -175,7 +175,7 @@ listen('update-pids', (event) => {
                 });
                 row.classList.add('expanded');
             }
-    
+
             details.addEventListener('transitionend', function handler(e) {
                 if (e.propertyName === 'height') {
                     if (!row.classList.contains('expanded')) {
@@ -188,4 +188,37 @@ listen('update-pids', (event) => {
             });
         });
     }
+});
+
+const dropdowns = document.querySelectorAll(".dropdown");
+
+dropdowns.forEach(dropdown => {
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    const menu = dropdown.querySelector(".dropdown-menu");
+
+    toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            document.querySelectorAll(".dropdown-menu").forEach(m => {
+                m.style.display = "none";
+            });
+            menu.style.display = "block";
+        }
+    });
+
+    menu.addEventListener("click", (e) => {
+        if (e.target.tagName === "LI") {
+            toggle.textContent = e.target.textContent;
+            toggle.dataset.value = e.target.dataset.value;
+            menu.style.display = "none";
+        }
+    });
+});
+
+document.addEventListener("click", () => {
+    document.querySelectorAll(".dropdown-menu").forEach(menu => {
+        menu.style.display = "none";
+    });
 });

@@ -82,31 +82,39 @@
     </div>
     <div id="connect-settings" class="screen" style="display: none;">
       <div id="connect-header" class="screen-label">CONNECTION SETTINGS</div>
-
+      
       <div class="form-row">
-        
-        <select id="protocol" class="input-group">
-          <option>Test</option>
-          <option>Test1</option>
-        </select>
-
-        <div class="input-group">
-          <label for="port">Serial Port COM</label>
-          <select id="port">
-            <option>Test</option>
-            <option>Test1</option>
-          </select>
+        <div class="dropdown" id="custom-dropdown">
+          <label>OBD-II PROTOCOL</label>
+          <button class="dropdown-toggle" id="dropdown-toggle"></button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value="option1">Option 1</li>
+            <li data-value="option2">Option 2</li>
+            <li data-value="option3">Option 3</li>
+          </ul>
         </div>
-
-        <div class="input-group">
-          <label for="baud">Baud Rate</label>
-          <select id="baud">
-            <option>Test</option>
-            <option>Test1</option>
-          </select>
+  
+        <div class="dropdown" id="custom-dropdown">
+          <label>SERIAL PORT COM</label>
+          <button class="dropdown-toggle" id="dropdown-toggle"></button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value="option1">Option 1</li>
+            <li data-value="option2">s 2</li>
+            <li data-value="option3">Option 3</li>
+          </ul>
+        </div>
+  
+        <div class="dropdown" id="custom-dropdown">
+          <label>BAUD RATE</label>
+          <button class="dropdown-toggle" id="dropdown-toggle"></button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value="option1">Option 1</li>
+            <li data-value="option2">Option 2</li>
+            <li data-value="option3">x 3</li>
+          </ul>
         </div>
       </div>
-
+      
     </div>
     <div id="dashboard" class="screen" style="display: flex;">
       <div id="dashboard-header" class="screen-label">OBD OVERVIEW</div>
