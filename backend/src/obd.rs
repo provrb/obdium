@@ -114,6 +114,13 @@ impl OBD {
         }
     }
 
+    pub fn disconnect(&mut self) {
+        if let Some(connection) = self.connection.take() {
+            drop(connection);
+            self.connection = None;
+        }
+    }
+
     pub fn connected(&self) -> bool {
         self.connection.is_some()
     }
@@ -130,6 +137,53 @@ impl OBD {
             Some(connection) => connection.baud_rate().ok(),
             None => None,
         }
+    }
+
+    pub fn get_open_serial_port() -> String {
+        match serialport::available_ports() {
+            Ok(ports) => {
+                for port in ports.iter() {
+                    // test each port with a simple AT command
+
+                    if let Ok(mut com) = serialport::new(&port.port_name, 38400)
+                        .timeout(Duration::from_millis(300))
+                        .open()
+                    {
+                        let _ = com.clear(serialport::ClearBuffer::All);
+
+                        if com.write_all(b"ATI\r").is_err() {
+                            continue;
+                        }
+
+                        let mut buffer = [0u8; 1];
+                        let mut response = String::new();
+
+                        loop {
+                            match com.read(&mut buffer) {
+                                Ok(1) => {
+                                    let byte = buffer[0];
+                                    response.push(byte as char);
+                                }
+                                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
+                                Ok(_) => break,
+                                Err(_) => break,
+                            }
+                        }
+
+                        let as_string = String::from_utf8_lossy(&buffer);
+                        let cleaned = as_string.trim_matches(|c: char| !c.is_ascii_graphic());
+
+                        if cleaned.ends_with('>') {
+                            return port.port_name.clone();
+                        }
+                    }
+                }
+            }
+            Err(err) => {
+                println!("error getting available serial ports: {err}");
+            }
+        }
+        String::new()
     }
 
     pub fn init(&mut self) -> Result<(), Error> {
@@ -303,8 +357,6 @@ impl OBD {
         meta_data.payload_size = payload_size as usize;
         meta_data.service = [as_bytes[0], as_bytes[1]];
         meta_data.payload = Some(meta_data.payload_from_response());
-
-        println!("Raw response: {:?}", meta_data);
 
         Ok(meta_data)
     }

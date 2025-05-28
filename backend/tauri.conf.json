@@ -20,8 +20,10 @@
     "windows": [
       {
         "title": "OBDium",
+        "height": 700,
         "width": 1200,
-        "height": 700
+        "minHeight": 400,
+        "minWidth": 700
       }
     ],
     "security": {

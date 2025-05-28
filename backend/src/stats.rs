@@ -45,6 +45,10 @@ pub fn critical_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             interval.tick().await;
 
             let mut obd = obd.lock().unwrap();
+            if !obd.connected() {
+                break;
+            }
+
             let rpm = obd.rpm();
             let turbocharger_rpm = obd.turbocharger_rpm();
             let vehicle_speed = obd.vehicle_speed();
@@ -83,6 +87,10 @@ pub fn high_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                         actual_engine_torque,
                     ) = {
                         let mut obd = obd.lock().unwrap();
+                        if !obd.connected() {
+                            break;
+                        }
+
                         (
                             obd.maf_air_flow_rate(),
                             obd.engine_fuel_rate(),
@@ -224,6 +232,9 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 0 => {
                     let stft_bank_1 = {
                         let mut obd = obd.lock().unwrap();
+                        if !obd.connected() {
+                            break;
+                        }
                         obd.short_term_fuel_trim(&BankNumber::Bank1)
                     };
 
@@ -268,6 +279,9 @@ pub fn less_frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                         engine_oil_temp_sensors,
                     ) = {
                         let mut obd = obd.lock().unwrap();
+                        if !obd.connected() {
+                            break;
+                        }
                         (
                             obd.long_term_fuel_trim(&BankNumber::Bank1),
                             obd.long_term_fuel_trim(&BankNumber::Bank2),
@@ -393,6 +407,9 @@ pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 0 => {
                     let (o2_sensor_1, o2_sensor_2, o2_sensor_3, o2_sensor_4) = {
                         let mut obd = obd.lock().unwrap();
+                        if !obd.connected() {
+                            break;
+                        }
                         (
                             obd.read_oxygen_sensor(&SensorNumber::Sensor1),
                             obd.read_oxygen_sensor(&SensorNumber::Sensor2),

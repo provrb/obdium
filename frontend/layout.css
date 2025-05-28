@@ -1,0 +1,85 @@
+.main {
+    flex: 1;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header .info {
+    font-size: 1.2rem;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: none !important;
+    background-color: transparent !important;
+}
+
+.sidebar {
+    width: 60px;
+    background-color: #0F0F0F;
+    padding: 10px 0;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    flex: 1;
+    overflow-y: auto;
+    align-content: start;
+    min-height: 0;
+}
+
+.screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.screen-label {
+    padding-bottom: 11px;
+    font-size: 1.5rem;
+    color: #F7F3FF;
+    font-weight: 700;
+    margin-left: 1px;
+}
+
+
+#connection-icon {
+    width: 1em;
+    height: 1em;
+    object-fit: contain;
+}
+
+#edit {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100vh;
+    min-height: 0;
+}
+
+#dashboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}

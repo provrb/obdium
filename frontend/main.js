@@ -1,11 +1,18 @@
 const { listen, emit } = window.__TAURI__.event;
 
+// ELM connection
+// Changes when connection-status is fired
+let connected = false;
+
 // When frontend gets loaded
 // alert the backend with an event.
 window.addEventListener('DOMContentLoaded', () => {
     emit('frontend-loaded');
     // Load pid list
     emit('get-pids')
+
+    // load serial ports
+    emit('get-serial-ports');
 });
 
 listen('update-card', (event) => {
@@ -97,9 +104,11 @@ listen('connection-status', (event) => {
     if (event.payload.connected) {
         connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port.toUpperCase();
         connection_icon.src = "/assets/icons/connected.png";
+        connected = true;
     } else {
         connection_label.textContent = "ELM327 NOT CONNECTED";
         connection_icon.src = "/assets/icons/not-connected.png";
+        connected = false;
     }
 
     console.log(event.payload.message);
@@ -190,6 +199,24 @@ listen('update-pids', (event) => {
     }
 });
 
+const menu = document.getElementById('serial-port-dropdown-menu');
+const serialPortSelected = document.getElementById('serial-port-selected');
+
+listen('update-serial-ports', (event) => {
+    serialPortSelected.textContent = "NO PORTS SELECTED";
+    menu.innerHTML = '';
+    
+    if (event.payload === "") {
+        return;
+    }
+    
+    const portOption = document.createElement('li');
+    portOption.textContent = event.payload;
+    portOption.dataset.value = event.payload;
+
+    menu.appendChild(portOption);
+})
+
 const dropdowns = document.querySelectorAll(".dropdown");
 
 dropdowns.forEach(dropdown => {
@@ -222,3 +249,60 @@ document.addEventListener("click", () => {
         menu.style.display = "none";
     });
 });
+
+const connectButton = document.getElementById('btn-connect');
+const disconnectButton = document.getElementById('btn-disconnect');
+
+connectButton.addEventListener("click", async () => {
+    const baudRate = document.getElementById('baud-rate-selected').textContent;
+    const serialPort = document.getElementById('serial-port-selected').textContent;
+    const status = document.getElementById('connection-details');
+    
+    let dots = 0;
+    const interval = setInterval(() => {
+        if (dots == 4) {
+            dots = 0;
+        }
+        
+        status.textContent = "CONNECTING" + '.'.repeat(dots);
+        dots+=1;
+    }, 500);
+
+    connectButton.disabled = true;
+    emit('connect-elm', { serialPort: serialPort, baudRate: parseInt(baudRate) });
+    await new Promise(r => setTimeout(r, 2000));
+    clearInterval(interval);
+    
+    if (connected) {
+        status.textContent = "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
+        connectButton.disabled = true;
+        disconnectButton.disabled = false;
+    } else {
+        status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
+        connectButton.disabled = false;
+        disconnectButton.disabled = true;
+    }
+})
+
+disconnectButton.addEventListener("click", async () => {
+    const status = document.getElementById('connection-details');
+    
+    let dots = 0;
+    const interval = setInterval(() => {
+        if (dots == 4) {
+            dots = 0;
+        }
+        
+        status.textContent = "DISCONNECTING" + '.'.repeat(dots);
+        dots+=1;
+    }, 500);
+
+    connectButton.disabled = true;
+    emit('disconnect-elm');
+    await new Promise(r => setTimeout(r, 1000));
+    clearInterval(interval);
+    
+    status.textContent = "NO CONNECTION ESTABLISHED";
+    connectButton.disabled = false;
+    disconnectButton.disabled = true;
+})
