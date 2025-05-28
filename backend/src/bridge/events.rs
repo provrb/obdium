@@ -123,6 +123,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             &window_arc,
             connect_payload.serial_port,
             connect_payload.baud_rate,
+            connect_payload.protocol
         );
 
         if let Some(obd) = obd {

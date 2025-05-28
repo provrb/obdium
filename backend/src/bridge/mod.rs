@@ -81,4 +81,5 @@ struct ConnectionStatus {
 struct ConnectPaylod {
     serial_port: String,
     baud_rate: u32,
+    protocol: u8
 }

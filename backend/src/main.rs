@@ -33,11 +33,11 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     once_calls(window, obd);
 }
 
-fn connect_obd(window: &Window, port: String, baud_rate: u32) -> Option<OBD> {
+fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> Option<OBD> {
     // Try to connect obd
     let mut obd = OBD::new();
 
-    match obd.connect(&port, baud_rate) {
+    match obd.connect(&port, baud_rate, protocol) {
         Ok(()) => {
             let band = obd.serial_port_baud_rate().unwrap_or_default();
             let port = obd.serial_port_name().unwrap_or_default();

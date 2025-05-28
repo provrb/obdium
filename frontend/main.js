@@ -41,7 +41,7 @@ listen('update-card', (event) => {
         h3.textContent = event.payload.name;
 
         if (event.payload.unit.toLowerCase() !== "no data")
-            unitSpan.textContent = event.payload.unit;
+           unitSpan.textContent = event.payload.unit;
 
         // if the unit is no data meaning that scalar has 'no data'
         // (see backend docs), then display 'N/A' for value
@@ -256,8 +256,12 @@ const disconnectButton = document.getElementById('btn-disconnect');
 connectButton.addEventListener("click", async () => {
     const baudRate = document.getElementById('baud-rate-selected').textContent;
     const serialPort = document.getElementById('serial-port-selected').textContent;
+    
+    const protocol = document.getElementById('protocol-selected').dataset.value;
     const status = document.getElementById('connection-details');
     
+    console.log("protocol:", protocol);
+
     let dots = 0;
     const interval = setInterval(() => {
         if (dots == 4) {

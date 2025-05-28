@@ -92,7 +92,7 @@ impl OBD {
         Self::default()
     }
 
-    pub fn connect(&mut self, port: &str, baud_rate: u32) -> Result<(), Error> {
+    pub fn connect(&mut self, port: &str, baud_rate: u32, protocol: u8) -> Result<(), Error> {
         if self.replay_requests {
             // No connection required
             return Ok(());
@@ -108,7 +108,24 @@ impl OBD {
             .ok();
 
         if self.connected() {
-            self.init()
+            let initialized = self.init();
+            let mut command = match protocol {
+                0 => Command::new_at(b"ATSP0"),
+                1 => Command::new_at(b"ATSP1"),
+                2 => Command::new_at(b"ATSP2"),
+                3 => Command::new_at(b"ATSP3"),
+                4 => Command::new_at(b"ATSP4"),
+                5 => Command::new_at(b"ATSP5"),
+                6 => Command::new_at(b"ATSP6"),
+                7 => Command::new_at(b"ATSP7"),
+                8 => Command::new_at(b"ATSP8"),
+                9 => Command::new_at(b"ATSP9"),
+                _ => return Err(Error::InitFailed),
+            };
+
+            self.send_command(&mut command)?;
+            
+            initialized
         } else {
             Err(Error::ConnectionFailed)
         }
@@ -196,8 +213,7 @@ impl OBD {
             Command::new_at(b"ATZ"),   // Reset all
             Command::new_at(b"ATE0"),  // Echo off
             Command::new_at(b"ATL0"),  // Linefeeds off
-            Command::new_at(b"ATH1"),  // Headers on
-            Command::new_at(b"ATSP0"), // Automatic protocol
+            Command::new_at(b"ATH1")   // Headers on
         ];
 
         for mut command in commands {
