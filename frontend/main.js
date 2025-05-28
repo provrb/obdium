@@ -260,8 +260,6 @@ connectButton.addEventListener("click", async () => {
     const protocol = document.getElementById('protocol-selected').dataset.value;
     const status = document.getElementById('connection-details');
     
-    console.log("protocol:", protocol);
-
     let dots = 0;
     const interval = setInterval(() => {
         if (dots == 4) {
@@ -273,7 +271,7 @@ connectButton.addEventListener("click", async () => {
     }, 500);
 
     connectButton.disabled = true;
-    emit('connect-elm', { serialPort: serialPort, baudRate: parseInt(baudRate) });
+    emit('connect-elm', { serialPort: serialPort, baudRate: parseInt(baudRate), protocol: parseInt(protocol) });
     await new Promise(r => setTimeout(r, 2000));
     clearInterval(interval);
     
