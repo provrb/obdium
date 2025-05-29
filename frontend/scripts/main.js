@@ -42,7 +42,7 @@ export async function connect_elm(baudRate, serialPort, protocol) {
 
     connectButton.disabled = true;
     emit('connect-elm', { serialPort: serialPort, baudRate: parseInt(baudRate), protocol: parseInt(protocol) });
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 1000));
     clearInterval(interval);
 
     if (window.connected) {

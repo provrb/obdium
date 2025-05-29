@@ -2,7 +2,7 @@
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 00 00 \n\n",
+    "response": "7E8 04 41 0C 23 82 \n\n",
     "played": true
   },
   {
@@ -20,7 +20,7 @@
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 41 C2 \n\n",
+    "response": "7E8 04 41 0C 26 25 \n\n",
     "played": true
   },
   {
@@ -36,351 +36,9 @@
     "played": true
   },
   {
-    "request": "01A2",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0150",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010E",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0E 99 \n\n",
-    "played": true
-  },
-  {
-    "request": "010B",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0B 25 \n\n",
-    "played": true
-  },
-  {
-    "request": "0133",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 61 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 35 CB \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 20 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 46 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 29 \n\n",
-    "played": true
-  },
-  {
-    "request": "0106",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 06 78 \n\n",
-    "played": true
-  },
-  {
-    "request": "012C",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 2C 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "012D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 2D 80 \n\n",
-    "played": true
-  },
-  {
-    "request": "013C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 3C 15 9A \n\n",
-    "played": true
-  },
-  {
-    "request": "013E",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 3E 16 DD \n\n",
-    "played": true
-  },
-  {
-    "request": "013D",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "013F",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0111",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 50 \n\n",
-    "played": true
-  },
-  {
-    "request": "0145",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 45 02 \n\n",
-    "played": true
-  },
-  {
-    "request": "0147",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 47 85 \n\n",
-    "played": true
-  },
-  {
-    "request": "0148",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0149",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 49 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "0128",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0129",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "012A",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "012B",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 12 87 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 0E \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 3B 2E \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 0A \n\n",
-    "played": true
-  },
-  {
-    "request": "014A",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 4A 45 \n\n",
-    "played": true
-  },
-  {
-    "request": "014B",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0164",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 15 2A \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 37 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 09 F6 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 27 \n\n",
-    "played": true
-  },
-  {
-    "request": "0110",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 00 51 \n\n",
-    "played": true
-  },
-  {
-    "request": "019D",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "221470",
-    "request_type": "Arbitrary",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0161",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0162",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 23 82 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 33 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 26 25 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "0133",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 61 \n\n",
-    "played": true
-  },
-  {
-    "request": "0146",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 46 43 \n\n",
-    "played": true
-  },
-  {
-    "request": "014F",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "015D",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 5D 66 00 \n\n",
-    "played": true
-  },
-  {
     "request": "0104",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 67 \n\n",
+    "response": "7E8 03 41 04 56 \n\n",
     "played": true
   },
   {
@@ -422,7 +80,7 @@
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 44 \n\n",
+    "response": "7E8 03 41 0D 20 \n\n",
     "played": true
   },
   {
@@ -440,145 +98,7 @@
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 5C \n\n",
-    "played": true
-  },
-  {
-    "request": "0108",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "01A2",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0150",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010E",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0E 8A \n\n",
-    "played": true
-  },
-  {
-    "request": "010B",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0B 14 \n\n",
-    "played": true
-  },
-  {
-    "request": "0133",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 61 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 3F 7A \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 1D \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 5F \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 72 \n\n",
-    "played": true
-  },
-  {
-    "request": "0111",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 32 \n\n",
-    "played": true
-  },
-  {
-    "request": "0145",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 45 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "0147",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 47 7C \n\n",
-    "played": true
-  },
-  {
-    "request": "0148",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0149",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 49 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 00 00 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 48 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 41 C2 \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 20 \n\n",
+    "response": "7E8 03 41 0D 29 \n\n",
     "played": true
   },
   {
@@ -596,7 +116,7 @@
   {
     "request": "0142",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 42 39 4B \n\n",
+    "response": "7E8 04 41 42 39 5F \n\n",
     "played": true
   },
   {
@@ -608,47 +128,59 @@
   {
     "request": "011F",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 1F 00 75 \n\n",
+    "response": "7E8 04 41 1F 00 00 \n\n",
     "played": true
   },
   {
-    "request": "0114",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0115",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 15 07 FF \n\n",
-    "played": false
-  },
-  {
-    "request": "0116",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0117",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "014A",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 4A 45 \n\n",
-    "played": true
-  },
-  {
-    "request": "014B",
+    "request": "01A2",
     "request_type": "PIDCommand",
     "response": "NO DATA",
     "played": true
   },
   {
-    "request": "0164",
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E A6 \n\n",
+    "played": true
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 26 \n\n",
+    "played": true
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n",
+    "played": true
+  },
+  {
+    "request": "0118",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "0119",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "011A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "011B",
     "request_type": "PIDCommand",
     "response": "NO DATA",
     "played": true
@@ -656,25 +188,7 @@
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 35 CB \n\n",
-    "played": true
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 29 \n\n",
-    "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 46 \n\n",
+    "response": "7E8 04 41 0C 3F 7A \n\n",
     "played": true
   },
   {
@@ -690,39 +204,9 @@
     "played": true
   },
   {
-    "request": "0110",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 10 20 \n\n",
-    "played": true
-  },
-  {
-    "request": "019D",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "221470",
-    "request_type": "Arbitrary",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0161",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0162",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 12 87 \n\n",
+    "response": "7E8 04 41 0C 14 5F \n\n",
     "played": true
   },
   {
@@ -735,6 +219,36 @@
     "request": "010D",
     "request_type": "PIDCommand",
     "response": "7E8 03 41 0D 0A \n\n",
+    "played": true
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2B \n\n",
+    "played": true
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 42 \n\n",
+    "played": true
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 E9 \n\n",
+    "played": true
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n",
     "played": true
   },
   {
@@ -752,19 +266,13 @@
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 37 \n\n",
+    "response": "7E8 03 41 0D 20 \n\n",
     "played": true
-  },
-  {
-    "request": "0106",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 06 84 \n\n",
-    "played": false
   },
   {
     "request": "0104",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 9F \n\n",
+    "response": "7E8 03 41 04 69 \n\n",
     "played": true
   },
   {
@@ -806,367 +314,91 @@
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 27 \n\n",
+    "response": "7E8 03 41 0D 29 \n\n",
     "played": true
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 09 F6 \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 33 \n\n",
-    "played": false
-  },
-  {
-    "request": "0107",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 07 7E \n\n",
-    "played": true
-  },
-  {
-    "request": "0109",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0105",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 05 44 \n\n",
-    "played": true
-  },
-  {
-    "request": "0167",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "015C",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "221154",
-    "request_type": "Arbitrary",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "0167",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
-  },
-  {
-    "request": "01A2",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0150",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010E",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0E A6 \n\n",
-    "played": false
-  },
-  {
-    "request": "010B",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0B 26 \n\n",
-    "played": false
-  },
-  {
-    "request": "0133",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 61 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 23 82 \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 26 25 \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 44 \n\n",
-    "played": false
-  },
-  {
-    "request": "0111",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 72 \n\n",
-    "played": false
-  },
-  {
-    "request": "0145",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 45 19 \n\n",
-    "played": false
-  },
-  {
-    "request": "0147",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 47 92 \n\n",
-    "played": false
-  },
-  {
-    "request": "0148",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0149",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 49 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 18 9F \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 5C \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 13 FB \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 1D \n\n",
-    "played": false
-  },
-  {
-    "request": "014A",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 4A 45 \n\n",
-    "played": false
-  },
-  {
-    "request": "014B",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0164",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
   },
   {
     "request": "010C",
     "request_type": "PIDCommand",
     "response": "7E8 04 41 0C 3F 7A \n\n",
-    "played": false
+    "played": true
   },
   {
     "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 72 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 5F \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 48 \n\n",
-    "played": false
-  },
-  {
-    "request": "0108",
     "request_type": "PIDCommand",
     "response": "NO DATA",
     "played": true
   },
   {
-    "request": "012C",
+    "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 2C 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "012D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 2D 80 \n\n",
-    "played": false
-  },
-  {
-    "request": "013C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 3C 1D 7C \n\n",
-    "played": false
-  },
-  {
-    "request": "013E",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 3E 1B 27 \n\n",
-    "played": false
-  },
-  {
-    "request": "013D",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "013F",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0110",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 04 93 \n\n",
-    "played": false
-  },
-  {
-    "request": "019D",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "221470",
-    "request_type": "Arbitrary",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0161",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0162",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0124",
-    "request_type": "PIDCommand",
-    "response": "7E8 06 41 24 7E 87 69 71 \n\n",
-    "played": false
-  },
-  {
-    "request": "0125",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0126",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0127",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "7E8 03 41 0D 00 \n\n",
+    "played": true
   },
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 00 00 \n\n",
-    "played": false
+    "response": "7E8 04 41 0C 14 5F \n\n",
+    "played": true
   },
   {
     "request": "0174",
     "request_type": "PIDCommand",
     "response": "NO DATA",
-    "played": false
+    "played": true
   },
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 20 \n\n",
-    "played": false
+    "response": "7E8 03 41 0D 44 \n\n",
+    "played": true
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 18 1F \n\n",
+    "played": true
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n",
+    "played": true
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA",
+    "played": true
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n",
+    "played": true
   }
 ]
