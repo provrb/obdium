@@ -74,6 +74,7 @@ struct ConnectionStatus {
     connected: bool,
     message: String,
     serial_port: String,
+    baud_rate: u32,
 }
 
 #[derive(Serialize, Deserialize)]

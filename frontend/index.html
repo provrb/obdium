@@ -5,7 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OBDII Dashboard</title>
-  <script type="module" src="main.js"></script>
+  <script type="module" src="scripts/events.js"></script>
+  <script type="module" src="scripts/main.js"></script>
+  <script type="module" src="scripts/settings.js"></script>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="scrollbar.css">
@@ -373,12 +375,12 @@
 
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">RECORD OBD RESPONSES</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="record-responses">
             <span class="slider"></span>
           </label>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">REPLAY SAVED RESPONSES</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="replay-respones">
             <span class="slider"></span>
           </label>
 
@@ -395,8 +397,7 @@
             </label>
             <label class="settings-label">LOG FILE PATH</label>
           </div>
-          <label class="settings-label" style="font-size: 0.6rem; margin-top: 4px; margin-bottom: 20px">
-            C:\Users\Ethan\Desktop\Logs\logs\logfile.txt
+          <label id="log-file-path" class="settings-label" style="font-size: 0.6rem; margin-top: 4px; margin-bottom: 20px">
           </label>
           <input id="file-upload" type="file" />
         </div>
@@ -404,27 +405,22 @@
           <div class="screen-label" style="margin-bottom: 8px;">DIAGNOSTICS</div>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">SAVE TROUBLE CODES</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="save-dtcs">
             <span class="slider"></span>
           </label>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">AUTO. CHECK FOR CODES</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="auto-check-codes">
             <span class="slider"></span>
           </label>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">READ FROM FREEZE FRAME</label>
-            <input type="checkbox" id="my-toggle">
-            <span class="slider"></span>
-          </label>
-          <label class="switch">
-            <label class="settings-label" style="margin-left: 52px;">SAVE FREEZE FRAME</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="use-freeze-frame">
             <span class="slider"></span>
           </label>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">AUTO. CONNECT ON STARTUP</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="auto-connect">
             <span class="slider"></span>
           </label>
         </div>
@@ -433,12 +429,12 @@
 
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">SHOW PARTIAL VIN</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="hide-vin">
             <span class="slider"></span>
           </label>
           <label class="switch">
             <label class="settings-label" style="margin-left: 52px;">DELETE LOGS ON EXIT APP</label>
-            <input type="checkbox" id="my-toggle">
+            <input type="checkbox" id="del-logs">
             <span class="slider"></span>
           </label>
         </div>

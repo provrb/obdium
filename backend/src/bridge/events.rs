@@ -228,10 +228,12 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
 pub fn do_send_connection_status(window: &Window, obd: &OBD, message: String, connected: bool) {
     let port = obd.serial_port_name().unwrap_or_default();
+    let baud = obd.serial_port_baud_rate().unwrap_or_default();
     let conn_status = ConnectionStatus {
         connected,
         message,
         serial_port: port,
+        baud_rate: baud,
     };
 
     let _ = window.emit("connection-status", conn_status);
