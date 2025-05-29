@@ -82,5 +82,12 @@ struct ConnectionStatus {
 struct ConnectPaylod {
     serial_port: String,
     baud_rate: u32,
-    protocol: u8
+    protocol: u8,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Setting {
+    t_id: String,
+    checked: bool,
 }

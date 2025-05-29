@@ -11,12 +11,14 @@ use serde_json::{json, Value};
 impl OBD {
     pub fn record_requests(&mut self, state: bool) {
         // clear requests file
-        if fs::File::create(RECORDED_REQEUSTS_DIR).is_ok() && state {
-            self.record_requests = state;
+        if state && fs::File::create(RECORDED_REQEUSTS_DIR).is_ok() {
+            self.record_requests = true;
         } else {
             println!("file creation to save requests failed. not recording requests.");
             self.record_requests = false;
         }
+
+        println!("Recording requests: {state:?}");
     }
 
     pub fn replay_requests(&mut self, state: bool) {
@@ -26,7 +28,8 @@ impl OBD {
             self.record_requests = false;
         }
 
-        self.replay_requests = state
+        self.replay_requests = state;
+        println!("Replaying requests: {state:?}");
     }
 
     pub(crate) fn save_request(&mut self, request: &Command, response: &Response) {

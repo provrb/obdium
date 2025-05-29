@@ -1,4 +1,4 @@
-use super::{ConnectPaylod, ConnectionStatus, VehicleInfo, VehicleInfoExtended};
+use super::{ConnectPaylod, ConnectionStatus, Setting, VehicleInfo, VehicleInfoExtended};
 /// Events to bridge the frontend with
 /// the backend.
 ///
@@ -123,7 +123,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             &window_arc,
             connect_payload.serial_port,
             connect_payload.baud_rate,
-            connect_payload.protocol
+            connect_payload.protocol,
         );
 
         if let Some(obd) = obd {
@@ -171,6 +171,34 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
                     );
                 }
             });
+
+            listen_change_obd_settings(&window_arc, &obd);
+        }
+    });
+}
+
+pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd_arc = Arc::clone(obd);
+    window.listen("settings-changed", move |event| {
+        let payload = match event.payload() {
+            Some(payload) => payload,
+            None => return,
+        };
+
+        let setting: Setting = match serde_json::from_str(payload) {
+            Ok(p) => p,
+            Err(e) => {
+                println!("Failed to parse setting payload: {e}");
+                return;
+            }
+        };
+
+        let mut obd = obd_arc.lock().unwrap();
+        match setting.t_id.as_str() {
+            "record-responses" => obd.record_requests(setting.checked),
+            "replay-responses" => obd.replay_requests(setting.checked),
+            "use-freeze-fram" => obd.query_freeze_frame(setting.checked),
+            _ => (),
         }
     });
 }

@@ -99,7 +99,17 @@ function settingChange(event) {
         // replay response
         // use freeze frame
         case 'record-responses':
-        case 'replay-respones':
+            // uncheck replay requests
+            document.getElementById('replay-responses').checked = false;
+            window.__TAURI__.event.emit('settings-changed', {tId: 'replay-responses', checked: false})
+            window.__TAURI__.event.emit('settings-changed', { tId, checked });
+            break;
+        case 'replay-responses':
+            // uncheck record requests
+            document.getElementById('record-responses').checked = false;
+            window.__TAURI__.event.emit('settings-changed', {tId: 'record-responses', checked: false})
+            window.__TAURI__.event.emit('settings-changed', { tId, checked });
+            break;
         case 'use-freeze-frame':
             window.__TAURI__.event.emit('settings-changed', { tId, checked });
             break;
@@ -116,7 +126,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     importSettings();
     
     document.getElementById('record-responses').addEventListener('change', settingChange);
-    document.getElementById('replay-respones').addEventListener('change', settingChange);
+    document.getElementById('replay-responses').addEventListener('change', settingChange);
     document.getElementById('save-dtcs').addEventListener('change', settingChange);
     document.getElementById('auto-check-codes').addEventListener('change', settingChange);
     document.getElementById('use-freeze-frame').addEventListener('change', settingChange);

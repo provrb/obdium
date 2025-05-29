@@ -195,3 +195,13 @@ input:checked + .slider {
 input:checked+.slider::before {
     transform: translateX(22px);
 }
+
+input:disabled + .slider {
+  background-color: #2b2b2b;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input:disabled + .slider::before {
+  background-color: #424242;
+}

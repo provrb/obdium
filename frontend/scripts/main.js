@@ -26,8 +26,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 export async function connect_elm(baudRate, serialPort, protocol) {
-    let dots = 0;
     const status = document.getElementById('connection-details');
+    const recordResponses = document.getElementById('record-responses');
+    const replayResponses = document.getElementById('replay-responses');
+    
+    let dots = 0;
     const interval = setInterval(() => {
         if (dots == 4) {
             dots = 0;
@@ -54,6 +57,10 @@ export async function connect_elm(baudRate, serialPort, protocol) {
         };
 
         saveConnectionConfig();
+    
+        // enable buttons for logging
+        recordResponses.disabled = false;
+        replayResponses.disabled = false;
     } else {
         status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
         connectButton.disabled = false;
@@ -63,6 +70,33 @@ export async function connect_elm(baudRate, serialPort, protocol) {
     document.getElementById('baud-rate-selected').textContent = baudRate;
     document.getElementById('serial-port-selected').textContent = serialPort;
     document.getElementById('protocol-selected').dataset.value = protocol ;
+}
+
+async function disconnect_elm() {
+    const recordResponses = document.getElementById('record-responses');
+    const replayResponses = document.getElementById('replay-responses');
+    const status = document.getElementById('connection-details');
+
+    let dots = 0;
+    const interval = setInterval(() => {
+        if (dots == 4) {
+            dots = 0;
+        }
+
+        status.textContent = "DISCONNECTING" + '.'.repeat(dots);
+        dots += 1;
+    }, 500);
+
+    connectButton.disabled = true;
+    emit('disconnect-elm');
+    await new Promise(r => setTimeout(r, 1000));
+    clearInterval(interval);
+
+    status.textContent = "NO CONNECTION ESTABLISHED";
+    connectButton.disabled = false;
+    disconnectButton.disabled = true;
+    recordResponses.disabled = true;
+    replayResponses.disabled = true;
 }
 
 const dropdowns = document.querySelectorAll(".dropdown");
@@ -110,24 +144,5 @@ connectButton.addEventListener("click", async () => {
 })
 
 disconnectButton.addEventListener("click", async () => {
-    const status = document.getElementById('connection-details');
-
-    let dots = 0;
-    const interval = setInterval(() => {
-        if (dots == 4) {
-            dots = 0;
-        }
-
-        status.textContent = "DISCONNECTING" + '.'.repeat(dots);
-        dots += 1;
-    }, 500);
-
-    connectButton.disabled = true;
-    emit('disconnect-elm');
-    await new Promise(r => setTimeout(r, 1000));
-    clearInterval(interval);
-
-    status.textContent = "NO CONNECTION ESTABLISHED";
-    connectButton.disabled = false;
-    disconnectButton.disabled = true;
+    disconnect_elm();
 })

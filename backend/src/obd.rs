@@ -124,7 +124,7 @@ impl OBD {
             };
 
             self.send_command(&mut command)?;
-            
+
             initialized
         } else {
             Err(Error::ConnectionFailed)
@@ -210,10 +210,10 @@ impl OBD {
         // and the ECU wont understand what we're asking for.
         // Furthermore, causes unexpected behaviour when parsing the response.
         let commands = vec![
-            Command::new_at(b"ATZ"),   // Reset all
-            Command::new_at(b"ATE0"),  // Echo off
-            Command::new_at(b"ATL0"),  // Linefeeds off
-            Command::new_at(b"ATH1")   // Headers on
+            Command::new_at(b"ATZ"),  // Reset all
+            Command::new_at(b"ATE0"), // Echo off
+            Command::new_at(b"ATL0"), // Linefeeds off
+            Command::new_at(b"ATH1"), // Headers on
         ];
 
         for mut command in commands {
