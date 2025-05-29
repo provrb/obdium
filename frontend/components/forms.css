@@ -1,8 +1,4 @@
-
-.vin-input::placeholder {
-    color: #49454F;
-    opacity: 1;
-}
+/* Simple search bars */
 
 .search-container {
     position: relative;
@@ -63,4 +59,13 @@
     outline: none;
     color: #F7F3FF;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.vin-input::placeholder {
+    color: #49454F;
+    opacity: 1;
+}
+
+input[type="file"] {
+    display: none;
 }

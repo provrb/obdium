@@ -1,3 +1,8 @@
+/*
+    "Card" that holds OBD information:
+    A label, value and unit
+*/
+
 .card {
     background-color: #151515;
     border-radius: 12px;

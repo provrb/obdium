@@ -365,7 +365,142 @@
       </div>
     </div>
     <div id="settings" class="screen" style="display: none;">
-      <div id="settings-header" class="screen-label">SETTINGS</div>
+      <div id="settings-header" class="screen-label">PREFERENCES</div>
+
+      <div style="display: flex">
+        <div>
+          <div class="screen-label" style="margin-bottom: 8px;">LOGGING</div>
+
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">RECORD OBD RESPONSES</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">REPLAY SAVED RESPONSES</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+
+          <div style="display: flex; align-items: center; gap: 10px">
+            <label for="file-upload" class="btn" id="btn" style="margin-top: 0; 
+            background-color: #1F1F1F;
+            color: #625e68;
+            width: 145px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-family: 'Montserrat';
+            ">
+              CHOOSE A FILE
+            </label>
+            <label class="settings-label">LOG FILE PATH</label>
+          </div>
+          <label class="settings-label" style="font-size: 0.6rem; margin-top: 4px; margin-bottom: 20px">
+            C:\Users\Ethan\Desktop\Logs\logs\logfile.txt
+          </label>
+          <input id="file-upload" type="file" />
+        </div>
+        <div style="margin-left: 50px;">
+          <div class="screen-label" style="margin-bottom: 8px;">DIAGNOSTICS</div>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">SAVE TROUBLE CODES</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">AUTO. CHECK FOR CODES</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">READ FROM FREEZE FRAME</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">SAVE FREEZE FRAME</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">AUTO. CONNECT ON STARTUP</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="margin-left: 150px;">
+          <div class="screen-label" style="margin-bottom: 8px;">PRIVACY</div>
+
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">SHOW PARTIAL VIN</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px;">DELETE LOGS ON EXIT APP</label>
+            <input type="checkbox" id="my-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="screen-label">UNIT CONVERSION</div>
+      <div style="display: flex">
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">SPEED</div>
+          <button class="dropdown-toggle" id="speed-unit-selected">KMH (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">DISTANCE</div>
+          <button class="dropdown-toggle" id="distance-selected">KM (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">TEMPERATURE</div>
+          <button class="dropdown-toggle" id="temperature-unit-selected">°C (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">ENERGY</div>
+          <button class="dropdown-toggle" id="speed-unit-selected">NM (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">PRESSURE</div>
+          <button class="dropdown-toggle" id="distance-selected">KPA (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px;">
+          <div class="settings-label">FLOW RATE</div>
+          <button class="dropdown-toggle" id="temperature-unit-selected">L/H (default)</button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </body>

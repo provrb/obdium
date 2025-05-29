@@ -1,3 +1,4 @@
+/* Regular button */
 
 .button-row {
     display: flex;
@@ -44,6 +45,8 @@
     box-shadow: none;
     opacity: 0.6;
 }
+
+/* Custom dropdown */
 
 .form-row {
     display: flex;
@@ -128,4 +131,67 @@
     justify-content: center;
     cursor: pointer;
     transition: transform 0.3s ease;
+}
+
+.settings-dropdown-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Switch */
+
+.switch {
+    position: relative;
+    width: 42px;
+    height: 20px;
+    display: flex;
+    white-space: nowrap;
+    margin-bottom: 16px;
+    margin-top: -8px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.settings-label {
+    color: #49454F;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2b2b2b;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #f3f3f2;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #1a69ae;
+}
+
+input:checked+.slider::before {
+    transform: translateX(22px);
 }

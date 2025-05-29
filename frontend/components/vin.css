@@ -1,3 +1,4 @@
+/* Vin that is apart of the header in all screens */
 
 .vin {
     font-size: 16px;
@@ -5,6 +6,8 @@
     margin-left: 1px;
     font-weight: 500;
 }
+
+/* Components of the vin screen */
 
 .car-image {
     height: 215px;

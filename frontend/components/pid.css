@@ -1,3 +1,8 @@
+/* 
+    A row containing a title and dropdown arrow.
+    On click, this row expands to show pid details.
+    "Glows" when hovered.
+*/
 
 .pid-container:hover .pid-row,
 .pid-container:hover .pid-details {
