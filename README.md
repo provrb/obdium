@@ -1,9 +1,7 @@
 <div align="center">
-  <h1>OBDium - GUI Branch</h1>
+  <h1>OBDium</h1>
   <p><em>A Rust-based vehicle diagnostics tool designed to connect with ELM327 adapters, offering live OBD-II data, fault code analysis, and offline VIN decoding.</p></em>
-  
-  <img alt="tests" src="https://img.shields.io/github/actions/workflow/status/provrb/obdium/rust.yml?label=tests&style=flat&logo=github&color=0080ff">
-  <img alt="build" src="https://img.shields.io/github/actions/workflow/status/provrb/obdium/rust.yml?label=build&style=flat&logo=github&color=0080ff)">
+
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/provrb/obdium?style=flat&logo=git&logoColor=white&color=0080ff">
   <img alt="repo-top-language" src="https://img.shields.io/github/languages/top/provrb/obdium?style=flat&color=0080ff">
   <img alt="repo-language-count" src="https://img.shields.io/github/languages/count/provrb/obdium?style=flat&color=0080ff">
