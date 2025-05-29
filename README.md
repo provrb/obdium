@@ -15,25 +15,25 @@
 - [Overview](#overview)
 - [Implementation](#implementation-and-logic)
 - [Features](#features)
-- [Usage](#example-usage)
+- [Usage](#usage)
 - [License](#license)
+- [Contributing](#contributing)
 - [Project Structure](#project-structure)
 - [Roadmap](#roadmap)
 
 ## Overview
 
-**OBDium** ( pronounced Oh-Bid-ium ), is a fast, extensible Rust-based diagnostic tool for interfacing with OBD-II systems via ELM327 serial adapters. It provides live access to vehicle sensor data, in-depth diagnostics, and accurate VIN decoding without relying on external crates for critical parsing logic. 
+**OBDium** ( pronounced Oh-Bid-ium ), is a fast, modern and extensible Rust-based diagnostic tool for interfacing with OBD-II systems via ELM327 serial adapters fully offline. It provides live access to vehicle sensor data, in-depth diagnostics, and accurate VIN decoding without relying on external crates for critical parsing logic. 
 
 Our goal with OBDium is to fill a gap in the ecosystem, providing the best free, open-source, and easy-to-use vehicle diagnostics tool.
 
 ## Features
-
-- **🔌 Serial Communication:** Connects to ELM327 OBD-II adapters via serial port
+- **⚠️ View Troube Codes:** Read diagnostic trouble codes, including **Powertrain, Body, Chassis,** and **Network** alongside a description
 - **🧠 Live Vehicle Metrics:** Reads and decodes various OBD-II PIDs (engine, fuel, air, exhaust, diagnostics, etc.) with plans for manufacturer specific PIDs soon
 - **🔎 Advanced VIN Decoding:** In-depth VIN decoding using a custom parser and SQLite-backed lookups based off of the NHTSA's VPIC MSSQL database
-- **💾 SQLite-Backed Caching & Queries:** Persistent VIN metadata and decoded lookup results are stored locally for fast and offline operation
-- **🧪 Unit Tests:** Comprehensive unit tests for VIN decoding and database access ([`tests/vin.rs`](tests/vin.rs))
-- **⚙️ Error Handling and Resilience:** Gracefully handles common ELM327 quirks and serial errors with clear messages and fallbacks
+- **🔌 Serial Communication:** Connects to ELM327 OBD-II adapters via serial port
+- **📱 Modern GUI:** No more ugly and outdated native applications. Developed with modern web development technologies using Tauri with JS/HTML/CSS 
+- **🖥️ Cross-platform:** Available on any operating system include both Linux and Windows
 
 ## Implementation and Logic
 This project required extensive research into concepts like ELM327, the OBD-II protocol, and response decoding. Below is a brief explanation of the implementation and logic behind OBDium.
@@ -46,54 +46,22 @@ This project required extensive research into concepts like ELM327, the OBD-II p
 
 For any questions about the implementation or logic behind OBDium, feel free to create a Discussion or open an Issue!
 
-## Try it yourself!
-
-Since commit 9a22b44, it is now possible to use previously recorded results for responses to simulate a vehicle responding to commands. **This means you don't even need an EML327 adapter for testing.**
-
-1. To get started, follow the [installation](#installation) steps. 
-
-2. In [`src/main.rs`](src/main.rs), ensure the line `obd.record_requests(state)` is commented out or set to false, and `obd.replay_requests(state)` is uncommented or set to true (soon to be made more convienant in later version).
-
-Now, OBDium will use all the responses located in the [`data/requests.json`](data/requests.json) file.
-
-## Example Usage
-
-To try it with an ELM327 adapter paired with a real car:
-
-1. Connect your ELM327 adapter to your computer and note the serial port (e.g., `COM4` on Windows or `/dev/ttyUSB0` on Linux).
-
-```sh
-cargo run --release
-```
-
-Sample output:
-```
-Model year: 2018
-WMI: "KL4"
-WMI ID: 2069
-Key: "CJASB|JB660929"
-
-======================== VEHICLE MODEL INFO ========================
-Manufacturer Country: ...
-Manufacturer Name: ...
-Manufacturer Region: ...
-...
-
-======================== DIAGNOSTICS ========================
-Supported pids for ECUs
-ECU 7E8:
-    01 03 04 05 06 07 0A 0B 0C 0D ...
-Check engine light: false
-Number of trouble codes: 0
-OBD standard: JOBD and OBD-II
-Auxiliary input status: Inactive
-...
-```
-
 ## Installation
+
+### Installer
+1. Head to the GitHub releases page [here](https://github.com/provrb/obdium/releases)
+2. Download the latest release for your operating system
+3. Extract and run the installer.
+
+### Command-Line
 
 1. **Install Rust**  
    Download and install from [rust-lang.org](https://www.rust-lang.org/tools/install).
+
+2. **Install Tauri**
+   ```sh
+   cargo install tauri-cli --version 1.6.5
+   ```
 
 2. **Clone the repository**  
    ```sh
@@ -101,20 +69,37 @@ Auxiliary input status: Inactive
    cd obdium
    ```
 
-   Ensure you correctly install the vpic.sqlite file from `/data/`.
-
 3. **Build the project**  
    ```sh
-   cargo build --release
+   cargo tauri build
    ```
 
-4. **(Optional) Run tests**  
-   ```sh
-   cargo test
-   ```
+4. **Find the application**: 
+   - The file built will be located in: `backend/target/release`
+   - MSI and NSIS installers will be located in: `backend/target/release/bundle`
 
 5. **Prepare SQLite databases**  
-   Ensure the required SQLite databases are present in the `data/` directory (see [`src/vin/parser.rs`](src/vin/parser.rs) for expected paths). This will change to be more convenient in the future.
+   Ensure the required SQLite databases are present in the `data/` directory (see [`src/vin/parser.rs`](backend/src/vin/mod.rs), [`src/lib.rs`](backend/src/lib.rs) for expected paths). This will change to be more convenient in the future.
+
+## Usage
+
+### Connecting
+1. Run the application
+2. Connect your ELM327 adapter to your vehicles OBD-II port and device.
+3. Navigate to the **Connection** panel:
+   - Select the OBD-II protocol, serial port, and baud rate to use.
+   - If not serial ports appear, you can click the refresh button to reload serial ports.
+4. Click 'Connect'
+
+### Features
+- OBD data will be recorded in the **OBD Dashboard**
+- View diagnostic trouble codes in the **DTC** panel.
+- View graphs for live data in the **Graphs** panel.
+- Decode a VIN to receive model-specific information in the **VIN Decoding** panel.
+- To stop tracking a metric, click on the card it's being displayed in, in the **OBD Dashboard**
+   - Resume tracking by clicking on it again at the very bottom of the dashboard.
+- Modify preferences like units, privacy, or startup settings in the **Settings** panel.
+- View an index of all PIDs in the **PID List** panel.
 
 ## Contributing
 
@@ -128,24 +113,23 @@ To contribute:
 
 ## Project Structure
 
-- [`src/main.rs`](src/main.rs): Entry point and CLI logic
-- [`src/obd.rs`](src/obd.rs): OBD-II communication and protocol handling
-- [`src/pid/`](src/pid/mod.rs): PID modules for various OBD-II data groups
-- [`src/vin/`](src/vin/mod.rs): VIN decoding and database integration
-- [`tests/vin.rs`](tests/vin.rs): Unit tests for VIN decoding and database access
+### Backend
+- [`backend/`](/backend/): Backend logic include calculations and core functionality of the app
+- [`backend/src/vin/`](/backend/src/vin/mod.rs): VIN decoding and database integration
+- [`backend/src/obd.rs`](/backend/src/obd.rs): Main OBD interface
+- [`backend/src/bridge`](/backend/src/bridge/): Backend interface for the frontend
+
+### Frontend
+- [`frontend/`](/frontend/): Main GUI logic
+
 
 ## License
 
 This code has minimal restrictions, such that any distributions are made free-of-cost. See [`LICENSE`](LICENSE) for details. 
 
 ## Roadmap
-1. Finish VIN parsing functionality.
+1. ~~Finish VIN parsing functionality.~~
 2. Fully functional user-interface with live graph view and the ability to send requests manually to the vehicle.
-3. DOCUMENT THE CRATE!!!!
+3. Support for Bluetooth and Wi-fi ELM connection
 
 ---
-
-**Note:**  
-- Ensure your user account has permission to access the serial port.
-- The tool expects the SQLite databases to be present in the `data/` directory.
-- For more details on extending PID or VIN decoding, see the module files in [`src/pid/`](src/pid/mod.rs) and [`src/vin/`](src/vin/mod.rs).
