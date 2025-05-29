@@ -1,0 +1,61 @@
+/* VSCode like sidebar */
+
+.sidebar-button {
+    width: 45px;
+    height: 45px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.sidebar-button-img {
+    margin-left: 3px;
+    color: #49454F;
+}
+
+.sidebar-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50px;
+    background: #151515;
+    color: #eee;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease 0s;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.sidebar-button.active-button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: #f3f3f2;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.sidebar-button:hover::after {
+    opacity: 1;
+    transition-delay: 0.3s;
+}
+
+.sidebar-button:hover svg {
+    stroke: #f3f3f2;
+}
+
+.sidebar-button.active-button svg {
+    stroke: #f3f3f2;
+}

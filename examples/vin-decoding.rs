@@ -25,7 +25,7 @@ fn main() {
     // Used internally as well
     let vspec_schema_id = vin.get_vspec_schema_id().unwrap();
     let vspec_pattern_id = vin.get_vspec_pattern_id().unwrap();
-
+    
     println!("Model year: {}", model_year);
     println!("WMI: {}", wmi);
     println!("WMI ID: {}", wmi_id);

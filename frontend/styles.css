@@ -1,0 +1,92 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #121212;
+    color: #f0e9f9;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+
+/* Labels */
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.connection {
+    font-size: 16px;
+    color: #F7F3FF;
+    font-weight: 500;
+}
+
+.car-model {
+    font-size: 1.5rem;
+    color: #F7F3FF;
+    font-weight: 700;
+}
+
+.connection {
+    font-size: 0.95rem;
+    color: #F7F3FF;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.connection-details {
+    font-size: 0.95rem;
+    color: #F7F3FF;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: -12px;
+    margin-bottom: 12px;
+}
+
+.error-hint {
+    font-size: 0.7rem;
+    color: #575757;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    gap: 5.7rem;
+}
+
+button.refresh {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinning {
+  animation: spin 0.3s linear 1;
+}

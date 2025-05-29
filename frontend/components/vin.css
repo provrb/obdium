@@ -1,0 +1,44 @@
+/* Vin that is apart of the header in all screens */
+
+.vin {
+    font-size: 16px;
+    color: #BDBDBD;
+    margin-left: 1px;
+    font-weight: 500;
+}
+
+/* Components of the vin screen */
+
+.car-image {
+    height: 215px;
+}
+
+.vin-results {
+    overflow-y: auto;
+    display: flex;
+    gap: 70px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.vin-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vin-label .label {
+    font-size: 16px;
+    color: #D4DADF;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.vin-label .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #F7F3FF;
+    margin-bottom: -7px;
+    max-width: 400px;
+}
