@@ -1,4 +1,5 @@
 const { listen, emit } = window.__TAURI__.event;
+import { exportDtcs } from "./features.js";
 
 listen("update-card", (event) => {
   const cards = document.querySelectorAll(".card");
@@ -248,6 +249,10 @@ listen("update-dtcs", (event) => {
 
     dtcList.appendChild(dtcRow);
   }
+
+  if (window.autoSaveCodes) {
+    exportDtcs(true);
+  }
 });
 
 const menu = document.getElementById("serial-port-dropdown-menu");
@@ -267,19 +272,3 @@ listen("update-serial-ports", (event) => {
 
   menu.appendChild(portOption);
 });
-
-export function clearDtcs() {
-  console.log("test", dtcList.innerHTML);
-  if (dtcList.innerHTML.trim() == "") {
-    return;
-  }
-
-  // clear codes
-  emit("clear-dtcs");
-  dtcHeader.textContent = "DIAGNOSTIC TROUBLE CODES (0)";
-  dtcList.innerHTML = ``;
-
-  // get permanant codes
-  // (codes that remain even after being cleared)
-  emit("get-dtcs");
-}

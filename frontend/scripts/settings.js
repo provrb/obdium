@@ -1,4 +1,4 @@
-import { connectElm } from "./main.js";
+import { connectElm } from "./features.js";
 const { emit } = window.__TAURI__.event;
 
 function importSettings() {
@@ -26,6 +26,8 @@ function importSettings() {
 
   window.hideVin = settings.showPartialVin;
   window.deleteLogsOnExit = settings.deleteLogsOnExit;
+  window.autoCheckCodes = settings.autoCheckCodes;
+  window.autoSaveCodes = settings.saveDtcs;
 
   // show buttons depending on which are toggled
   document.getElementById("save-dtcs").checked = settings.saveDtcs;
@@ -45,7 +47,6 @@ export function saveConnectionConfig() {
   }
 
   if (window.connectionConfig) {
-    console.log("Not null");
     settings.connectionConfig = window.connectionConfig;
     localStorage.setItem("userSettings", JSON.stringify(settings));
     console.log("Saved new settings:", settings);
@@ -126,7 +127,7 @@ function settingChange(event) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   // sleep
-  await new Promise((r) => setTimeout(r, 4000));
+  await new Promise((r) => setTimeout(r, 500));
 
   importSettings();
 

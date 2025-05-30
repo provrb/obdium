@@ -22,7 +22,8 @@
       },
       "fs": {
         "all": false,
-        "writeFile": true
+        "writeFile": true,
+        "scope": ["*/**"]
       }
     },
     "windows": [

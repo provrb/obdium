@@ -1,8 +1,11 @@
 const { listen, emit } = window.__TAURI__.event;
-const { save } = window.__TAURI__.dialog;
-const { writeFile } = window.__TAURI__.fs;
-import { saveConnectionConfig } from "./settings.js";
-import { clearDtcs } from "./events.js";
+
+import {
+  clearDtcs,
+  exportDtcs,
+  connectElm,
+  disconnectElm,
+} from "./features.js";
 
 // ELM connection
 // Changes when connection-status is fired
@@ -16,6 +19,8 @@ window.connectionConfig = {
 // Personal settings
 let hideVin = false;
 let deleteLogsOnExit = false;
+let autoCheckCodes = false;
+let autoSaveCodes = false;
 
 // When frontend gets loaded
 // alert the backend with an event.
@@ -27,85 +32,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // load serial ports
   emit("get-serial-ports");
 });
-
-export async function connectElm(baudRate, serialPort, protocol) {
-  const status = document.getElementById("connection-details");
-  const recordResponses = document.getElementById("record-responses");
-  const replayResponses = document.getElementById("replay-responses");
-
-  let dots = 0;
-  const interval = setInterval(() => {
-    if (dots == 4) {
-      dots = 0;
-    }
-
-    status.textContent = "CONNECTING" + ".".repeat(dots);
-    dots += 1;
-  }, 500);
-
-  connectButton.disabled = true;
-  emit("connect-elm", {
-    serialPort: serialPort,
-    baudRate: parseInt(baudRate),
-    protocol: parseInt(protocol),
-  });
-  await new Promise((r) => setTimeout(r, 1000));
-  clearInterval(interval);
-
-  if (window.connected) {
-    status.textContent =
-      "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
-    connectButton.disabled = true;
-    disconnectButton.disabled = false;
-
-    window.connectionConfig = {
-      serialPort: serialPort,
-      baudRate: baudRate,
-      protocol: parseInt(protocol),
-    };
-
-    saveConnectionConfig();
-
-    // enable buttons for logging
-    recordResponses.disabled = false;
-    replayResponses.disabled = false;
-  } else {
-    status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
-    connectButton.disabled = false;
-    disconnectButton.disabled = true;
-  }
-
-  document.getElementById("baud-rate-selected").textContent = baudRate;
-  document.getElementById("serial-port-selected").textContent = serialPort;
-  document.getElementById("protocol-selected").dataset.value = protocol;
-}
-
-async function disconnectElm() {
-  const recordResponses = document.getElementById("record-responses");
-  const replayResponses = document.getElementById("replay-responses");
-  const status = document.getElementById("connection-details");
-
-  let dots = 0;
-  const interval = setInterval(() => {
-    if (dots == 4) {
-      dots = 0;
-    }
-
-    status.textContent = "DISCONNECTING" + ".".repeat(dots);
-    dots += 1;
-  }, 500);
-
-  connectButton.disabled = true;
-  emit("disconnect-elm");
-  await new Promise((r) => setTimeout(r, 1000));
-  clearInterval(interval);
-
-  status.textContent = "NO CONNECTION ESTABLISHED";
-  connectButton.disabled = false;
-  disconnectButton.disabled = true;
-  recordResponses.disabled = true;
-  replayResponses.disabled = true;
-}
 
 const dropdowns = document.querySelectorAll(".dropdown");
 
@@ -155,9 +81,7 @@ connectButton.addEventListener("click", async () => {
   );
 });
 
-disconnectButton.addEventListener("click", async () => {
-  disconnectElm();
-});
+disconnectButton.addEventListener("click", disconnectElm);
 
 const dtcScanButton = document.getElementById("dtc-scan-button");
 dtcScanButton.addEventListener("click", async () => {
@@ -200,32 +124,6 @@ dtcClearButton.addEventListener("mousedown", () => {
 dtcClearButton.addEventListener("mouseup", resetButtonFill);
 dtcClearButton.addEventListener("mouseleave", resetButtonFill);
 
-const dtcLogButton = document.getElementById('dtc-log-file');
-const dtcList = document.getElementById('dtc-list');
-dtcLogButton.addEventListener('click', async () => {
-    const path = await save({
-        title: "Save as JSON",
-        defaultPath: "dtc_log.json",
-        filters: [{name: "JSON", extensions: ["json"] }],
-    });
-
-    if (!path) {
-        return;
-    }
-
-    let totalJSON = [];
-    dtcList.childNodes.forEach((dtcRow) => {
-        if (dtcRow.nodeType == 1) {
-            const dtcJSON = {
-                category: dtcRow.querySelector('#dtc-category').textContent.trim(),
-                name: dtcRow.querySelector('#dtc-name').textContent.trim(),
-                location: dtcRow.querySelector('#dtc-location').textContent.trim(),
-                description: dtcRow.querySelector('#dtc-description').textContent.trim(),
-            };
-
-            totalJSON.push(dtcJSON);
-        }
-    })
-
-    await writeFile({path, contents: JSON.stringify(totalJSON, null, 2)});
-});
+const dtcLogButton = document.getElementById("dtc-log-file");
+const dtcList = document.getElementById("dtc-list");
+dtcLogButton.addEventListener("click", exportDtcs);

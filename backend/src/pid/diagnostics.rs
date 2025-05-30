@@ -415,6 +415,14 @@ impl OBD {
 
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
+        // let mut dummy = Vec::new();
+        // dummy.push(TroubleCode::new(TroubleCodeCategory::Powertrain, "P0106".into(), false));
+        // dummy.push(TroubleCode::new(TroubleCodeCategory::Chassis, "C1702".into(), true));
+        // dummy.push(TroubleCode::new(TroubleCodeCategory::Network, "U1156".into(), false));
+        // dummy.push(TroubleCode::new(TroubleCodeCategory::Body, "B2452".into(), true));
+
+        // return dummy;
+
         let n_dtcs = self.get_num_trouble_codes();
         if n_dtcs == 0 {
             // no trouble codes
