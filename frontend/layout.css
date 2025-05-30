@@ -80,6 +80,25 @@
   animation: pulse 2s infinite ease-in-out;
 }
 
+.freeze-frame-status {
+  display: flex;
+  position: fixed;
+  y: 0;
+  bottom: 0;
+  background-color: #2578c0;
+  width: 100%;
+  height: 22px;
+  z-index: 999;
+  align-items: center;
+  vertical-align: middle;
+  justify-content: center;
+}
+
+.freeze-frame-status label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
 #connection-icon {
   width: 1em;
   height: 1em;

@@ -7,6 +7,7 @@ const connectButton = document.getElementById("btn-connect");
 const disconnectButton = document.getElementById("btn-disconnect");
 const dtcList = document.getElementById("dtc-list");
 const dtcHeader = document.getElementById("dtc-header");
+const freezeFrameBar = document.getElementById("freeze-frame-status");
 
 export function clearDtcs() {
   console.log("test", dtcList.innerHTML);
@@ -141,4 +142,8 @@ export async function disconnectElm() {
   disconnectButton.disabled = true;
   recordResponses.disabled = true;
   replayResponses.disabled = true;
+}
+
+export function freezeFrameDisclaimer(show) {
+  freezeFrameBar.style.display = show ? "flex" : "none";
 }

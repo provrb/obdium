@@ -1,4 +1,4 @@
-import { connectElm } from "./features.js";
+import { connectElm, freezeFrameDisclaimer } from "./features.js";
 const { emit } = window.__TAURI__.event;
 
 function importSettings() {
@@ -123,6 +123,7 @@ function settingChange(event) {
 
   localStorage.setItem("userSettings", JSON.stringify(settings));
   console.log("Saved settings:", settings);
+  freezeFrameDisclaimer(checked);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
