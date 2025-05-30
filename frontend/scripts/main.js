@@ -1,13 +1,16 @@
 const { listen, emit } = window.__TAURI__.event;
-import { saveConnectionConfig } from './settings.js'
+const { save } = window.__TAURI__.dialog;
+const { writeFile } = window.__TAURI__.fs;
+import { saveConnectionConfig } from "./settings.js";
+import { clearDtcs } from "./events.js";
 
 // ELM connection
 // Changes when connection-status is fired
 let connected = false;
 window.connectionConfig = {
-    serialPort: "0",
-    baudRate: "0",
-    protocol: 0,
+  serialPort: "0",
+  baudRate: "0",
+  protocol: 0,
 };
 
 // Personal settings
@@ -16,133 +19,213 @@ let deleteLogsOnExit = false;
 
 // When frontend gets loaded
 // alert the backend with an event.
-window.addEventListener('DOMContentLoaded', () => {
-    emit('frontend-loaded');
-    // Load pid list
-    emit('get-pids')
+window.addEventListener("DOMContentLoaded", () => {
+  emit("frontend-loaded");
+  // Load pid list
+  emit("get-pids");
 
-    // load serial ports
-    emit('get-serial-ports');
+  // load serial ports
+  emit("get-serial-ports");
 });
 
-export async function connect_elm(baudRate, serialPort, protocol) {
-    const status = document.getElementById('connection-details');
-    const recordResponses = document.getElementById('record-responses');
-    const replayResponses = document.getElementById('replay-responses');
-    
-    let dots = 0;
-    const interval = setInterval(() => {
-        if (dots == 4) {
-            dots = 0;
-        }
+export async function connectElm(baudRate, serialPort, protocol) {
+  const status = document.getElementById("connection-details");
+  const recordResponses = document.getElementById("record-responses");
+  const replayResponses = document.getElementById("replay-responses");
 
-        status.textContent = "CONNECTING" + '.'.repeat(dots);
-        dots += 1;
-    }, 500);
-
-    connectButton.disabled = true;
-    emit('connect-elm', { serialPort: serialPort, baudRate: parseInt(baudRate), protocol: parseInt(protocol) });
-    await new Promise(r => setTimeout(r, 1000));
-    clearInterval(interval);
-
-    if (window.connected) {
-        status.textContent = "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
-        connectButton.disabled = true;
-        disconnectButton.disabled = false;
-
-        window.connectionConfig = {
-            serialPort: serialPort,
-            baudRate: baudRate,
-            protocol: parseInt(protocol),
-        };
-
-        saveConnectionConfig();
-    
-        // enable buttons for logging
-        recordResponses.disabled = false;
-        replayResponses.disabled = false;
-    } else {
-        status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
-        connectButton.disabled = false;
-        disconnectButton.disabled = true;
+  let dots = 0;
+  const interval = setInterval(() => {
+    if (dots == 4) {
+      dots = 0;
     }
 
-    document.getElementById('baud-rate-selected').textContent = baudRate;
-    document.getElementById('serial-port-selected').textContent = serialPort;
-    document.getElementById('protocol-selected').dataset.value = protocol ;
-}
+    status.textContent = "CONNECTING" + ".".repeat(dots);
+    dots += 1;
+  }, 500);
 
-async function disconnect_elm() {
-    const recordResponses = document.getElementById('record-responses');
-    const replayResponses = document.getElementById('replay-responses');
-    const status = document.getElementById('connection-details');
+  connectButton.disabled = true;
+  emit("connect-elm", {
+    serialPort: serialPort,
+    baudRate: parseInt(baudRate),
+    protocol: parseInt(protocol),
+  });
+  await new Promise((r) => setTimeout(r, 1000));
+  clearInterval(interval);
 
-    let dots = 0;
-    const interval = setInterval(() => {
-        if (dots == 4) {
-            dots = 0;
-        }
-
-        status.textContent = "DISCONNECTING" + '.'.repeat(dots);
-        dots += 1;
-    }, 500);
-
+  if (window.connected) {
+    status.textContent =
+      "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
     connectButton.disabled = true;
-    emit('disconnect-elm');
-    await new Promise(r => setTimeout(r, 1000));
-    clearInterval(interval);
+    disconnectButton.disabled = false;
 
-    status.textContent = "NO CONNECTION ESTABLISHED";
+    window.connectionConfig = {
+      serialPort: serialPort,
+      baudRate: baudRate,
+      protocol: parseInt(protocol),
+    };
+
+    saveConnectionConfig();
+
+    // enable buttons for logging
+    recordResponses.disabled = false;
+    replayResponses.disabled = false;
+  } else {
+    status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
     connectButton.disabled = false;
     disconnectButton.disabled = true;
-    recordResponses.disabled = true;
-    replayResponses.disabled = true;
+  }
+
+  document.getElementById("baud-rate-selected").textContent = baudRate;
+  document.getElementById("serial-port-selected").textContent = serialPort;
+  document.getElementById("protocol-selected").dataset.value = protocol;
+}
+
+async function disconnectElm() {
+  const recordResponses = document.getElementById("record-responses");
+  const replayResponses = document.getElementById("replay-responses");
+  const status = document.getElementById("connection-details");
+
+  let dots = 0;
+  const interval = setInterval(() => {
+    if (dots == 4) {
+      dots = 0;
+    }
+
+    status.textContent = "DISCONNECTING" + ".".repeat(dots);
+    dots += 1;
+  }, 500);
+
+  connectButton.disabled = true;
+  emit("disconnect-elm");
+  await new Promise((r) => setTimeout(r, 1000));
+  clearInterval(interval);
+
+  status.textContent = "NO CONNECTION ESTABLISHED";
+  connectButton.disabled = false;
+  disconnectButton.disabled = true;
+  recordResponses.disabled = true;
+  replayResponses.disabled = true;
 }
 
 const dropdowns = document.querySelectorAll(".dropdown");
 
-dropdowns.forEach(dropdown => {
-    const toggle = dropdown.querySelector(".dropdown-toggle");
-    const menu = dropdown.querySelector(".dropdown-menu");
+dropdowns.forEach((dropdown) => {
+  const toggle = dropdown.querySelector(".dropdown-toggle");
+  const menu = dropdown.querySelector(".dropdown-menu");
 
-    toggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (menu.style.display === "block") {
-            menu.style.display = "none";
-        } else {
-            document.querySelectorAll(".dropdown-menu").forEach(m => {
-                m.style.display = "none";
-            });
-            menu.style.display = "block";
-        }
-    });
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (menu.style.display === "block") {
+      menu.style.display = "none";
+    } else {
+      document.querySelectorAll(".dropdown-menu").forEach((m) => {
+        m.style.display = "none";
+      });
+      menu.style.display = "block";
+    }
+  });
 
-    menu.addEventListener("click", (e) => {
-        if (e.target.tagName === "LI") {
-            toggle.textContent = e.target.textContent;
-            toggle.dataset.value = e.target.dataset.value;
-            menu.style.display = "none";
-        }
-    });
+  menu.addEventListener("click", (e) => {
+    if (e.target.tagName === "LI") {
+      toggle.textContent = e.target.textContent;
+      toggle.dataset.value = e.target.dataset.value;
+      menu.style.display = "none";
+    }
+  });
 });
 
 document.addEventListener("click", () => {
-    document.querySelectorAll(".dropdown-menu").forEach(menu => {
-        menu.style.display = "none";
-    });
+  document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+    menu.style.display = "none";
+  });
 });
 
-const connectButton = document.getElementById('btn-connect');
-const disconnectButton = document.getElementById('btn-disconnect');
+const connectButton = document.getElementById("btn-connect");
+const disconnectButton = document.getElementById("btn-disconnect");
 
 connectButton.addEventListener("click", async () => {
-    const baudRate = document.getElementById('baud-rate-selected');
-    const serialPort = document.getElementById('serial-port-selected');
-    const protocol = document.getElementById('protocol-selected');
+  const baudRate = document.getElementById("baud-rate-selected");
+  const serialPort = document.getElementById("serial-port-selected");
+  const protocol = document.getElementById("protocol-selected");
 
-    connect_elm(baudRate.textContent, serialPort.textContent, parseInt(protocol.dataset.value));
-})
+  connectElm(
+    baudRate.textContent,
+    serialPort.textContent,
+    parseInt(protocol.dataset.value),
+  );
+});
 
 disconnectButton.addEventListener("click", async () => {
-    disconnect_elm();
-})
+  disconnectElm();
+});
+
+const dtcScanButton = document.getElementById("dtc-scan-button");
+dtcScanButton.addEventListener("click", async () => {
+  await new Promise((r) => setTimeout(r, 500));
+
+  emit("get-dtcs");
+});
+
+const dtcClearButton = document.getElementById("dtc-clear-button");
+const fill = document.getElementById("btn-hold-fill");
+
+function resetButtonFill() {
+  clearInterval(interval);
+  fill.style.transition = "width 0.3s";
+  fill.style.width = "0%";
+}
+
+let holdTimeout;
+let progress = 0;
+let interval;
+
+dtcClearButton.addEventListener("mousedown", () => {
+  progress = 0;
+  fill.style.transition = "none";
+  fill.style.width = "0%";
+
+  interval = setInterval(() => {
+    progress += 1;
+    fill.style.width = progress + "%";
+    if (progress >= 100) {
+      clearInterval(interval);
+
+      // held
+      resetButtonFill();
+      clearDtcs();
+    }
+  }, 10);
+});
+
+dtcClearButton.addEventListener("mouseup", resetButtonFill);
+dtcClearButton.addEventListener("mouseleave", resetButtonFill);
+
+const dtcLogButton = document.getElementById('dtc-log-file');
+const dtcList = document.getElementById('dtc-list');
+dtcLogButton.addEventListener('click', async () => {
+    const path = await save({
+        title: "Save as JSON",
+        defaultPath: "dtc_log.json",
+        filters: [{name: "JSON", extensions: ["json"] }],
+    });
+
+    if (!path) {
+        return;
+    }
+
+    let totalJSON = [];
+    dtcList.childNodes.forEach((dtcRow) => {
+        if (dtcRow.nodeType == 1) {
+            const dtcJSON = {
+                category: dtcRow.querySelector('#dtc-category').textContent.trim(),
+                name: dtcRow.querySelector('#dtc-name').textContent.trim(),
+                location: dtcRow.querySelector('#dtc-location').textContent.trim(),
+                description: dtcRow.querySelector('#dtc-description').textContent.trim(),
+            };
+
+            totalJSON.push(dtcJSON);
+        }
+    })
+
+    await writeFile({path, contents: JSON.stringify(totalJSON, null, 2)});
+});

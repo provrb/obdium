@@ -14,7 +14,7 @@ evalexpr = "12.0.2"
 serde_json = "1.0.140"
 serde = { version = "^1.0.190", features = ["derive"] }
 tokio = "1.45.0"
-tauri = { version = "1", features = ["shell-open"] }
+tauri = { version = "1", features = [ "fs-write-file", "dialog-save", "shell-open"] }
 
 [build-dependencies]
 tauri-build = { version = "1", features = [] }

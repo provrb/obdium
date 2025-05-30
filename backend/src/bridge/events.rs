@@ -1,4 +1,4 @@
-use super::{ConnectPaylod, ConnectionStatus, Setting, VehicleInfo, VehicleInfoExtended};
+use super::{ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleInfoExtended};
 /// Events to bridge the frontend with
 /// the backend.
 ///
@@ -173,6 +173,8 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             });
 
             listen_change_obd_settings(&window_arc, &obd);
+            listen_send_dtcs(&window_arc, &obd);
+            listen_clear_dtcs(&window_arc, &obd);
         }
     });
 }
@@ -200,6 +202,39 @@ pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             "use-freeze-fram" => obd.query_freeze_frame(setting.checked),
             _ => (),
         }
+    });
+}
+
+pub fn listen_send_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd_arc = Arc::clone(obd);
+    let window_arc = Arc::clone(window);
+    window.listen("get-dtcs", move |_| {
+        let mut obd = obd_arc.lock().unwrap();
+
+        let codes = [obd.get_trouble_codes(), obd.get_permanant_trouble_codes()].concat();
+        println!("codes: {:?}", codes);
+
+        // create serializable DTC struct from TroubleCode struct
+        let serialized: Vec<Dtc> = codes
+            .into_iter()
+            .map(|dtc| Dtc {
+                name: dtc.dtc,
+                category: dtc.category.system_letter().to_string(),
+                description: dtc.description,
+                permanant: dtc.permanant,
+                location: dtc.category.as_str().to_string(),
+            })
+            .collect();
+
+        let _ = window_arc.emit("update-dtcs", serialized);
+    });
+}
+
+pub fn listen_clear_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd_arc = Arc::clone(obd);
+    window.listen("clear-dtcs", move |_| {
+        let mut obd = obd_arc.lock().unwrap();
+        let _ = obd.clear_trouble_codes();
     });
 }
 

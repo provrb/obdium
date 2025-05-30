@@ -1,38 +1,37 @@
 .grid::-webkit-scrollbar {
-    width: 13px;
+  width: 13px;
 }
 
 .grid::-webkit-scrollbar-track {
-    background: #0F0F0F;
-    border-radius: 10px;
+  background: #0f0f0f;
+  border-radius: 10px;
 }
 
 .grid::-webkit-scrollbar-thumb {
-    background-color: #29272c;
-    border-radius: 10px;
-    border: 2px solid #0F0F0F;
+  background-color: #29272c;
+  border-radius: 10px;
+  border: 2px solid #0f0f0f;
 }
 
 .grid::-webkit-scrollbar-thumb:hover {
-    background-color: #49454F;
+  background-color: #49454f;
 }
 
-
 .vin-results::-webkit-scrollbar {
-    width: 13px;
+  width: 13px;
 }
 
 .vin-results::-webkit-scrollbar-track {
-    background: #0F0F0F;
-    border-radius: 10px;
+  background: #0f0f0f;
+  border-radius: 10px;
 }
 
 .vin-results::-webkit-scrollbar-thumb {
-    background-color: #29272c;
-    border-radius: 10px;
-    border: 2px solid #0F0F0F;
+  background-color: #29272c;
+  border-radius: 10px;
+  border: 2px solid #0f0f0f;
 }
 
 .vin-results::-webkit-scrollbar-thumb:hover {
-    background-color: #49454F;
+  background-color: #49454f;
 }

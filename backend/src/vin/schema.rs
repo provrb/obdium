@@ -70,7 +70,6 @@ impl VIN {
                 };
 
                 if matched_schema_ids.contains(&schema_id) {
-                    println!("contains");
                     return schema_id;
                 }
             }

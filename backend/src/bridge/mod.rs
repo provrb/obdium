@@ -70,6 +70,7 @@ struct VehicleInfoExtended {
 /// Tells the frontend the serial port
 /// connection status.
 #[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
 struct ConnectionStatus {
     connected: bool,
     message: String,
@@ -90,4 +91,14 @@ struct ConnectPaylod {
 struct Setting {
     t_id: String,
     checked: bool,
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct Dtc {
+    category: String,
+    description: String,
+    name: String,
+    permanant: bool,
+    location: String,
 }

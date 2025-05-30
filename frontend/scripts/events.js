@@ -1,123 +1,129 @@
 const { listen, emit } = window.__TAURI__.event;
 
-listen('update-card', (event) => {
-    const cards = document.querySelectorAll('.card');
-    const exists = Array.from(cards).some(card => {
-        return card.textContent.includes(event.payload.name);
-    });
+listen("update-card", (event) => {
+  const cards = document.querySelectorAll(".card");
+  const exists = Array.from(cards).some((card) => {
+    return card.textContent.includes(event.payload.name);
+  });
 
-    // create card if it doesnt exist
-    if (!exists) {
-        const container = document.querySelector('.grid');
-        if (!container)
-            return;
+  // create card if it doesnt exist
+  if (!exists) {
+    const container = document.querySelector(".grid");
+    if (!container) return;
 
-        // create the card
-        // has a header, value, and then unit
-        const card = document.createElement('div');
-        const h3 = document.createElement('h3');
-        const valueDiv = document.createElement('div');
-        const unitSpan = document.createElement('span');
+    // create the card
+    // has a header, value, and then unit
+    const card = document.createElement("div");
+    const h3 = document.createElement("h3");
+    const valueDiv = document.createElement("div");
+    const unitSpan = document.createElement("span");
 
-        card.className = 'card';
-        valueDiv.className = 'value';
-        unitSpan.className = 'unit';
+    card.className = "card";
+    valueDiv.className = "value";
+    unitSpan.className = "unit";
 
-        h3.textContent = event.payload.name;
+    h3.textContent = event.payload.name;
 
-        if (event.payload.unit.toLowerCase() !== "no data")
-            unitSpan.textContent = event.payload.unit;
+    if (event.payload.unit.toLowerCase() !== "no data")
+      unitSpan.textContent = event.payload.unit;
 
-        // if the unit is no data meaning that scalar has 'no data'
-        // (see backend docs), then display 'N/A' for value
-        const valueText = event.payload.unit.toLowerCase() === "no data" ? "N/A" : event.payload.value.toString();
+    // if the unit is no data meaning that scalar has 'no data'
+    // (see backend docs), then display 'N/A' for value
+    const valueText =
+      event.payload.unit.toLowerCase() === "no data"
+        ? "N/A"
+        : event.payload.value.toString();
 
-        // add value and unit to one div to align horizontally
-        valueDiv.appendChild(document.createTextNode(valueText + " "));
-        valueDiv.appendChild(unitSpan);
+    // add value and unit to one div to align horizontally
+    valueDiv.appendChild(document.createTextNode(valueText + " "));
+    valueDiv.appendChild(unitSpan);
 
-        // append elements to card
-        card.appendChild(h3);
-        card.appendChild(valueDiv);
+    // append elements to card
+    card.appendChild(h3);
+    card.appendChild(valueDiv);
 
-        container.appendChild(card);
+    container.appendChild(card);
 
-        return;
+    return;
+  }
+
+  cards.forEach((card) => {
+    // Don't update card data.
+    if (card.classList.contains("dimmed")) {
+      return;
     }
 
-    cards.forEach(card => {
-        // Don't update card data.
-        if (card.classList.contains('dimmed')) {
-            return;
+    const h3 = card.querySelector("h3");
+    if (!h3) return;
+
+    const title = h3.textContent?.toLowerCase();
+    if (title == event.payload.name.toLowerCase()) {
+      const valueElem = card.querySelector(".value");
+
+      if (valueElem) {
+        const textNode = Array.from(valueElem.childNodes).find(
+          (node) => node.nodeType === Node.TEXT_NODE,
+        );
+
+        if (textNode) {
+          textNode.textContent =
+            event.payload.unit.toLowerCase() === "no data"
+              ? "N/A "
+              : event.payload.value.toString() + " ";
         }
-
-        const h3 = card.querySelector('h3');
-        if (!h3) return;
-
-        const title = h3.textContent?.toLowerCase();
-        if (title == event.payload.name.toLowerCase()) {
-            const valueElem = card.querySelector('.value');
-            const unitElem = card.querySelector('.unit');
-
-            if (valueElem) {
-                const textNode = Array.from(valueElem.childNodes).find(
-                    node => node.nodeType === Node.TEXT_NODE
-                );
-
-                if (textNode) {
-                    textNode.textContent = event.payload.unit.toLowerCase() === "no data"
-                        ? "N/A "
-                        : event.payload.value.toString() + " ";
-                }
-            }
-        }
-    });
-});
-
-listen('vehicle-details', (event) => {
-    const vin = document.querySelector(".vin")
-    const makeModel = document.querySelector(".car-model");
-
-    if (!hideVin) {
-        vin.textContent = "VIN: " + event.payload.vin.toUpperCase();
-    } else {
-        vin.textContent = "VIN: " + event.payload.vin.toUpperCase().slice(0, 6) + "*".repeat(12);
+      }
     }
-
-    makeModel.textContent = (event.payload.make + " " + event.payload.model).toUpperCase();
+  });
 });
 
-listen('connection-status', (event) => {
-    const connection_label = document.getElementById("connection-label");
-    const connection_icon = document.getElementById("connection-icon");
+listen("vehicle-details", (event) => {
+  const vin = document.querySelector(".vin");
+  const makeModel = document.querySelector(".car-model");
 
-    if (event.payload.connected) {
-        connection_label.textContent = "ELM327 CONNECTED VIA " + event.payload.serial_port.toUpperCase();
-        connection_icon.src = "/assets/icons/connected.png";
-        window.connected = true;
-    } else {
-        connection_label.textContent = "ELM327 NOT CONNECTED";
-        connection_icon.src = "/assets/icons/not-connected.png";
-        window.connected = false;
-    }
+  if (!hideVin) {
+    vin.textContent = "VIN: " + event.payload.vin.toUpperCase();
+  } else {
+    vin.textContent =
+      "VIN: " + event.payload.vin.toUpperCase().slice(0, 6) + "*".repeat(12);
+  }
 
-
-    console.log(event.payload.message);
+  makeModel.textContent = (
+    event.payload.make +
+    " " +
+    event.payload.model
+  ).toUpperCase();
 });
 
-listen('update-pids', (event) => {
-    const pids = event.payload;
-    const pidList = document.getElementById('pid-list');
+listen("connection-status", (event) => {
+  const connectionLabel = document.getElementById("connection-label");
+  const connectionIcon = document.getElementById("connection-icon");
 
-    for (const pidInfo of pids) {
-        const pidGroup = document.createElement('div');
-        pidGroup.className = 'pid-group';
+  if (event.payload.connected) {
+    connectionLabel.textContent =
+      "ELM327 CONNECTED VIA " + event.payload.serialPort.toUpperCase();
+    connectionIcon.src = "/assets/icons/connected.png";
+    window.connected = true;
+  } else {
+    connectionLabel.textContent = "ELM327 NOT CONNECTED";
+    connectionIcon.src = "/assets/icons/not-connected.png";
+    window.connected = false;
+  }
 
-        pidGroup.innerHTML = `
+  console.log(event.payload.message);
+});
+
+listen("update-pids", (event) => {
+  const pids = event.payload;
+  const pidList = document.getElementById("pid-list");
+
+  for (const pidInfo of pids) {
+    const pidGroup = document.createElement("div");
+    pidGroup.className = "pid-group";
+    pidGroup.innerHTML = `
         <div class="pid-container">
-            <div class="pid-row">
+            <div class="info-row">
             <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-            <span class="name">${pidInfo.pid_name.toUpperCase()}</span>
+            <span class="name">${pidInfo.pidName.toUpperCase()}</span>
             </div>
             <div class="pid-details" style="display: none; height: 0;">
             <div class="pid-data-columns">
@@ -145,65 +151,135 @@ listen('update-pids', (event) => {
             <button class="pid-button">DETAILS</button>
             </div>
         </div>
-      `;
+        `;
 
-        pidList.appendChild(pidGroup);
+    pidList.appendChild(pidGroup);
 
-        // Increment results counter
-        const header = document.getElementById('pid-list-header');
-        header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
+    // Increment results counter
+    const header = document.getElementById("pid-list-header");
+    header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
 
-        // Add expand/collapse event listener
-        const row = pidGroup.querySelector('.pid-row');
-        const details = pidGroup.querySelector('.pid-details');
+    // Add expand/collapse event listener
+    const row = pidGroup.querySelector(".info-row");
+    const details = pidGroup.querySelector(".pid-details");
 
-        row.addEventListener('click', () => {
-            const expanded = row.classList.contains('expanded');
+    row.addEventListener("click", () => {
+      const expanded = row.classList.contains("expanded");
 
-            if (expanded) {
-                details.style.height = details.scrollHeight + 'px';
-                requestAnimationFrame(() => {
-                    details.style.height = '0px';
-                });
-                row.classList.remove('expanded');
-            } else {
-                details.style.display = 'block';
-                const height = details.scrollHeight + 'px';
-                details.style.height = '0px';
-                requestAnimationFrame(() => {
-                    details.style.height = height;
-                });
-                row.classList.add('expanded');
-            }
-
-            details.addEventListener('transitionend', function handler(e) {
-                if (e.propertyName === 'height') {
-                    if (!row.classList.contains('expanded')) {
-                        details.style.display = 'none';
-                    } else {
-                        details.style.height = 'auto';
-                    }
-                    details.removeEventListener('transitionend', handler);
-                }
-            });
+      if (expanded) {
+        details.style.height = details.scrollHeight + "px";
+        requestAnimationFrame(() => {
+          details.style.height = "0px";
         });
-    }
+        row.classList.remove("expanded");
+      } else {
+        details.style.display = "block";
+        const height = details.scrollHeight + "px";
+        details.style.height = "0px";
+        requestAnimationFrame(() => {
+          details.style.height = height;
+        });
+        row.classList.add("expanded");
+      }
+
+      details.addEventListener("transitionend", function handler(e) {
+        if (e.propertyName === "height") {
+          if (!row.classList.contains("expanded")) {
+            details.style.display = "none";
+          } else {
+            details.style.height = "auto";
+          }
+          details.removeEventListener("transitionend", handler);
+        }
+      });
+    });
+  }
 });
 
-const menu = document.getElementById('serial-port-dropdown-menu');
-const serialPortSelected = document.getElementById('serial-port-selected');
+const dtcList = document.getElementById("dtc-list");
+const dtcHeader = document.getElementById("dtc-header");
 
-listen('update-serial-ports', (event) => {
-    serialPortSelected.textContent = "NO PORTS SELECTED";
-    menu.innerHTML = '';
+listen("update-dtcs", (event) => {
+  console.log("received event to update dtcs", event);
+  // set title
 
-    if (event.payload === "") {
-        return;
-    }
+  const dtcs = event.payload;
+  if (!dtcs) {
+    dtcHeader.textContent = "DIAGNOSTIC TROUBLE CODES (0)";
+    return;
+  }
 
-    const portOption = document.createElement('li');
-    portOption.textContent = event.payload;
-    portOption.dataset.value = event.payload;
+  dtcHeader.textContent = "DIAGNOSTIC TROUBLE CODES (" + dtcs.length + ")";
 
-    menu.appendChild(portOption);
-})
+  // clear dtc list
+  dtcList.innerHTML = ``;
+
+  for (const troubleCode of dtcs) {
+    const description = troubleCode.permanant
+      ? troubleCode.description + " [PERMANANT CODE]"
+      : troubleCode.description + " [PENDING CODE]";
+
+    let dtcRow = document.createElement("div");
+    dtcRow.className = "info-row";
+    dtcRow.style = "height: 60px; position: relative;";
+    dtcRow.innerHTML = `
+        <div class="category" id="dtc-category" style="font-size: 40px; font-weight: 900; margin-left: 6px; min-width: 70px; text-align: center; display: inline-block;">
+            ${troubleCode.category}
+        </div>
+        <div class="name" style="display: inline-block; vertical-align: top;">
+            <span class="name" id="dtc-name" style="font-size: 25px; font-weight: 700;">${troubleCode.name}</span>
+            <div class="name" id="dtc-location" style="color: #BDBDBD; font-size: 15px; margin-top: -5px; font-weight: 600;">
+            ${troubleCode.location}
+            </div>
+        </div>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+            style="margin-left: 190px; position: absolute; top: 50%; transform: translateY(-50%);">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+        </svg>
+        
+        <div class="name" id="dtc-description"
+            style="position: absolute; color: #BDBDBD; left: 240px; top: 0; bottom: 0; max-width: 600px; overflow-wrap: break-word; display: flex; align-items: center; height: 100%;">
+            ${description}
+        </div>
+        `;
+
+    dtcList.appendChild(dtcRow);
+  }
+});
+
+const menu = document.getElementById("serial-port-dropdown-menu");
+const serialPortSelected = document.getElementById("serial-port-selected");
+
+listen("update-serial-ports", (event) => {
+  serialPortSelected.textContent = "NO PORTS SELECTED";
+  menu.innerHTML = "";
+
+  if (event.payload === "") {
+    return;
+  }
+
+  const portOption = document.createElement("li");
+  portOption.textContent = event.payload;
+  portOption.dataset.value = event.payload;
+
+  menu.appendChild(portOption);
+});
+
+export function clearDtcs() {
+  console.log("test", dtcList.innerHTML);
+  if (dtcList.innerHTML.trim() == "") {
+    return;
+  }
+
+  // clear codes
+  emit("clear-dtcs");
+  dtcHeader.textContent = "DIAGNOSTIC TROUBLE CODES (0)";
+  dtcList.innerHTML = ``;
+
+  // get permanant codes
+  // (codes that remain even after being cleared)
+  emit("get-dtcs");
+}

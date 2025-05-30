@@ -84,7 +84,7 @@ impl fmt::Display for AuxiliaryInputStatus {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum TroubleCodeCategory {
     Powertrain,
     Chassis,
@@ -128,19 +128,23 @@ impl fmt::Display for TroubleCodeCategory {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct TroubleCode {
-    category: TroubleCodeCategory,
-    dtc: String,
-    description: String,
+    pub category: TroubleCodeCategory,
+    pub dtc: String,
+    pub description: String,
+
+    /// Is this a permanant OBD code or a pending one ?
+    pub permanant: bool,
 }
 
 impl TroubleCode {
-    pub fn new(category: TroubleCodeCategory, dtc: String) -> Self {
+    pub fn new(category: TroubleCodeCategory, dtc: String, permanant: bool) -> Self {
         let mut code = Self {
             category,
             dtc,
             description: String::default(),
+            permanant,
         };
 
         code.set_description();
@@ -437,19 +441,47 @@ impl OBD {
 
         let binding = response.replace("\r", "").replace(" ", "");
         println!("raw: {}", binding.escape_default());
-        let sanitized = binding
-            .split("43")
-            .filter_map(|chunk| {
-                if chunk.len() >= 4 {
-                    Some(chunk.trim_end_matches("00"))
-                } else {
-                    None
-                }
-            })
-            .collect::<Vec<_>>()
-            .join("");
+        let (sanitized, permanant) = {
+            if binding.contains("43") {
+                (
+                    binding
+                        .split("43")
+                        .filter_map(|chunk| {
+                            if chunk.len() >= 4 {
+                                Some(chunk.trim_end_matches("00"))
+                            } else {
+                                None
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                        .join(""),
+                    false,
+                )
+            } else if binding.contains("4A") {
+                (
+                    binding
+                        .split("4A")
+                        .filter_map(|chunk| {
+                            if chunk.len() >= 4 {
+                                Some(chunk.trim_end_matches("00"))
+                            } else {
+                                None
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                        .join(""),
+                    true,
+                )
+            } else {
+                return Vec::new();
+            }
+        };
 
         println!("dbg: dtc response from ecu: {sanitized}");
+
+        if sanitized.to_lowercase().contains("nodata") {
+            return Vec::new();
+        }
 
         let mut codes = Vec::new();
 
@@ -497,7 +529,7 @@ impl OBD {
                 right
             );
 
-            codes.push(TroubleCode::new(category, dtc_code));
+            codes.push(TroubleCode::new(category, dtc_code, permanant));
         }
 
         codes

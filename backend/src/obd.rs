@@ -190,7 +190,7 @@ impl OBD {
                         let as_string = String::from_utf8_lossy(&buffer);
                         let cleaned = as_string.trim_matches(|c: char| !c.is_ascii_graphic());
 
-                        if cleaned.ends_with('>') {
+                        if cleaned.ends_with('>') || cleaned.contains("ELM") {
                             return port.port_name.clone();
                         }
                     }

@@ -12,7 +12,6 @@ impl OBD {
     pub fn record_requests(&mut self, state: bool) {
         if state {
             match fs::OpenOptions::new()
-                .write(true)
                 .create(true)
                 .append(true)
                 .open(RECORDED_REQEUSTS_DIR)
