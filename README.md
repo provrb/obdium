@@ -73,19 +73,22 @@ For any questions about the implementation or logic behind OBDium, feel free to 
    cd obdium
    ```
 
-4. **Build the project**
+4. Download SQLite Databases with Git LFS
+  
+   ```sh
+   git lfs fetch
+   ```
+
+5. **Build the project**
 
    ```sh
    cargo tauri build
    ```
 
-5. **Find the application**:
+6. **Find the application**:
 
    - The file built will be located in: `backend/target/release`
    - MSI and NSIS installers will be located in: `backend/target/release/bundle`
-
-6. **Prepare SQLite databases**  
-   Ensure the required SQLite databases are present in the `data/` directory (see [`src/vin/parser.rs`](backend/src/vin/mod.rs), [`src/lib.rs`](backend/src/lib.rs) for expected paths). This will change to be more convenient in the future.
 
 ## Usage
 
