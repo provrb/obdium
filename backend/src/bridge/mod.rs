@@ -76,6 +76,7 @@ struct ConnectionStatus {
     message: String,
     serial_port: String,
     baud_rate: u32,
+    protocol: u8,
 }
 
 #[derive(Serialize, Deserialize)]

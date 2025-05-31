@@ -239,14 +239,14 @@ impl OBD {
     /// Get the DTC that caused the freeze frame.
     pub fn get_freeze_frame_dtc(&mut self) -> Vec<TroubleCode> {
         if let Err(err) = self.send_command(&mut Command::new_pid(b"0102")) {
-            println!("when getting dtc: {err}");
+            println!("when getting dtc3: {err}");
             return Vec::new();
         }
 
         match self.read_until(b'>') {
             Ok(mut response) => self.decode_trouble_codes(&mut response),
             Err(err) => {
-                println!("when getting dtc: {err}");
+                println!("when getting dtc4: {err}");
                 Vec::new()
             }
         }
@@ -254,14 +254,14 @@ impl OBD {
 
     pub fn get_permanant_trouble_codes(&mut self) -> Vec<TroubleCode> {
         if let Err(err) = self.send_command(&mut Command::new_svc(b"0A")) {
-            println!("when getting dtc: {err}");
+            println!("when getting dtc6: {err}");
             return Vec::new();
         }
 
         match self.read_until(b'>') {
             Ok(mut raw_response) => self.decode_trouble_codes(&mut raw_response),
             Err(err) => {
-                println!("when getting dtc: {err}");
+                println!("when getting dtc7: {err}");
                 Vec::new()
             }
         }
@@ -430,14 +430,14 @@ impl OBD {
         }
 
         if let Err(err) = self.send_command(&mut Command::new_svc(b"03")) {
-            println!("when getting dtc: {err}");
+            println!("when getting dtc1: {err}");
             return Vec::new();
         }
 
         match self.read_until(b'>') {
             Ok(mut response) => self.decode_trouble_codes(&mut response),
             Err(err) => {
-                println!("when getting dtc: {err}");
+                println!("when getting dtc2: {err}");
                 Vec::new()
             }
         }

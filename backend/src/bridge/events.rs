@@ -17,14 +17,12 @@ use tokio::time::sleep;
 // Where the backend "listens" for events from the frontend
 // All listen events are prefixed with 'listen'
 
-pub fn do_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let window_arc = Arc::new(window.clone());
     let pids = {
         let mut obd = obd.lock().unwrap();
         obd.get_service_supported_pids("01")
     };
-
-    println!("supported pids for mode 1:\n{:?}", pids);
 
     let supported_pids: Vec<&String> = { pids.values().flatten().collect() };
 
@@ -34,7 +32,9 @@ pub fn do_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         .for_each(|pid| pid.supported = supported_pids.contains(&&pid.pid.to_string()));
     supported_pids_info.sort_by(|a, b| b.supported.cmp(&a.supported));
 
-    let _ = window_arc.emit("update-pids", &supported_pids_info);
+    window.listen("get-pids", move |_| {
+        let _ = window_arc.emit("update-pids", &supported_pids_info);
+    });
 }
 
 pub fn listen_send_ports(window: &Arc<Window>) {
@@ -144,7 +144,6 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
 
             // Usually called once
             do_send_vehicle_details(&window_arc, &obd);
-            do_send_pids(&window_arc, &obd);
 
             // Live tracking data
             track_data(&window_arc, &obd);
@@ -189,6 +188,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             listen_change_obd_settings(&window_arc, &obd);
             listen_send_dtcs(&window_arc, &obd);
             listen_clear_dtcs(&window_arc, &obd);
+            listen_send_pids(&window_arc, &obd);
         }
     });
 }
@@ -320,6 +320,7 @@ pub fn do_send_connection_status(window: &Window, obd: &OBD, message: String, co
         message,
         serial_port: port,
         baud_rate: baud,
+        protocol: obd.get_protocol_number(),
     };
 
     let _ = window.emit("connection-status", conn_status);

@@ -82,6 +82,7 @@ pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
     elm_version: Option<String>,
     freeze_frame_query: bool,
+    protocol: u8,
 
     pub(crate) record_requests: bool,
     pub(crate) replay_requests: bool,
@@ -124,6 +125,7 @@ impl OBD {
             };
 
             self.send_command(&mut command)?;
+            self.protocol = protocol;
 
             initialized
         } else {
@@ -692,7 +694,7 @@ impl OBD {
         response
     }
 
-    pub fn get_protocol(&mut self) -> Result<String, Error> {
+    pub fn get_protocol_name(&mut self) -> Result<String, Error> {
         let mut request = Command::new_at(b"AT DP");
         self.send_command(&mut request)?;
 
@@ -707,6 +709,10 @@ impl OBD {
         }
 
         response.formatted_response.ok_or(Error::InvalidResponse)
+    }
+
+    pub fn get_protocol_number(&self) -> u8 {
+        self.protocol
     }
 
     /// Test and run Mode 22 pids from

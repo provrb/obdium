@@ -68,18 +68,6 @@ export async function connectElm(baudRate, serialPort, protocol) {
   }
 
   const status = document.getElementById("connection-details");
-  const recordResponses = document.getElementById("record-responses");
-  const replayResponses = document.getElementById("replay-responses");
-
-  let dots = 0;
-  const interval = setInterval(() => {
-    if (dots == 4) {
-      dots = 0;
-    }
-
-    status.textContent = "CONNECTING" + ".".repeat(dots);
-    dots += 1;
-  }, 500);
 
   connectButton.disabled = true;
   emit("connect-elm", {
@@ -87,66 +75,13 @@ export async function connectElm(baudRate, serialPort, protocol) {
     baudRate: parseInt(baudRate),
     protocol: parseInt(protocol),
   });
-  await new Promise((r) => setTimeout(r, 1000));
-  clearInterval(interval);
-
-  if (window.connected) {
-    status.textContent =
-      "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
-    connectButton.disabled = true;
-    disconnectButton.disabled = false;
-
-    window.connectionConfig = {
-      serialPort: serialPort,
-      baudRate: baudRate,
-      protocol: parseInt(protocol),
-    };
-
-    saveConnectionConfig();
-
-    // enable buttons for logging
-    recordResponses.disabled = false;
-    replayResponses.disabled = false;
-
-    if (window.autoCheckCodes) {
-      emit("get-dtcs");
-    }
-  } else {
-    status.textContent = "FAILED TO CONNECT THROUGH SERIAL PORT";
-    connectButton.disabled = false;
-    disconnectButton.disabled = true;
-  }
-
-  document.getElementById("baud-rate-selected").textContent = baudRate;
-  document.getElementById("serial-port-selected").textContent = serialPort;
-  document.getElementById("protocol-selected").dataset.value = protocol;
 }
 
 export async function disconnectElm() {
-  const recordResponses = document.getElementById("record-responses");
-  const replayResponses = document.getElementById("replay-responses");
   const status = document.getElementById("connection-details");
-
-  let dots = 0;
-  const interval = setInterval(() => {
-    if (dots == 4) {
-      dots = 0;
-    }
-
-    status.textContent = "DISCONNECTING" + ".".repeat(dots);
-    dots += 1;
-  }, 500);
 
   connectButton.disabled = true;
   emit("disconnect-elm");
-  await new Promise((r) => setTimeout(r, 1000));
-  clearInterval(interval);
-
-  status.textContent = "NO CONNECTION ESTABLISHED";
-  connectButton.disabled = false;
-  disconnectButton.disabled = true;
-  recordResponses.disabled = true;
-  replayResponses.disabled = true;
 }
 
 export function freezeFrameDisclaimer(show) {
@@ -154,5 +89,5 @@ export function freezeFrameDisclaimer(show) {
 }
 
 export function clearObdView() {
-  obdGrid.innerHTML = '';
+  obdGrid.innerHTML = "";
 }

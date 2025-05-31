@@ -52,7 +52,7 @@ pauseObdButton.addEventListener("click", () => {
   } else {
     pauseObdButton.textContent = "PAUSE";
   }
-})
+});
 
 dropdowns.forEach((dropdown) => {
   const toggle = dropdown.querySelector(".dropdown-toggle");
@@ -91,8 +91,8 @@ connectButton.addEventListener("click", async () => {
   const protocol = document.getElementById("protocol-selected");
 
   connectElm(
-    baudRate.textContent,
-    serialPort.textContent,
+    baudRate.textContent.trim(),
+    serialPort.textContent.trim(),
     parseInt(protocol.dataset.value),
   );
 });
@@ -141,4 +141,4 @@ dtcClearButton.addEventListener("mouseleave", resetButtonFill);
 
 const dtcLogButton = document.getElementById("dtc-log-file");
 const dtcList = document.getElementById("dtc-list");
-dtcLogButton.addEventListener("click", exportDtcs);
+dtcLogButton.addEventListener("click", () => exportDtcs(false));

@@ -1,5 +1,13 @@
 const { listen, emit } = window.__TAURI__.event;
 import { exportDtcs } from "./features.js";
+import { saveConnectionConfig } from "./settings.js";
+
+const connectionLabel = document.getElementById("connection-label");
+const connectionIcon = document.getElementById("connection-icon");
+const replayResponses = document.getElementById("replay-responses");
+const recordResponses = document.getElementById("record-responses");
+const connectButton = document.getElementById("btn-connect");
+const disconnectButton = document.getElementById("btn-disconnect");
 
 listen("update-card", (event) => {
   if (window.obdViewPaused) return;
@@ -98,37 +106,75 @@ listen("vehicle-details", (event) => {
 });
 
 listen("connection-status", (event) => {
-  console.log("received connection status:", event);
-  const connectionLabel = document.getElementById("connection-label");
-  const connectionIcon = document.getElementById("connection-icon");
+  const protocolDropdown = document.getElementById("protocol-menu");
+  const protocolSelected = document.getElementById("protocol-selected");
+  const status = document.getElementById("connection-details");
+
+  console.log("Retrieved connection status:", event);
 
   if (event.payload.connected) {
+    const serialPort = event.payload.serialPort;
+    const baudRate = event.payload.baudRate;
+    const protocol = event.payload.protocol;
+
     connectionLabel.textContent =
-      "ELM327 CONNECTED VIA " + event.payload.serialPort.toUpperCase();
+      "ELM327 CONNECTED VIA " + serialPort.toUpperCase();
+    status.textContent =
+      "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
     connectionIcon.src = "/assets/icons/connected.png";
     window.connected = true;
+    recordResponses.disabled = false;
+    replayResponses.disabled = false;
+    connectButton.disabled = true;
+    disconnectButton.disabled = false;
+
+    document.getElementById("baud-rate-selected").textContent = baudRate;
+    document.getElementById("serial-port-selected").textContent = serialPort;
+    protocolSelected.dataset.value = protocol;
+    protocolSelected.textContent = protocolDropdown.querySelector(
+      `li[data-value="${protocol}"]`,
+    ).textContent;
+
+    emit("get-pids");
+
+    window.connectionConfig = {
+      serialPort: serialPort,
+      baudRate: baudRate,
+      protocol: parseInt(protocol),
+    };
+
+    saveConnectionConfig();
+
+    if (window.autoCheckCodes) {
+      emit("get-dtcs");
+    }
   } else {
     connectionLabel.textContent = "ELM327 NOT CONNECTED";
+    status.textContent = "NO CONNECTION ESTABLISHED";
     connectionIcon.src = "/assets/icons/not-connected.png";
     window.connected = false;
+    recordResponses.disabled = true;
+    replayResponses.disabled = true;
+    connectButton.disabled = false;
+    disconnectButton.disabled = true;
   }
-
-  console.log(event.payload.message);
 });
 
 listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");
-  pidList.innerHTML = '';
+  pidList.innerHTML = "";
+
+  console.log("updating pids", event);
 
   for (const pidInfo of pids) {
     const pidGroup = document.createElement("div");
     pidGroup.className = "pid-group";
     pidGroup.innerHTML = `
-        <div class="pid-container" ${(!pidInfo.supported) ? 'style="opacity: 0.15"' : "" } >
+        <div class="pid-container" ${!pidInfo.supported ? 'style="opacity: 0.15"' : ""} >
             <div class="info-row">
             <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-            <span class="name">${(pidInfo.supported) ? "[SUPPORTED]" : "[UNSUPPORTED]" }  ${pidInfo.pidName.toUpperCase()}</span>
+            <span class="name">${pidInfo.supported ? "[SUPPORTED]" : "[UNSUPPORTED]"}  ${pidInfo.pidName.toUpperCase()}</span>
             </div>
             <div class="pid-details" style="display: none; height: 0;">
             <div class="pid-data-columns">
