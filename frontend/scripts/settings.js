@@ -118,12 +118,12 @@ function settingChange(event) {
       break;
     case "use-freeze-frame":
       emit("settings-changed", { tId, checked });
+      freezeFrameDisclaimer(checked);
       break;
   }
 
   localStorage.setItem("userSettings", JSON.stringify(settings));
   console.log("Saved settings:", settings);
-  freezeFrameDisclaimer(checked);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
