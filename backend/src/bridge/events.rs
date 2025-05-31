@@ -229,6 +229,7 @@ pub fn listen_send_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let window_arc = Arc::clone(window);
     window.listen("get-dtcs", move |_| {
         let mut obd = obd_arc.lock().unwrap();
+        std::thread::sleep(Duration::from_secs(1));
 
         let codes = [obd.get_trouble_codes(), obd.get_permanant_trouble_codes()].concat();
         println!("codes: {:?}", codes);
@@ -277,6 +278,7 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     spawn(async move {
         let mut obd = obd.lock().unwrap();
+        std::thread::sleep(Duration::from_secs(2));
 
         // send the vin and vehicle details to the frontend
         match obd.get_vin() {

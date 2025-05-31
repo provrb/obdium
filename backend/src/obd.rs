@@ -592,6 +592,8 @@ impl OBD {
         let mut response = self.read_until(b'>').unwrap_or_default();
         response = response.replace("SEARCHING...", "");
 
+        println!("raw response is: {}", response.escape_default());
+
         let ecu_names = self.extract_ecu_names(&response);
         self.strip_ecu_names(&mut response, ecu_names.as_slice());
 
@@ -644,6 +646,8 @@ impl OBD {
                     .expect("call to u8::from_str_radix failed on str '{byte}'"),
             );
         }
+
+        println!("got vin: {vin}");
 
         match VIN::new(&vin) {
             Ok(vin) => Some(vin),
