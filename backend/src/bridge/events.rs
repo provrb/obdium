@@ -25,23 +25,14 @@ pub fn do_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     };
 
     println!("supported pids for mode 1:\n{:?}", pids);
-    
-    let supported_pids: Vec<&String> = {
-        pids
-            .values()
-            .flatten()
-            .collect()
-    };
 
-    let mut supported_pids_info = PID_INFOS.to_owned();    
-    supported_pids_info.iter_mut().for_each(
-        |pid| {
-            pid.supported = supported_pids.contains(&&pid.pid.to_string())
-        }
-    );
-    supported_pids_info.sort_by(|a, b| {
-        b.supported.cmp(&a.supported)
-    });
+    let supported_pids: Vec<&String> = { pids.values().flatten().collect() };
+
+    let mut supported_pids_info = PID_INFOS.to_owned();
+    supported_pids_info
+        .iter_mut()
+        .for_each(|pid| pid.supported = supported_pids.contains(&&pid.pid.to_string()));
+    supported_pids_info.sort_by(|a, b| b.supported.cmp(&a.supported));
 
     let _ = window_arc.emit("update-pids", &supported_pids_info);
 }
