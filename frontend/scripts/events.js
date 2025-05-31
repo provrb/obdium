@@ -105,7 +105,7 @@ listen("vehicle-details", (event) => {
   ).toUpperCase();
 });
 
-listen("connection-status", (event) => {
+listen("connection-status", async (event) => {
   const protocolDropdown = document.getElementById("protocol-menu");
   const protocolSelected = document.getElementById("protocol-selected");
   const status = document.getElementById("connection-details");
@@ -135,8 +135,6 @@ listen("connection-status", (event) => {
       `li[data-value="${protocol}"]`,
     ).textContent;
 
-    emit("get-pids");
-
     window.connectionConfig = {
       serialPort: serialPort,
       baudRate: baudRate,
@@ -148,6 +146,9 @@ listen("connection-status", (event) => {
     if (window.autoCheckCodes) {
       emit("get-dtcs");
     }
+
+    await new Promise((r) => setTimeout(r, 7000));
+    emit("get-pids");
   } else {
     connectionLabel.textContent = "ELM327 NOT CONNECTED";
     status.textContent = "NO CONNECTION ESTABLISHED";

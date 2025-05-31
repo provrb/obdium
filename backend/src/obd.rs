@@ -83,7 +83,7 @@ pub struct OBD {
     elm_version: Option<String>,
     freeze_frame_query: bool,
     protocol: u8,
-    
+
     pub(crate) requests_path: String,
     pub(crate) record_requests: bool,
     pub(crate) replay_requests: bool,
@@ -419,6 +419,8 @@ impl OBD {
                 request_pid_bytes[1],
             ];
             let response = self.query(Command::new_pid(&command));
+            println!("Response: {:?}", &response.formatted_response);
+
             let split = format!("41{}", request_pid);
 
             let mut parsed: HashMap<String, Vec<String>> = self.parse_supported_pids(
@@ -426,6 +428,8 @@ impl OBD {
                 &split,
                 i32::from_str_radix(request_pid, 16).unwrap_or_default(),
             );
+
+            println!("  -> Parsed: {parsed:?}");
 
             for (ecu_name, pids) in parsed.iter_mut() {
                 supported_pids
@@ -470,18 +474,15 @@ impl OBD {
 
             // Loop through all characters in 'data'
             // Get the character as a number from the hex character 'ch'
-            for ch in data.chars() {
-                let as_num = u8::from_str_radix(ch.to_string().as_str(), 16).unwrap_or_default();
-                let bits = format!("{:04b}", as_num);
+            for byte_str in data.as_bytes().chunks(2).flat_map(std::str::from_utf8) {
+                let as_num = u8::from_str_radix(byte_str, 16).unwrap_or_default();
 
                 // Iterate through each character in binary representation
                 // If bit is 1, that is a supported pid.
-                for bit in bits.chars() {
-                    if bit == '1' {
-                        // value not found
-                        supported_pids.push(format!("{pid:02X}"));
+                for i in 0..8 {
+                    if (as_num & (1 << (7 - i))) != 0 {
+                        supported_pids.push(format!("{:02X}", pid));
                     }
-
                     pid += 1;
                 }
             }

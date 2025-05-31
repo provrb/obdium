@@ -444,7 +444,10 @@ impl OBD {
     }
 
     fn decode_trouble_codes(&self, response: &mut String) -> Vec<TroubleCode> {
-        println!("==> Decoding trouble codes. Raw response: '{}'", response.escape_default());
+        println!(
+            "==> Decoding trouble codes. Raw response: '{}'",
+            response.escape_default()
+        );
         let ecu_names = self.extract_ecu_names(response);
         println!(" -> ECU names extracted: '{:?}'", ecu_names);
         self.strip_ecu_names(response, &ecu_names);

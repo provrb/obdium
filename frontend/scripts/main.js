@@ -146,7 +146,7 @@ const dtcList = document.getElementById("dtc-list");
 dtcLogButton.addEventListener("click", () => exportDtcs(false));
 
 const logFileButton = document.getElementById("log-file-button");
-logFileButton.addEventListener('click', async () => {
+logFileButton.addEventListener("click", async () => {
   window.logFilePath = await save({
     title: "Save as JSON",
     defaultPath: "requests.json",
@@ -160,4 +160,4 @@ logFileButton.addEventListener('click', async () => {
   }
 
   document.getElementById("log-file-path").textContent = window.logFilePath;
-})
+});

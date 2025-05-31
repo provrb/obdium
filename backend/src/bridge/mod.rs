@@ -94,7 +94,7 @@ struct Setting {
     checked: bool,
 
     // Optional data to send
-    // Used for record_requests file pat 
+    // Used for record_requests file pat
     data: Option<String>,
 }
 

@@ -18,11 +18,15 @@ use tokio::time::sleep;
 // All listen events are prefixed with 'listen'
 
 pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    std::thread::sleep(Duration::from_secs(2));
+
     let window_arc = Arc::new(window.clone());
     let pids = {
         let mut obd = obd.lock().unwrap();
         obd.get_service_supported_pids("01")
     };
+
+    println!("Supported pids list: \n{:?}", pids);
 
     let supported_pids: Vec<&String> = { pids.values().flatten().collect() };
 
