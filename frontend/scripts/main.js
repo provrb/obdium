@@ -35,11 +35,13 @@ const dtcClearButton = document.getElementById("dtc-clear-button");
 // alert the backend with an event.
 window.addEventListener("DOMContentLoaded", () => {
   emit("frontend-loaded");
-  // Load pid list
-  emit("get-pids");
 
   // load serial ports
   emit("get-serial-ports");
+
+  emit("get-connection-status");
+
+  console.log("frontend loaded");
 });
 
 clearObdButton.addEventListener("click", clearObdView);

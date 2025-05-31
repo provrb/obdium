@@ -98,6 +98,7 @@ listen("vehicle-details", (event) => {
 });
 
 listen("connection-status", (event) => {
+  console.log("received connection status:", event);
   const connectionLabel = document.getElementById("connection-label");
   const connectionIcon = document.getElementById("connection-icon");
 
@@ -118,15 +119,16 @@ listen("connection-status", (event) => {
 listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");
+  pidList.innerHTML = '';
 
   for (const pidInfo of pids) {
     const pidGroup = document.createElement("div");
     pidGroup.className = "pid-group";
     pidGroup.innerHTML = `
-        <div class="pid-container">
+        <div class="pid-container" ${(!pidInfo.supported) ? 'style="opacity: 0.15"' : "" } >
             <div class="info-row">
             <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-            <span class="name">${pidInfo.pidName.toUpperCase()}</span>
+            <span class="name">${(pidInfo.supported) ? "[SUPPORTED]" : "[UNSUPPORTED]" }  ${pidInfo.pidName.toUpperCase()}</span>
             </div>
             <div class="pid-details" style="display: none; height: 0;">
             <div class="pid-data-columns">

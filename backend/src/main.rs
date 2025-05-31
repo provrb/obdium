@@ -5,7 +5,7 @@ mod bridge;
 mod stats;
 
 use bridge::events::{
-    do_send_connection_status, listen_connect_elm, listen_decode_vin, listen_send_pids,
+    do_send_connection_status, listen_connect_elm, listen_decode_vin,
     listen_send_ports,
 };
 use obdium::OBD;
@@ -80,7 +80,6 @@ fn main() {
                 });
 
                 let window_arc = Arc::new(window);
-                listen_send_pids(&window_arc);
 
                 while !frontend_ready.load(Ordering::SeqCst) {
                     sleep(Duration::from_millis(100));

@@ -63,6 +63,10 @@ export async function exportDtcs(autoSave) {
 }
 
 export async function connectElm(baudRate, serialPort, protocol) {
+  if (window.connected) {
+    return;
+  }
+
   const status = document.getElementById("connection-details");
   const recordResponses = document.getElementById("record-responses");
   const replayResponses = document.getElementById("replay-responses");
