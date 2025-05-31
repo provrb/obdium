@@ -1,648 +1,477 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OBDII Dashboard</title>
-    <script type="module" src="scripts/events.js"></script>
-    <script type="module" src="scripts/settings.js"></script>
-    <script type="module" src="scripts/main.js"></script>
-    <script type="module" src="scripts/features.js"></script>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="layout.css" />
-    <link rel="stylesheet" href="scrollbar.css" />
-    <link rel="stylesheet" href="components/card.css" />
-    <link rel="stylesheet" href="components/forms.css" />
-    <link rel="stylesheet" href="components/pid.css" />
-    <link rel="stylesheet" href="components/sidebar.css" />
-    <link rel="stylesheet" href="components/vin.css" />
-    <link rel="stylesheet" href="components/buttons.css" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBDII Dashboard</title>
+  <script type="module" src="scripts/events.js"></script>
+  <script type="module" src="scripts/settings.js"></script>
+  <script type="module" src="scripts/main.js"></script>
+  <script type="module" src="scripts/features.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="scrollbar.css" />
+  <link rel="stylesheet" href="components/card.css" />
+  <link rel="stylesheet" href="components/forms.css" />
+  <link rel="stylesheet" href="components/pid.css" />
+  <link rel="stylesheet" href="components/sidebar.css" />
+  <link rel="stylesheet" href="components/vin.css" />
+  <link rel="stylesheet" href="components/buttons.css" />
 
-  <body>
-    <div
-      class="freeze-frame-status"
-      id="freeze-frame-status"
-      style="display: none"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="17"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M14 21h1" />
-        <path d="M14 3h1" />
-        <path d="M19 3a2 2 0 0 1 2 2" />
-        <path d="M21 14v1" />
-        <path d="M21 19a2 2 0 0 1-2 2" />
-        <path d="M21 9v1" />
-        <path d="M3 14v1" />
-        <path d="M3 9v1" />
-        <path d="M5 21a2 2 0 0 1-2-2" />
-        <path d="M5 3a2 2 0 0 0-2 2" />
-        <path d="M7 12h10" />
-        <path d="M7 16h6" />
-        <path d="M7 8h8" />
-        <path d="M9 21h1" />
-        <path d="M9 3h1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="freeze-frame-status" id="freeze-frame-status" style="display: none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 21h1" />
+      <path d="M14 3h1" />
+      <path d="M19 3a2 2 0 0 1 2 2" />
+      <path d="M21 14v1" />
+      <path d="M21 19a2 2 0 0 1-2 2" />
+      <path d="M21 9v1" />
+      <path d="M3 14v1" />
+      <path d="M3 9v1" />
+      <path d="M5 21a2 2 0 0 1-2-2" />
+      <path d="M5 3a2 2 0 0 0-2 2" />
+      <path d="M7 12h10" />
+      <path d="M7 16h6" />
+      <path d="M7 8h8" />
+      <path d="M9 21h1" />
+      <path d="M9 3h1" />
+    </svg>
+    <label>FREEZE FRAME ACTIVE | READING FROM FREEZE FRAME</label>
+  </div>
+
+  <div class="sidebar">
+    <button class="sidebar-button" data-tooltip="CONNECT" data-screen="connect-settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <circle cx="10" cy="7" r="1" />
+        <circle cx="4" cy="20" r="1" />
+        <path d="M4.7 19.3 19 5" />
+        <path d="m21 3-3 1 2 2Z" />
+        <path d="M9.26 7.68 5 12l2 5" />
+        <path d="m10 14 5 2 3.5-3.5" />
+        <path d="m18 12 1-1 1 1-1 1Z" />
       </svg>
-      <label>FREEZE FRAME ACTIVE | READING FROM FREEZE FRAME</label>
-    </div>
-
-    <div class="sidebar">
-      <button
-        class="sidebar-button"
-        data-tooltip="CONNECT"
-        data-screen="connect-settings"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <circle cx="10" cy="7" r="1" />
-          <circle cx="4" cy="20" r="1" />
-          <path d="M4.7 19.3 19 5" />
-          <path d="m21 3-3 1 2 2Z" />
-          <path d="M9.26 7.68 5 12l2 5" />
-          <path d="m10 14 5 2 3.5-3.5" />
-          <path d="m18 12 1-1 1 1-1 1Z" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="OBD DASHBOARD"
-        data-screen="dashboard"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path d="m12 14 4-4" />
-          <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="TROUBLE CODES"
-        data-screen="view-dtcs"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path
-            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
-          />
-          <path d="M12 9v4" />
-          <path d="M12 17h.01" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="OBD TESTS"
-        data-screen="tests"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path
-            d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"
-          />
-          <path d="M6.453 15h11.094" />
-          <path d="M8.5 2h7" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="VIEW PIDS"
-        data-screen="edit"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <rect width="18" height="18" x="3" y="3" rx="2" />
-          <path d="M21 9H3" />
-          <path d="M21 15H3" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="VIEW GRAPHS"
-        data-screen="graphs"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.9"
-          stroke="currentColor"
-          class="sidebar-button-img"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
-          />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="VIN DECODING"
-        data-screen="vin"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6" />
-          <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7" />
-          <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1" />
-          <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1" />
-          <path d="M9 6v12" />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="SETTINGS"
-        data-screen="settings"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path
-            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-          />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      </button>
-    </div>
-    <div class="main">
-      <div class="header">
-        <div class="info">
-          <div class="connection">
-            <img
-              id="connection-icon"
-              src="/assets/icons/not-connected.png"
-              alt="Connectivity"
-            />
-            <span id="connection-label">ELM327 NOT CONNECTED</span>
-          </div>
-          <div class="car-model">UNAVAILABLE</div>
-          <div class="vin">VIN: ?????????????????</div>
+    </button>
+    <button class="sidebar-button" data-tooltip="OBD DASHBOARD" data-screen="dashboard">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path d="m12 14 4-4" />
+        <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="TROUBLE CODES" data-screen="view-dtcs">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="OBD TESTS" data-screen="tests">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path
+          d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
+        <path d="M6.453 15h11.094" />
+        <path d="M8.5 2h7" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="VIEW PIDS" data-screen="edit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <path d="M21 9H3" />
+        <path d="M21 15H3" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="VIEW GRAPHS" data-screen="graphs">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="none" viewBox="0 0 24 24" stroke-width="1.9"
+        stroke="currentColor" class="sidebar-button-img">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="VIN DECODING" data-screen="vin">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6" />
+        <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7" />
+        <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1" />
+        <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1" />
+        <path d="M9 6v12" />
+      </svg>
+    </button>
+    <button class="sidebar-button" data-tooltip="SETTINGS" data-screen="settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
+        <path
+          d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </button>
+  </div>
+  <div class="main">
+    <div class="header">
+      <div class="info">
+        <div class="connection">
+          <img id="connection-icon" src="/assets/icons/not-connected.png" alt="Connectivity" />
+          <span id="connection-label">ELM327 NOT CONNECTED</span>
         </div>
-        <div class="search-container">
-          <input class="search" type="text" placeholder="Search" />
-          <img
-            src="/assets/icons/search.png"
-            alt="Search"
-            class="search-icon"
-          />
-        </div>
+        <div class="car-model">UNAVAILABLE</div>
+        <div class="vin">VIN: ?????????????????</div>
       </div>
-      <div id="connect-settings" class="screen" style="display: none">
-        <div id="connect-header" class="screen-label">CONNECTION SETTINGS</div>
+      <div class="search-container">
+        <input class="search" type="text" placeholder="Search" />
+        <img src="/assets/icons/search.png" alt="Search" class="search-icon" />
+      </div>
+    </div>
+    <div id="connect-settings" class="screen" style="display: none">
+      <div id="connect-header" class="screen-label">CONNECTION SETTINGS</div>
 
-        <div class="connection-details" id="connection-details">
-          NO CONNECTION ESTABLISHED
-        </div>
+      <div class="connection-details" id="connection-details">
+        NO CONNECTION ESTABLISHED
+      </div>
 
-        <div class="form-row">
-          <div class="dropdown" id="protocol-dropdown">
-            <label>OBD-II PROTOCOL</label>
-            <button
-              class="dropdown-toggle"
-              id="protocol-selected"
-              data-value="0"
-            >
-              AUTOMATIC
-            </button>
-            <ul class="dropdown-menu" id="protocol-menu">
-              <li data-value="0">AUTOMATIC</li>
-              <li data-value="1">SAE J1850 PWM @41.6k</li>
-              <li data-value="2">SAE J1850 VPW @10.4k</li>
-              <li data-value="3">ISO 9141-2 (5 baud init)</li>
-              <li data-value="4">ISO 14230-4 KWP (5 baud init)</li>
-              <li data-value="5">ISO 14230-4 KWP (fast init)</li>
-              <li data-value="6">ISO 15765-4 CAN (11 bit ID @500k)</li>
-              <li data-value="7">ISO 15765-4 CAN (29 bit ID @500k)</li>
-              <li data-value="8">ISO 15765-4 CAN (11 bit ID @250k)</li>
-              <li data-value="9">ISO 15765-4 CAN (29 bit ID @250k)</li>
-            </ul>
-          </div>
-
-          <div class="dropdown" id="serial-port-dropdown">
-            <div class="label-row">
-              <label>SERIAL PORT COM</label>
-              <button class="refresh" id="refresh-serial-ports">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="17"
-                  height="17"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#f3f3f2"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-refresh-cw-icon lucide-refresh-cw"
-                >
-                  <path
-                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
-                  />
-                  <path d="M21 3v5h-5" />
-                  <path
-                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
-                  />
-                  <path d="M8 16H3v5" />
-                </svg>
-              </button>
-            </div>
-
-            <button class="dropdown-toggle" id="serial-port-selected">
-              NO PORTS FOUND
-            </button>
-            <ul class="dropdown-menu" id="serial-port-dropdown-menu"></ul>
-          </div>
-
-          <div class="dropdown" id="baud-rate-dropdown">
-            <label>BAUD RATE</label>
-            <button class="dropdown-toggle" id="baud-rate-selected">
-              38400
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="4800">4800</li>
-              <li data-value="9600">9600</li>
-              <li data-value="19200">19200</li>
-              <li data-value="38400">38400</li>
-              <li data-value="57600">57600</li>
-              <li data-value="115200">115200</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="btn connect" id="btn-connect">CONNECT</button>
-          <button class="btn disconnect" id="btn-disconnect" disabled>
-            DISCONNECT
+      <div class="form-row">
+        <div class="dropdown" id="protocol-dropdown">
+          <label>OBD-II PROTOCOL</label>
+          <button class="dropdown-toggle" id="protocol-selected" data-value="0">
+            AUTOMATIC
           </button>
+          <ul class="dropdown-menu" id="protocol-menu">
+            <li data-value="0">AUTOMATIC</li>
+            <li data-value="1">SAE J1850 PWM @41.6k</li>
+            <li data-value="2">SAE J1850 VPW @10.4k</li>
+            <li data-value="3">ISO 9141-2 (5 baud init)</li>
+            <li data-value="4">ISO 14230-4 KWP (5 baud init)</li>
+            <li data-value="5">ISO 14230-4 KWP (fast init)</li>
+            <li data-value="6">ISO 15765-4 CAN (11 bit ID @500k)</li>
+            <li data-value="7">ISO 15765-4 CAN (29 bit ID @500k)</li>
+            <li data-value="8">ISO 15765-4 CAN (11 bit ID @250k)</li>
+            <li data-value="9">ISO 15765-4 CAN (29 bit ID @250k)</li>
+          </ul>
         </div>
 
-        <div class="error-hint" style="display: flex">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-          </svg>
-          CHOOSE SERIAL PORT, BAUD RATE AND PROTOCOL
-        </div>
-      </div>
-
-      <div id="dashboard" class="screen" style="display: flex">
-        <div id="dashboard-header" class="screen-label">OBD OVERVIEW</div>
-        <div class="grid" id="dashboard-cards" style="display: grid"></div>
-      </div>
-
-      <div id="view-dtcs" class="screen" style="display: none">
-        <div id="dtc-header" class="screen-label">DIAGNOSTIC TROUBLE CODES</div>
-        <div class="button-row">
-          <div
-            class="btn"
-            id="dtc-scan-button"
-            style="background-color: #1f1f1f; width: 140px; margin-top: -5px"
-          >
-            SCAN CODES
+        <div class="dropdown" id="serial-port-dropdown">
+          <div class="label-row">
+            <label>SERIAL PORT COM</label>
+            <button class="refresh" id="refresh-serial-ports">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="#f3f3f2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-refresh-cw-icon lucide-refresh-cw">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M8 16H3v5" />
+              </svg>
+            </button>
           </div>
-          <div
-            class="btn"
-            id="dtc-clear-button"
-            style="
+
+          <button class="dropdown-toggle" id="serial-port-selected">
+            NO PORTS FOUND
+          </button>
+          <ul class="dropdown-menu" id="serial-port-dropdown-menu"></ul>
+        </div>
+
+        <div class="dropdown" id="baud-rate-dropdown">
+          <label>BAUD RATE</label>
+          <button class="dropdown-toggle" id="baud-rate-selected">
+            38400
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value="4800">4800</li>
+            <li data-value="9600">9600</li>
+            <li data-value="19200">19200</li>
+            <li data-value="38400">38400</li>
+            <li data-value="57600">57600</li>
+            <li data-value="115200">115200</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn connect" id="btn-connect">CONNECT</button>
+        <button class="btn disconnect" id="btn-disconnect" disabled>
+          DISCONNECT
+        </button>
+      </div>
+
+      <div class="error-hint" style="display: flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+        CHOOSE SERIAL PORT, BAUD RATE AND PROTOCOL
+      </div>
+    </div>
+
+    <div id="dashboard" class="screen" style="display: flex">
+      <div id="dashboard-header" class="screen-label">OBD OVERVIEW</div>
+
+      <div class="button-row" style="margin-bottom: 20px;">
+        <div class="btn" id="obd-pause" style="background-color: #1f1f1f; width: 100px; margin-top: -5px">
+          PAUSE
+        </div>
+        <div class="btn" id="obd-clear" style="background-color: #1f1f1f; width: 100px; margin-top: -5px">
+          CLEAR
+        </div>
+      </div>
+
+
+      <div class="grid" id="dashboard-cards" style="display: grid"></div>
+    </div>
+
+    <div id="view-dtcs" class="screen" style="display: none">
+      <div id="dtc-header" class="screen-label">DIAGNOSTIC TROUBLE CODES</div>
+      <div class="button-row">
+        <div class="btn" id="dtc-scan-button" style="background-color: #1f1f1f; width: 140px; margin-top: -5px">
+          SCAN CODES
+        </div>
+        <div class="btn" id="dtc-clear-button" style="
               background-color: #1f1f1f;
               width: 160px;
               margin-top: -5px;
               position: relative;
               overflow: hidden;
-            "
-          >
-            <span style="z-index: 5">CLEAR CODES</span>
-            <div class="btn-hold-fill" id="btn-hold-fill"></div>
-          </div>
-          <div
-            class="btn"
-            id="dtc-log-file"
-            style="background-color: #1f1f1f; width: 160px; margin-top: -5px"
-          >
-            SAVE TO FILE
-          </div>
+            ">
+          <span style="z-index: 5">CLEAR CODES</span>
+          <div class="btn-hold-fill" id="btn-hold-fill"></div>
         </div>
-
-        <div
-          id="dtc-list"
-          class="info-row-scroll"
-          style="margin-top: 10px"
-        ></div>
-      </div>
-
-      <div id="tests" class="screen" style="display: none"></div>
-
-      <div id="edit" class="screen" style="display: none">
-        <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
-        <div id="pid-list" class="info-row-scroll"></div>
-      </div>
-
-      <div id="graphs" class="screen" style="display: none">
-        <div id="graphs-header" class="screen-label">GRAPHS</div>
-      </div>
-
-      <div id="vin" class="screen" style="display: none">
-        <div id="vin-decoding-header" class="screen-label">DECODING VIN</div>
-        <input class="vin-input" type="text" placeholder="Enter VIN" />
-        <div class="vin-results">
-          <div class="vin-column">
-            <div id="vin-full" class="vin-label">
-              <div class="label">VEHICLE IDENTIFICATION NUMBER</div>
-              <div class="value"></div>
-            </div>
-            <img src="/assets/images/vehicle.png" class="car-image" />
-            <div id="vehicle-title" class="vin-label">
-              <div class="label">VEHICLE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="make">
-              <div class="label">MAKE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="model">
-              <div class="label">MODEL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="model-year">
-              <div class="label">MODEL YEAR</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-model">
-              <div class="label">ENGINE MODEL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="cylinder-count">
-              <div class="label">CYLINDER COUNT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="axel-count">
-              <div class="label">AXEL COUNT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="traction-control">
-              <div class="label">TRACTION CONTROL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-country">
-              <div class="label">PLANT COUNTRY</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-city">
-              <div class="label">PLANT CITY</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-state">
-              <div class="label">PLANT STATE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="semi-auto-headlamp-beam-switching">
-              <div class="label">SEMI-AUTO HEADLAMP BEAM SWITCHING</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="dynamic-brake-support">
-              <div class="label">DYNAMIC BRAKE SUPPORT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-knee">
-              <div class="label">AIRBAG LOCATIONS: KNEE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-side">
-              <div class="label">AIRBAG LOCATIONS: SIDE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="body-style">
-              <div class="label">BODY STYLE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="fuel-type">
-              <div class="label">FUEL TYPE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="fuel-delivery-type">
-              <div class="label">FUEL DELIVERY TYPE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-manufacturer">
-              <div class="label">ENGINE MANUFACTURER</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="anti-lock-braking-system">
-              <div class="label">ANTI-LOCK BRAKING SYSTEM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="transmission-style">
-              <div class="label">TRANSMISSION STYLE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="steering-location">
-              <div class="label">STEERING LOCATION</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="keyless-ignition">
-              <div class="label">KEYLESS IGNITION</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="top-speed">
-              <div class="label">TOP SPEED</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="backup-camera">
-              <div class="label">BACKUP CAMERA</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="daytime-running-light">
-              <div class="label">DAYTIME RUNNING LIGHT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="window-auto-reverse">
-              <div class="label">WINDOW AUTO-REVERSE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-front">
-              <div class="label">AIRBAG LOCATIONS: FRONT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="drive-type">
-              <div class="label">DRIVE TYPE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="front-wheel-size">
-              <div class="label">FRONT WHEEL SIZE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="rear-wheel-size">
-              <div class="label">REAR WHEEL SIZE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="automatic-crash-notification">
-              <div class="label">AUTOMATIC CRASH NOTIFICAITON</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="trim">
-              <div class="label">TRIM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="transmission-speeds">
-              <div class="label">TRANSMISSION SPEEDS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="vehicle-base-price">
-              <div class="label">VEHICLE BASE PRICE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="number-of-rows">
-              <div class="label">NUMBER OF ROWS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="number-of-seats">
-              <div class="label">NUMBER OF SEATS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="brake-system">
-              <div class="label">BRAKE SYSTEM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-displacement">
-              <div class="label">ENGINE DISPLACEMENT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="gross-vehicle-weight-rating">
-              <div class="label">GROSS VEHICLE WEIGHT RATING</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-curtain">
-              <div class="label">AIRBAG LOCATIONS: CURTAIN</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="vehicle-manufacturer">
-              <div class="label">VEHICLE MANUFACTURER</div>
-              <div class="value"></div>
-            </div>
-          </div>
+        <div class="btn" id="dtc-log-file" style="background-color: #1f1f1f; width: 160px; margin-top: -5px">
+          SAVE TO FILE
         </div>
       </div>
 
-      <div id="settings" class="screen" style="display: none">
-        <div id="settings-header" class="screen-label">PREFERENCES</div>
+      <div id="dtc-list" class="info-row-scroll" style="margin-top: 10px"></div>
+    </div>
 
-        <div style="display: flex">
-          <div>
-            <div class="screen-label" style="margin-bottom: 8px">LOGGING</div>
+    <div id="tests" class="screen" style="display: none"></div>
 
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >RECORD OBD RESPONSES</label
-              >
-              <input type="checkbox" id="record-responses" disabled />
-              <span class="slider"></span>
-            </label>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >REPLAY SAVED RESPONSES</label
-              >
-              <input type="checkbox" id="replay-responses" disabled />
-              <span class="slider"></span>
-            </label>
+    <div id="edit" class="screen" style="display: none">
+      <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
+      <div id="pid-list" class="info-row-scroll"></div>
+    </div>
 
-            <div style="display: flex; align-items: center; gap: 10px">
-              <label
-                for="file-upload"
-                class="btn"
-                id="btn"
-                style="
+    <div id="graphs" class="screen" style="display: none">
+      <div id="graphs-header" class="screen-label">GRAPHS</div>
+    </div>
+
+    <div id="vin" class="screen" style="display: none">
+      <div id="vin-decoding-header" class="screen-label">DECODING VIN</div>
+      <input class="vin-input" type="text" placeholder="Enter VIN" />
+      <div class="vin-results">
+        <div class="vin-column">
+          <div id="vin-full" class="vin-label">
+            <div class="label">VEHICLE IDENTIFICATION NUMBER</div>
+            <div class="value"></div>
+          </div>
+          <img src="/assets/images/vehicle.png" class="car-image" />
+          <div id="vehicle-title" class="vin-label">
+            <div class="label">VEHICLE</div>
+            <div class="value"></div>
+          </div>
+        </div>
+        <div class="vin-column">
+          <div class="vin-label" id="make">
+            <div class="label">MAKE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="model">
+            <div class="label">MODEL</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="model-year">
+            <div class="label">MODEL YEAR</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="engine-model">
+            <div class="label">ENGINE MODEL</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="cylinder-count">
+            <div class="label">CYLINDER COUNT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="axel-count">
+            <div class="label">AXEL COUNT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="traction-control">
+            <div class="label">TRACTION CONTROL</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="plant-country">
+            <div class="label">PLANT COUNTRY</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="plant-city">
+            <div class="label">PLANT CITY</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="plant-state">
+            <div class="label">PLANT STATE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="semi-auto-headlamp-beam-switching">
+            <div class="label">SEMI-AUTO HEADLAMP BEAM SWITCHING</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="dynamic-brake-support">
+            <div class="label">DYNAMIC BRAKE SUPPORT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="airbag-locations-knee">
+            <div class="label">AIRBAG LOCATIONS: KNEE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="airbag-locations-side">
+            <div class="label">AIRBAG LOCATIONS: SIDE</div>
+            <div class="value"></div>
+          </div>
+        </div>
+        <div class="vin-column">
+          <div class="vin-label" id="body-style">
+            <div class="label">BODY STYLE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="fuel-type">
+            <div class="label">FUEL TYPE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="fuel-delivery-type">
+            <div class="label">FUEL DELIVERY TYPE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="engine-manufacturer">
+            <div class="label">ENGINE MANUFACTURER</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="anti-lock-braking-system">
+            <div class="label">ANTI-LOCK BRAKING SYSTEM</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="transmission-style">
+            <div class="label">TRANSMISSION STYLE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="steering-location">
+            <div class="label">STEERING LOCATION</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="keyless-ignition">
+            <div class="label">KEYLESS IGNITION</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="top-speed">
+            <div class="label">TOP SPEED</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="backup-camera">
+            <div class="label">BACKUP CAMERA</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="daytime-running-light">
+            <div class="label">DAYTIME RUNNING LIGHT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="window-auto-reverse">
+            <div class="label">WINDOW AUTO-REVERSE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="airbag-locations-front">
+            <div class="label">AIRBAG LOCATIONS: FRONT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="drive-type">
+            <div class="label">DRIVE TYPE</div>
+            <div class="value"></div>
+          </div>
+        </div>
+        <div class="vin-column">
+          <div class="vin-label" id="front-wheel-size">
+            <div class="label">FRONT WHEEL SIZE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="rear-wheel-size">
+            <div class="label">REAR WHEEL SIZE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="automatic-crash-notification">
+            <div class="label">AUTOMATIC CRASH NOTIFICAITON</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="trim">
+            <div class="label">TRIM</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="transmission-speeds">
+            <div class="label">TRANSMISSION SPEEDS</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="vehicle-base-price">
+            <div class="label">VEHICLE BASE PRICE</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="number-of-rows">
+            <div class="label">NUMBER OF ROWS</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="number-of-seats">
+            <div class="label">NUMBER OF SEATS</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="brake-system">
+            <div class="label">BRAKE SYSTEM</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="engine-displacement">
+            <div class="label">ENGINE DISPLACEMENT</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="gross-vehicle-weight-rating">
+            <div class="label">GROSS VEHICLE WEIGHT RATING</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="airbag-locations-curtain">
+            <div class="label">AIRBAG LOCATIONS: CURTAIN</div>
+            <div class="value"></div>
+          </div>
+          <div class="vin-label" id="vehicle-manufacturer">
+            <div class="label">VEHICLE MANUFACTURER</div>
+            <div class="value"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="screen" style="display: none">
+      <div id="settings-header" class="screen-label">PREFERENCES</div>
+
+      <div style="display: flex">
+        <div>
+          <div class="screen-label" style="margin-bottom: 8px">LOGGING</div>
+
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">RECORD OBD RESPONSES</label>
+            <input type="checkbox" id="record-responses" disabled />
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">REPLAY SAVED RESPONSES</label>
+            <input type="checkbox" id="replay-responses" disabled />
+            <span class="slider"></span>
+          </label>
+
+          <div style="display: flex; align-items: center; gap: 10px">
+            <label for="file-upload" class="btn" id="btn" style="
                   margin-top: 0;
                   background-color: #1f1f1f;
                   color: #625e68;
@@ -650,295 +479,280 @@
                   font-weight: 700;
                   font-size: 0.9rem;
                   font-family: &quot;Montserrat&quot;;
-                "
-              >
-                CHOOSE A FILE
-              </label>
-              <label class="settings-label">LOG FILE PATH</label>
-            </div>
-            <label
-              id="log-file-path"
-              class="settings-label"
-              style="font-size: 0.6rem; margin-top: 4px; margin-bottom: 20px"
-            >
+                ">
+              CHOOSE A FILE
             </label>
-            <input id="file-upload" type="file" />
+            <label class="settings-label">LOG FILE PATH</label>
           </div>
-          <div style="margin-left: 50px">
-            <div class="screen-label" style="margin-bottom: 8px">
-              DIAGNOSTICS
-            </div>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >SAVE TROUBLE CODES</label
-              >
-              <input type="checkbox" id="save-dtcs" />
-              <span class="slider"></span>
-            </label>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >AUTO. CHECK FOR CODES</label
-              >
-              <input type="checkbox" id="auto-check-codes" />
-              <span class="slider"></span>
-            </label>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >READ FROM FREEZE FRAME</label
-              >
-              <input type="checkbox" id="use-freeze-frame" />
-              <span class="slider"></span>
-            </label>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >AUTO. CONNECT ON STARTUP</label
-              >
-              <input type="checkbox" id="auto-connect" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div style="margin-left: 150px">
-            <div class="screen-label" style="margin-bottom: 8px">PRIVACY</div>
-
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >SHOW PARTIAL VIN</label
-              >
-              <input type="checkbox" id="hide-vin" />
-              <span class="slider"></span>
-            </label>
-            <label class="switch">
-              <label class="settings-label" style="margin-left: 52px"
-                >DELETE LOGS ON EXIT APP</label
-              >
-              <input type="checkbox" id="del-logs" />
-              <span class="slider"></span>
-            </label>
-          </div>
+          <label id="log-file-path" class="settings-label"
+            style="font-size: 0.6rem; margin-top: 4px; margin-bottom: 20px">
+          </label>
+          <input id="file-upload" type="file" />
         </div>
+        <div style="margin-left: 50px">
+          <div class="screen-label" style="margin-bottom: 8px">
+            DIAGNOSTICS
+          </div>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">SAVE TROUBLE CODES</label>
+            <input type="checkbox" id="save-dtcs" />
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">AUTO. CHECK FOR CODES</label>
+            <input type="checkbox" id="auto-check-codes" />
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">READ FROM FREEZE FRAME</label>
+            <input type="checkbox" id="use-freeze-frame" />
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">AUTO. CONNECT ON STARTUP</label>
+            <input type="checkbox" id="auto-connect" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="margin-left: 150px">
+          <div class="screen-label" style="margin-bottom: 8px">PRIVACY</div>
 
-        <div class="screen-label">UNIT CONVERSION</div>
-        <div style="display: flex">
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">SPEED</div>
-            <button class="dropdown-toggle" id="speed-unit-selected">
-              KMH (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">DISTANCE</div>
-            <button class="dropdown-toggle" id="distance-selected">
-              KM (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">TEMPERATURE</div>
-            <button class="dropdown-toggle" id="temperature-unit-selected">
-              °C (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">ENERGY</div>
-            <button class="dropdown-toggle" id="speed-unit-selected">
-              NM (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">PRESSURE</div>
-            <button class="dropdown-toggle" id="distance-selected">
-              KPA (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
-          <div class="dropdown" style="width: 150px; margin-bottom: 8px">
-            <div class="settings-label">FLOW RATE</div>
-            <button class="dropdown-toggle" id="temperature-unit-selected">
-              L/H (default)
-            </button>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
-            </ul>
-          </div>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">SHOW PARTIAL VIN</label>
+            <input type="checkbox" id="hide-vin" />
+            <span class="slider"></span>
+          </label>
+          <label class="switch">
+            <label class="settings-label" style="margin-left: 52px">DELETE LOGS ON EXIT APP</label>
+            <input type="checkbox" id="del-logs" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="screen-label">UNIT CONVERSION</div>
+      <div style="display: flex">
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">SPEED</div>
+          <button class="dropdown-toggle" id="speed-unit-selected">
+            KMH (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">DISTANCE</div>
+          <button class="dropdown-toggle" id="distance-selected">
+            KM (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">TEMPERATURE</div>
+          <button class="dropdown-toggle" id="temperature-unit-selected">
+            °C (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">ENERGY</div>
+          <button class="dropdown-toggle" id="speed-unit-selected">
+            NM (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">PRESSURE</div>
+          <button class="dropdown-toggle" id="distance-selected">
+            KPA (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
+        </div>
+        <div class="dropdown" style="width: 150px; margin-bottom: 8px">
+          <div class="settings-label">FLOW RATE</div>
+          <button class="dropdown-toggle" id="temperature-unit-selected">
+            L/H (default)
+          </button>
+          <ul class="dropdown-menu" id="dropdown-menu">
+            <li data-value=""></li>
+            <li data-value=""></li>
+            <li data-value=""></li>
+          </ul>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 
-  <script>
-    8;
-    const { listen, emit } = window.__TAURI__.event;
+<script>
+  8;
+  const { listen, emit } = window.__TAURI__.event;
 
-    /// Search bar functionality for dashboard
+  /// Search bar functionality for dashboard
 
-    const searchInput = document.querySelector(".search");
+  const searchInput = document.querySelector(".search");
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const cards = document.querySelectorAll(".card");
-      const rows = document.querySelectorAll(".info-row");
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll(".card");
+    const rows = document.querySelectorAll(".info-row");
 
-      // Filter cards in dashboard
-      cards.forEach((card) => {
-        const title = card.querySelector("h3").textContent.toLowerCase();
-        const match = title.includes(query);
-        card.style.display = match ? "flex" : "none";
-      });
-
-      // Filter PID rows in edit screen
-      rows.forEach((row) => {
-        const name = row.querySelector(".name").textContent.toLowerCase();
-        const match = name.includes(query);
-        const group = row.closest(".pid-group");
-        group.style.display = match ? "block" : "none";
-      });
+    // Filter cards in dashboard
+    cards.forEach((card) => {
+      const title = card.querySelector("h3").textContent.toLowerCase();
+      const match = title.includes(query);
+      card.style.display = match ? "flex" : "none";
     });
 
-    const vinInput = document.querySelector(".vin-input");
+    // Filter PID rows in edit screen
+    rows.forEach((row) => {
+      const name = row.querySelector(".name").textContent.toLowerCase();
+      const match = name.includes(query);
+      const group = row.closest(".pid-group");
+      group.style.display = match ? "block" : "none";
+    });
+  });
 
-    vinInput.addEventListener("keydown", async function (event) {
-      if (event.key == "Enter") {
-        const query = vinInput.value.trim();
-        if (query !== "") {
-          // request backend to decode vin
-          await emit("decode-vin", query);
+  const vinInput = document.querySelector(".vin-input");
+
+  vinInput.addEventListener("keydown", async function (event) {
+    if (event.key == "Enter") {
+      const query = vinInput.value.trim();
+      if (query !== "") {
+        // request backend to decode vin
+        await emit("decode-vin", query);
+      }
+    }
+  });
+
+  const vinLabel = document.getElementById("vin-full");
+  const vehicleName = document.getElementById("vehicle-title");
+
+  // show vehicle info if no error
+  listen("decode-vin", (event) => {
+    const data = event.payload;
+
+    if (!data.error_msg) {
+      return;
+    }
+
+    console.log(data.error_msg);
+
+    // show all fields
+    for (const key in data) {
+      const name = key.replaceAll("_", "-");
+      const label = document.getElementById(name);
+      if (label) {
+        const value = label.querySelector(".value");
+        console.log(name, data[key]);
+        value.textContent = data[key].toUpperCase();
+        if (value.textContent == "N/A" || value.textContent == "-1") {
+          label.style.display = "none";
+        } else {
+          label.style.display = "block";
         }
       }
-    });
+    }
 
-    const vinLabel = document.getElementById("vin-full");
-    const vehicleName = document.getElementById("vehicle-title");
+    // show vin
+    const vinFull = vinLabel.querySelector(".value");
+    if (vinFull) {
+      vinFull.textContent = data.vin;
+    }
 
-    // show vehicle info if no error
-    listen("decode-vin", (event) => {
-      const data = event.payload;
+    // show vehicle name
+    const vehicleNameLabel = vehicleName.querySelector(".value");
+    if (vehicleNameLabel) {
+      vehicleNameLabel.textContent = (
+        data.model_year +
+        " " +
+        data.make +
+        " " +
+        data.model
+      ).toUpperCase();
+    }
+  });
 
-      if (!data.error_msg) {
-        return;
-      }
+  /// Toggle different screens when sidebar buttons are clicked
 
-      console.log(data.error_msg);
+  const screens = document.querySelectorAll(".screen");
+  const buttons = document.querySelectorAll(".sidebar-button");
 
-      // show all fields
-      for (const key in data) {
-        const name = key.replaceAll("_", "-");
-        const label = document.getElementById(name);
-        if (label) {
-          const value = label.querySelector(".value");
-          console.log(name, data[key]);
-          value.textContent = data[key].toUpperCase();
-          if (value.textContent == "N/A" || value.textContent == "-1") {
-            label.style.display = "none";
-          } else {
-            label.style.display = "block";
-          }
-        }
-      }
+  buttons.forEach((button) => {
+    // Default screen is dashboard
+    if (button.dataset.screen == "dashboard") {
+      button.classList.add("active-button");
+    }
 
-      // show vin
-      const vinFull = vinLabel.querySelector(".value");
-      if (vinFull) {
-        vinFull.textContent = data.vin;
-      }
+    button.addEventListener("click", () => {
+      const target = button.dataset.screen;
 
-      // show vehicle name
-      const vehicleNameLabel = vehicleName.querySelector(".value");
-      if (vehicleNameLabel) {
-        vehicleNameLabel.textContent = (
-          data.model_year +
-          " " +
-          data.make +
-          " " +
-          data.model
-        ).toUpperCase();
-      }
-    });
-
-    /// Toggle different screens when sidebar buttons are clicked
-
-    const screens = document.querySelectorAll(".screen");
-    const buttons = document.querySelectorAll(".sidebar-button");
-
-    buttons.forEach((button) => {
-      // Default screen is dashboard
-      if (button.dataset.screen == "dashboard") {
-        button.classList.add("active-button");
-      }
-
-      button.addEventListener("click", () => {
-        const target = button.dataset.screen;
-
-        screens.forEach((screen) => {
-          screen.style.display =
-            screen.id === target
-              ? screen.classList.contains("grid")
-                ? "flex"
-                : "flex"
-              : "none";
-        });
-
-        // Show different background color for clicked button
-        buttons.forEach((btn) => btn.classList.remove("active-button"));
-        button.classList.add("active-button");
+      screens.forEach((screen) => {
+        screen.style.display =
+          screen.id === target
+            ? screen.classList.contains("grid")
+              ? "flex"
+              : "flex"
+            : "none";
       });
+
+      // Show different background color for clicked button
+      buttons.forEach((btn) => btn.classList.remove("active-button"));
+      button.classList.add("active-button");
     });
+  });
 
-    /// Clicking cards makes them not report data and dims them
+  /// Clicking cards makes them not report data and dims them
 
-    const dashboard = document.getElementById("dashboard-cards");
+  const dashboard = document.getElementById("dashboard-cards");
 
-    dashboard.addEventListener("click", (e) => {
-      const card = e.target.closest(".card");
-      if (!card) return;
+  dashboard.addEventListener("click", (e) => {
+    const card = e.target.closest(".card");
+    if (!card) return;
 
-      if (card.classList.contains("dimmed")) {
-        // undim and set to first element
-        card.classList.remove("dimmed");
-        dashboard.insertBefore(card, dashboard.firstChild);
-      } else {
-        card.classList.add("dimmed");
-        dashboard.appendChild(card);
-      }
-    });
+    if (card.classList.contains("dimmed")) {
+      // undim and set to first element
+      card.classList.remove("dimmed");
+      dashboard.insertBefore(card, dashboard.firstChild);
+    } else {
+      card.classList.add("dimmed");
+      dashboard.appendChild(card);
+    }
+  });
 
-    /// Refresh serial ports
+  /// Refresh serial ports
 
-    const refreshButton = document.getElementById("refresh-serial-ports");
-    const refreshIcon = refreshButton.querySelector("svg");
+  const refreshButton = document.getElementById("refresh-serial-ports");
+  const refreshIcon = refreshButton.querySelector("svg");
 
-    refreshButton.addEventListener("click", () => {
-      refreshIcon.classList.add("spinning");
+  refreshButton.addEventListener("click", () => {
+    refreshIcon.classList.add("spinning");
 
-      emit("get-serial-ports");
-    });
+    emit("get-serial-ports");
+  });
 
-    refreshIcon.addEventListener("animationend", () => {
-      refreshIcon.classList.remove("spinning");
-    });
-  </script>
+  refreshIcon.addEventListener("animationend", () => {
+    refreshIcon.classList.remove("spinning");
+  });
+</script>
+
 </html>

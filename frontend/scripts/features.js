@@ -8,6 +8,7 @@ const disconnectButton = document.getElementById("btn-disconnect");
 const dtcList = document.getElementById("dtc-list");
 const dtcHeader = document.getElementById("dtc-header");
 const freezeFrameBar = document.getElementById("freeze-frame-status");
+const obdGrid = document.getElementById("dashboard-cards");
 
 export function clearDtcs() {
   console.log("test", dtcList.innerHTML);
@@ -146,4 +147,8 @@ export async function disconnectElm() {
 
 export function freezeFrameDisclaimer(show) {
   freezeFrameBar.style.display = show ? "flex" : "none";
+}
+
+export function clearObdView() {
+  obdGrid.innerHTML = '';
 }

@@ -5,6 +5,7 @@ import {
   exportDtcs,
   connectElm,
   disconnectElm,
+  clearObdView,
 } from "./features.js";
 
 // ELM connection
@@ -22,6 +23,14 @@ let deleteLogsOnExit = false;
 let autoCheckCodes = false;
 let autoSaveCodes = false;
 
+// UI Components
+const dropdowns = document.querySelectorAll(".dropdown");
+const connectButton = document.getElementById("btn-connect");
+const disconnectButton = document.getElementById("btn-disconnect");
+const clearObdButton = document.getElementById("obd-clear");
+const pauseObdButton = document.getElementById("obd-pause");
+const dtcClearButton = document.getElementById("dtc-clear-button");
+
 // When frontend gets loaded
 // alert the backend with an event.
 window.addEventListener("DOMContentLoaded", () => {
@@ -33,7 +42,15 @@ window.addEventListener("DOMContentLoaded", () => {
   emit("get-serial-ports");
 });
 
-const dropdowns = document.querySelectorAll(".dropdown");
+clearObdButton.addEventListener("click", clearObdView);
+pauseObdButton.addEventListener("click", () => {
+  window.obdViewPaused = !window.obdViewPaused;
+  if (obdViewPaused) {
+    pauseObdButton.textContent = "RESUME";
+  } else {
+    pauseObdButton.textContent = "PAUSE";
+  }
+})
 
 dropdowns.forEach((dropdown) => {
   const toggle = dropdown.querySelector(".dropdown-toggle");
@@ -66,9 +83,6 @@ document.addEventListener("click", () => {
   });
 });
 
-const connectButton = document.getElementById("btn-connect");
-const disconnectButton = document.getElementById("btn-disconnect");
-
 connectButton.addEventListener("click", async () => {
   const baudRate = document.getElementById("baud-rate-selected");
   const serialPort = document.getElementById("serial-port-selected");
@@ -90,7 +104,6 @@ dtcScanButton.addEventListener("click", async () => {
   emit("get-dtcs");
 });
 
-const dtcClearButton = document.getElementById("dtc-clear-button");
 const fill = document.getElementById("btn-hold-fill");
 
 function resetButtonFill() {

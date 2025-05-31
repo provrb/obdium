@@ -2,6 +2,8 @@ const { listen, emit } = window.__TAURI__.event;
 import { exportDtcs } from "./features.js";
 
 listen("update-card", (event) => {
+  if (window.obdViewPaused) return;
+
   const cards = document.querySelectorAll(".card");
   const exists = Array.from(cards).some((card) => {
     return card.textContent.includes(event.payload.name);
