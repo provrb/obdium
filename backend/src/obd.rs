@@ -83,14 +83,18 @@ pub struct OBD {
     elm_version: Option<String>,
     freeze_frame_query: bool,
     protocol: u8,
-
+    
+    pub(crate) requests_path: String,
     pub(crate) record_requests: bool,
     pub(crate) replay_requests: bool,
 }
 
 impl OBD {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            requests_path: "./data/requests.json".to_string(),
+            ..Default::default()
+        }
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32, protocol: u8) -> Result<(), Error> {

@@ -1,20 +1,21 @@
-use std::fs;
+use std::{fs, time::Duration};
 
 use crate::{
     cmd::{Command, CommandType},
     obd::OBD,
     response::Response,
-    RECORDED_REQEUSTS_DIR,
 };
 use serde_json::{json, Value};
 
 impl OBD {
-    pub fn record_requests(&mut self, state: bool) {
+    pub fn record_requests(&mut self, state: bool, path: String) {
         if state {
+            self.requests_path = path;
+
             match fs::OpenOptions::new()
                 .create(true)
                 .append(true)
-                .open(RECORDED_REQEUSTS_DIR)
+                .open(&self.requests_path)
             {
                 Ok(_) => {
                     self.record_requests = true;
@@ -45,7 +46,7 @@ impl OBD {
     pub(crate) fn save_request(&mut self, request: &Command, response: &Response) {
         // get the current file contents
         let mut contents_json = {
-            let contents = fs::read_to_string(RECORDED_REQEUSTS_DIR).expect("file read error");
+            let contents = fs::read_to_string(&self.requests_path).expect("file read error");
             if contents.trim().is_empty() {
                 vec![]
             } else {
@@ -64,12 +65,15 @@ impl OBD {
 
         let pretty =
             serde_json::to_string_pretty(&contents_json).expect("failed pretty'ing string");
-        fs::write(RECORDED_REQEUSTS_DIR, pretty).expect("failed to write requests file");
+        fs::write(&self.requests_path, pretty).expect("failed to write requests file");
     }
 
     pub(crate) fn get_recorded_response(&self, request: &Command) -> Response {
+        // add a delay to simulate vehicle
+        std::thread::sleep(Duration::from_millis(300));
+
         let mut contents_json: Vec<Value> = {
-            let contents = fs::read_to_string(RECORDED_REQEUSTS_DIR).expect("file read error");
+            let contents = fs::read_to_string(&self.requests_path).expect("file read error");
             if contents.trim().is_empty() {
                 vec![]
             } else {
@@ -94,7 +98,7 @@ impl OBD {
             let pretty =
                 serde_json::to_string_pretty(&contents_json).expect("failed pretty'ing string");
 
-            fs::write(RECORDED_REQEUSTS_DIR, pretty).expect("failed to write requests file");
+            fs::write(&self.requests_path, pretty).expect("failed to write requests file");
 
             let value = &contents_json[i];
             let escaped_response = value["response"].as_str().unwrap_or_default();
@@ -112,7 +116,7 @@ impl OBD {
 
     fn reset_played_flags(&self) {
         let mut contents_json: Vec<Value> = {
-            let contents = fs::read_to_string(RECORDED_REQEUSTS_DIR).expect("file read error");
+            let contents = fs::read_to_string(&self.requests_path).expect("file read error");
             serde_json::from_str(&contents).unwrap_or_else(|_| vec![])
         };
 
@@ -129,6 +133,6 @@ impl OBD {
         let pretty =
             serde_json::to_string_pretty(&contents_json).expect("failed pretty'ing string");
 
-        fs::write(RECORDED_REQEUSTS_DIR, pretty).expect("failed to write requests file");
+        fs::write(&self.requests_path, pretty).expect("failed to write requests file");
     }
 }

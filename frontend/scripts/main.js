@@ -1,4 +1,5 @@
 const { listen, emit } = window.__TAURI__.event;
+const { save } = window.__TAURI__.dialog;
 
 import {
   clearDtcs,
@@ -22,6 +23,7 @@ let hideVin = false;
 let deleteLogsOnExit = false;
 let autoCheckCodes = false;
 let autoSaveCodes = false;
+let logFilePath = "";
 
 // UI Components
 const dropdowns = document.querySelectorAll(".dropdown");
@@ -142,3 +144,20 @@ dtcClearButton.addEventListener("mouseleave", resetButtonFill);
 const dtcLogButton = document.getElementById("dtc-log-file");
 const dtcList = document.getElementById("dtc-list");
 dtcLogButton.addEventListener("click", () => exportDtcs(false));
+
+const logFileButton = document.getElementById("log-file-button");
+logFileButton.addEventListener('click', async () => {
+  window.logFilePath = await save({
+    title: "Save as JSON",
+    defaultPath: "requests.json",
+    filters: [{ name: "JSON", extensions: ["json"] }],
+  });
+
+  // set default path
+  if (!window.logFilePath) {
+    window.logFilePath = "./requests.json";
+    return;
+  }
+
+  document.getElementById("log-file-path").textContent = window.logFilePath;
+})

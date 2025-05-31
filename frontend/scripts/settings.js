@@ -108,7 +108,7 @@ function settingChange(event) {
       // uncheck replay requests
       document.getElementById("replay-responses").checked = false;
       emit("settings-changed", { tId: "replay-responses", checked: false });
-      emit("settings-changed", { tId, checked });
+      emit("settings-changed", { tId, checked, data: window.logFilePath });
       break;
     case "replay-responses":
       // uncheck record requests

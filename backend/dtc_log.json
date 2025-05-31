@@ -1,0 +1,26 @@
+[
+  {
+    "category": "P",
+    "name": "P0106",
+    "location": "Powertrain",
+    "description": "Manifold Absolute Pressure/Barometric Pressure Circuit Range/Performance Problem [PENDING CODE]"
+  },
+  {
+    "category": "C",
+    "name": "C1702",
+    "location": "Chassis",
+    "description": "RightRear Sensor Circuit Short to Vbat [PERMANANT CODE]"
+  },
+  {
+    "category": "U",
+    "name": "U1156",
+    "location": "Network",
+    "description": "SCP (J1850) Invalid or Missing Data for Digital Signal Processing [PENDING CODE]"
+  },
+  {
+    "category": "B",
+    "name": "B2452",
+    "location": "Body",
+    "description": "Aux Heater Fuel Pump Circuit Open [PERMANANT CODE]"
+  }
+]

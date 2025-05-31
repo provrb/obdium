@@ -14,4 +14,3 @@ pub use response::*;
 
 const CODE_DESC_DB_PATH: &str = "./data/code-descriptions.sqlite";
 const MODE22_PIDS_DB_PATH: &str = "./data/model-pids.sqlite";
-const RECORDED_REQEUSTS_DIR: &str = "./data/requests.json";

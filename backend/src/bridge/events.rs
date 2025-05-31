@@ -211,7 +211,12 @@ pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
         let mut obd = obd_arc.lock().unwrap();
         match setting.t_id.as_str() {
-            "record-responses" => obd.record_requests(setting.checked),
+            "record-responses" => {
+                if let Some(path) = setting.data {
+                    println!("record response has a path: {path}");
+                    obd.record_requests(setting.checked, path);
+                }
+            }
             "replay-responses" => obd.replay_requests(setting.checked),
             "use-freeze-fram" => obd.query_freeze_frame(setting.checked),
             _ => (),

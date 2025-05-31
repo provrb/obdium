@@ -92,6 +92,10 @@ struct ConnectPaylod {
 struct Setting {
     t_id: String,
     checked: bool,
+
+    // Optional data to send
+    // Used for record_requests file pat 
+    data: Option<String>,
 }
 
 #[derive(Deserialize, Serialize, Clone)]
