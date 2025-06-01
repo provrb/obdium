@@ -15,10 +15,10 @@
 - [Implementation](#implementation-and-logic)
 - [Features](#features)
 - [Usage](#usage)
+- [Showcase](#showcase)
 - [License](#license)
 - [Contributing](#contributing)
 - [Project Structure](#project-structure)
-- [Roadmap](#roadmap)
 
 ## Overview
 
@@ -112,6 +112,29 @@ For any questions about the implementation or logic behind OBDium, feel free to 
 - Modify preferences like units, privacy, or startup settings in the **Settings** panel.
 - View an index of all PIDs in the **PID List** panel.
 
+## Showcase
+
+![connect-screen](/examples/connect-screen.png)
+<p align="center"><em>Connection Screen - Not Connected</em></p>
+
+![connected-screen](/examples/connected-screen.png)
+<p align="center"><em>Connection Screen - Connected</em></p>
+
+![obd-overview](/examples/obd-overview-screen.png)
+<p align="center"><em>OBD Overview Screen</em></p>
+
+![readiness-tests](/examples/readiness-tests-screen.png)
+<p align="center"><em>I/M Readiness Test Status</em></p>
+
+![supported-pids](/examples/supported-pids-screen.png)
+<p align="center"><em>A List of Supported Pids</em></p>
+
+![vin-decoding](/examples/vin-decoding-screen.png)
+<p align="center"><em>OBDium VIN Decoder</em></p>
+
+![settings](/examples/settings-screen.png)
+<p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
+
 ## Contributing
 
 Contributions are welcome! Please open issues or submit pull requests for bug fixes, new features, or improvements.  
@@ -132,17 +155,7 @@ To contribute:
 - [`backend/src/bridge`](/backend/src/bridge/): Backend interface for the frontend
 
 ### Frontend
-
 - [`frontend/`](/frontend/): Main GUI logic
 
 ## License
-
 This code has minimal restrictions, such that any distributions are made free-of-cost. See [`LICENSE`](LICENSE) for details.
-
-## Roadmap
-
-1. ~~Finish VIN parsing functionality.~~
-2. Fully functional user-interface with live graph view and the ability to send requests manually to the vehicle.
-3. Support for Bluetooth and Wi-fi ELM connection
-
----
