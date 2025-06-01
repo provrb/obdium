@@ -128,6 +128,7 @@ impl VIN {
         let con = self.vpic_connection()?;
 
         let possible_vin_schema_ids = self.get_similiar_vin_schema_ids()?;
+
         let placeholders = possible_vin_schema_ids
             .iter()
             .map(|_| "?")
@@ -381,10 +382,13 @@ impl VIN {
                         Err(_) => continue,
                     };
 
+                    //println!("Key - pattern_id: {pattern_id} element_id: {key_element_id} key_attribute: {key_attribute}");
+
                     // query pattern with schema id and key_element_id
                     // compare key_attribute to the attribute from schema_id
                     if let Ok(element_id) = ElementId::try_from(key_element_id as u16) {
                         if let Ok(data) = self.query_pattern(element_id, vin_key) {
+                            //println!("   -> query returned: {data:?}\n");
                             if data.4 == key_attribute {
                                 return pattern_id;
                             }
@@ -393,7 +397,7 @@ impl VIN {
                 }
             }
 
-            panic!("NoResultsFound: {}", query);
+            -1
         });
 
         if vspec_pattern_id == -1 {

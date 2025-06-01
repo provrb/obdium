@@ -10,8 +10,8 @@ impl VIN {
             let key = self.as_key();
             let wmi_id = self.get_wmi_id().unwrap_or(-1); // This is okay because the query will return no results.
 
-            // Look for engine model.
-            // Element Id for engine model is 18.
+            // Look for model.
+            // Element Id for model is 28.
             // Check if pattern matches keys
             //      They match:
             //          Check Wmi_VinSchema
@@ -24,7 +24,7 @@ impl VIN {
                 Err(_) => return -1,
             };
 
-            let query = "SELECT * FROM Pattern WHERE ElementId = 18";
+            let query = "SELECT * FROM Pattern WHERE ElementId = 28";
             let mut statement = match con.prepare(query) {
                 Ok(stmt) => stmt,
                 Err(_) => return -1,
