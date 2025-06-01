@@ -86,6 +86,7 @@ fn main() {
 
                 listen_send_ports(&window_arc);
                 listen_connect_elm(&window_arc);
+                
             });
 
             Ok(())

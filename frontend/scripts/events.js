@@ -149,6 +149,8 @@ listen("connection-status", async (event) => {
 
     await new Promise((r) => setTimeout(r, 7000));
     emit("get-pids");
+    await new Promise((r) => setTimeout(r, 2000));
+    emit("get-readiness-tests");
   } else {
     connectionLabel.textContent = "ELM327 NOT CONNECTED";
     status.textContent = "NO CONNECTION ESTABLISHED";
@@ -164,7 +166,7 @@ listen("connection-status", async (event) => {
 listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");
-  pidList.innerHTML = "";
+  pidList.innerHTML = ``;
 
   console.log("updating pids", event);
 
@@ -323,3 +325,22 @@ listen("update-serial-ports", (event) => {
 
   menu.appendChild(portOption);
 });
+
+const readinessTests = document.getElementById("readiness-tests-list");
+listen("update-readiness-tests", (event) => {
+  readinessTests.innerHTML = ``;
+  
+  const tests = event.payload;
+  for (const test of tests) {
+    const testRow = document.createElement("div");
+    testRow.className = "info-row";
+    testRow.style = "justify-content: space-between;";
+    testRow.innerHTML = `
+      <div class="name" id="test-name" style="flex: 2;">TEST: ${test.name.toUpperCase()}</div>
+      <div class="name" id="test-availability" style="flex: 1;">${test.available ? "AVAILABLE" : "UNAVAILABLE"}</div>
+      <div class="name" id="test-completeness" style="flex: 1;">${test.complete ? "COMPLETE" : "INCOMPLETE"}</div>
+    `
+    
+    readinessTests.appendChild(testRow);
+  }
+})

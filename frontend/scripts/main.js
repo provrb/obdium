@@ -1,5 +1,6 @@
 const { listen, emit } = window.__TAURI__.event;
 const { save } = window.__TAURI__.dialog;
+const { writeFile } = window.__TAURI__.fs;
 
 import {
   clearDtcs,
@@ -161,3 +162,41 @@ logFileButton.addEventListener("click", async () => {
 
   document.getElementById("log-file-path").textContent = window.logFilePath;
 });
+
+const imTestRefreshButton = document.getElementById("readiness-test-refresh");
+const imTestExportButton = document.getElementById("readiness-test-export");
+const imTestList = document.getElementById("readiness-tests-list");
+
+imTestRefreshButton.addEventListener("click", () => {
+  emit("get-readiness-tests");
+})
+
+imTestExportButton.addEventListener("click", async () => {  
+  let totalJSON = [];
+  imTestList.childNodes.forEach((testRow) => {
+    if (testRow.nodeType == 1) {
+      const available = testRow.querySelector("#test-availability").textContent.trim() == "AVAILABLE" ? true : false;
+      const complete = testRow.querySelector("#test-completeness").textContent.trim() == "COMPLETE" ? true : false;
+
+      const testJSON = {
+        name: testRow.querySelector("#test-name").textContent.replace("TEST: ", "").trim(),
+        available: available,
+        complete: complete
+      };
+
+      totalJSON.push(testJSON);
+    }
+  });
+
+  const path = await save({
+    title: "Save as JSON",
+    defaultPath: "readiness_tests.json",
+    filters: [{ name: "JSON", extensions: ["json"] }],
+  });
+
+  if (!path) {
+    return;
+  }
+
+  await writeFile({ path, contents: JSON.stringify(totalJSON, null, 2) });
+})

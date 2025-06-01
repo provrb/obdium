@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use sqlite::State;
 use std::fmt;
 
@@ -198,7 +199,7 @@ impl fmt::Display for TroubleCode {
     }
 }
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
 pub struct Test {
     pub name: &'static str,
     pub available: bool,

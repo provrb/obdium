@@ -41,6 +41,17 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
+pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let window_arc = Arc::new(window.clone());
+    let obd_arc = Arc::clone(obd);
+    let window_clone = Arc::clone(&window_arc);
+    window_clone.listen("get-readiness-tests", move |_| {
+        let mut obd = obd_arc.lock().unwrap();
+        let tests = [obd.get_common_tests_status().to_vec(), obd.get_advanced_tests_status().to_vec()].concat();
+        let _ = window_arc.emit("update-readiness-tests", tests);
+    });
+}
+
 pub fn listen_send_ports(window: &Arc<Window>) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
@@ -193,6 +204,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             listen_send_dtcs(&window_arc, &obd);
             listen_clear_dtcs(&window_arc, &obd);
             listen_send_pids(&window_arc, &obd);
+            listen_send_readiness_test(&window_arc, &obd);
         }
     });
 }

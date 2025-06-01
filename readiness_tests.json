@@ -1,0 +1,57 @@
+[
+  {
+    "name": "COMPONENTS",
+    "available": false,
+    "complete": true
+  },
+  {
+    "name": "FUEL SYSTEM",
+    "available": false,
+    "complete": true
+  },
+  {
+    "name": "MISFIRE",
+    "available": false,
+    "complete": true
+  },
+  {
+    "name": "EGR AND/OR VVT SYSTEM",
+    "available": true,
+    "complete": true
+  },
+  {
+    "name": "OXYGEN SENSOR HEATER",
+    "available": false,
+    "complete": false
+  },
+  {
+    "name": "OXYGEN SENSOR",
+    "available": true,
+    "complete": true
+  },
+  {
+    "name": "GASOLINE PARTICULATE FILTER",
+    "available": false,
+    "complete": false
+  },
+  {
+    "name": "SECONDARY AIR SYSTEM",
+    "available": false,
+    "complete": false
+  },
+  {
+    "name": "EVAPORATIVE SYSTEM",
+    "available": false,
+    "complete": false
+  },
+  {
+    "name": "HEATED CATALYST",
+    "available": false,
+    "complete": false
+  },
+  {
+    "name": "CATALYST",
+    "available": true,
+    "complete": true
+  }
+]

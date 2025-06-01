@@ -99,6 +99,22 @@
   font-weight: 500;
 }
 
+.list-header {
+  align-items: center;
+  vertical-align: bottom;
+  justify-content: space-between;
+  display: flex;
+}
+
+.list-header label {
+  font-size: 1rem;
+  color: #f7f3ff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
 #connection-icon {
   width: 1em;
   height: 1em;

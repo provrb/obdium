@@ -25,12 +25,6 @@ h1 {
   flex-direction: column;
 }
 
-.connection {
-  font-size: 16px;
-  color: #f7f3ff;
-  font-weight: 500;
-}
-
 .car-model {
   font-size: 1.5rem;
   color: #f7f3ff;
