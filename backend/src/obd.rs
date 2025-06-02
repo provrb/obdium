@@ -589,14 +589,9 @@ impl OBD {
         // (e.g ["4D", "41" ...])
         let mut payload = Vec::new();
 
-        self.send_command(&mut Command::new_svc(b"03"));
-
         // Parsing
         let mut response = self.read_until(b'>').unwrap_or_default();
         response = response.replace("SEARCHING...", "");
-
-        println!("raw response is: {}", response.escape_default());
-        return Vec::new();
 
         let ecu_names = OBD::extract_ecu_names(&response);
         OBD::strip_ecu_names(&mut response, ecu_names.as_slice());
