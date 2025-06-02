@@ -350,8 +350,8 @@ impl OBD {
     pub(crate) fn parse_pid_response(&self, raw_response: &str) -> Result<Response, Error> {
         let mut response = raw_response.replace("SEARCHING...", "").replace("\r", "\n");
 
-        let payload_size = self.extract_payload_size(&response);
-        let ecu_names = self.extract_ecu_names(&response);
+        let payload_size = OBD::extract_payload_size(&response);
+        let ecu_names = OBD::extract_ecu_names(&response);
         let escaped = response.clone();
 
         response = response.replace(" ", "").replace("\n", "").replacen(
@@ -360,7 +360,7 @@ impl OBD {
             1,
         );
 
-        self.strip_ecu_names(&mut response, ecu_names.as_slice());
+        OBD::strip_ecu_names(&mut response, ecu_names.as_slice());
 
         if response.len() < 2 {
             return Err(Error::InvalidResponse);
@@ -494,7 +494,7 @@ impl OBD {
         respective_pids
     }
 
-    pub(crate) fn extract_ecu_names(&self, response: &str) -> Vec<String> {
+    pub fn extract_ecu_names(response: &str) -> Vec<String> {
         response
             .lines()
             .filter_map(|line| {
@@ -514,7 +514,7 @@ impl OBD {
             .collect()
     }
 
-    pub(crate) fn extract_payload_size(&self, response: &str) -> u32 {
+    pub fn extract_payload_size(response: &str) -> u32 {
         response
             .split_whitespace()
             .nth(1)
@@ -522,7 +522,7 @@ impl OBD {
             .unwrap_or(0)
     }
 
-    pub(crate) fn strip_ecu_names(&self, response: &mut String, ecu_names: &[String]) {
+    pub(crate) fn strip_ecu_names(response: &mut String, ecu_names: &[String]) {
         for ecu_name in ecu_names.iter() {
             *response = response.replace(ecu_name, "")
         }
@@ -589,14 +589,17 @@ impl OBD {
         // (e.g ["4D", "41" ...])
         let mut payload = Vec::new();
 
+        self.send_command(&mut Command::new_svc(b"03"));
+
         // Parsing
         let mut response = self.read_until(b'>').unwrap_or_default();
         response = response.replace("SEARCHING...", "");
 
         println!("raw response is: {}", response.escape_default());
+        return Vec::new();
 
-        let ecu_names = self.extract_ecu_names(&response);
-        self.strip_ecu_names(&mut response, ecu_names.as_slice());
+        let ecu_names = OBD::extract_ecu_names(&response);
+        OBD::strip_ecu_names(&mut response, ecu_names.as_slice());
 
         let stack_frames: Vec<&str> = response
             .split('\r')
@@ -604,29 +607,48 @@ impl OBD {
             .collect();
 
         // Parse each stack frame
+
+        println!("stack frames: {stack_frames:?}");
+        println!();
         for frame in stack_frames {
-            let clean = frame.trim_start();
+            let clean = frame.trim();
             let bytes: Vec<&str> = clean.split_whitespace().collect();
             if bytes.len() < 2 {
                 continue;
             }
+            println!("Frame: {frame:?}");
+            println!("Clean: {clean}");
+            println!("Bytes: {bytes:?}");
 
-            for byte in bytes.iter() {
-                match byte {
-                    &"10" => {
-                        // First frame
-                        payload.extend(bytes[5..].iter().map(|&s| s.to_string()));
-                    }
-                    &"21" | &"22" | &"23" | &"24" => {
-                        // ["22", "4E", "4C", "30", "30", "30", "30", "30"]
-                        // We insert:
-                        // ["4E", "4C", "30", "30", "30", "30", "30"]
-                        payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
-                    }
-                    _ => {
-                        // unhandled or one frame
+            let pci = match u8::from_str_radix(bytes[0], 16) {
+                Ok(b) => b,
+                Err(_) => continue,
+            };
+
+            let frame_type = pci >> 4;
+
+            match frame_type {
+                0x0 => {
+                    // single frame
+                    let length = (pci & 0x0F) as usize;
+                    if bytes.len() >= 2 + length {
+                        payload.extend(bytes[2..2 + length].iter().map(|&s| s.to_string()));
                     }
                 }
+                0x1 => {
+                    // first frame
+
+                    if bytes.len() >= 4 {
+                        payload.extend(bytes[4..].iter().map(|&s| s.to_string()));
+                    }
+                }
+                0x2 => {
+                    // consecutive frame
+                    if bytes.len() >= 1 {
+                        payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
+                    }
+                }
+                _ => {}
             }
         }
         payload
@@ -640,7 +662,7 @@ impl OBD {
 
         // Convert hex payload to ASCII string
         let mut vin = String::new();
-        for byte in self.read_iso_tp_response() {
+        for byte in self.read_iso_tp_response().iter().skip(1) {
             vin.push(
                 u8::from_str_radix(&byte, 16)
                     .map(|s| s as char)

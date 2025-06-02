@@ -244,13 +244,8 @@ impl OBD {
             return Vec::new();
         }
 
-        match self.read_until(b'>') {
-            Ok(mut response) => self.decode_trouble_codes(&mut response),
-            Err(err) => {
-                println!("when getting dtc4: {err}");
-                Vec::new()
-            }
-        }
+        let mut raw_response = self.read_iso_tp_response().join("");
+        OBD::decode_trouble_codes(&mut raw_response)
     }
 
     pub fn get_permanant_trouble_codes(&mut self) -> Vec<TroubleCode> {
@@ -259,13 +254,8 @@ impl OBD {
             return Vec::new();
         }
 
-        match self.read_until(b'>') {
-            Ok(mut raw_response) => self.decode_trouble_codes(&mut raw_response),
-            Err(err) => {
-                println!("when getting dtc7: {err}");
-                Vec::new()
-            }
-        }
+        let mut raw_response = self.read_iso_tp_response().join("");
+        OBD::decode_trouble_codes(&mut raw_response)
     }
 
     pub fn clear_trouble_codes(&mut self) -> Result<(), Error> {
@@ -435,23 +425,18 @@ impl OBD {
             return Vec::new();
         }
 
-        match self.read_until(b'>') {
-            Ok(mut response) => self.decode_trouble_codes(&mut response),
-            Err(err) => {
-                println!("when getting dtc2: {err}");
-                Vec::new()
-            }
-        }
+        let mut raw_response = self.read_iso_tp_response().join("");
+        OBD::decode_trouble_codes(&mut raw_response)
     }
 
-    fn decode_trouble_codes(&self, response: &mut String) -> Vec<TroubleCode> {
+    pub fn decode_trouble_codes(response: &mut String) -> Vec<TroubleCode> {
         println!(
             "==> Decoding trouble codes. Raw response: '{}'",
             response.escape_default()
         );
-        let ecu_names = self.extract_ecu_names(response);
+        let ecu_names = OBD::extract_ecu_names(response);
         println!(" -> ECU names extracted: '{:?}'", ecu_names);
-        self.strip_ecu_names(response, &ecu_names);
+        OBD::strip_ecu_names(response, &ecu_names);
 
         let binding = response.replace("\r", "").replace(" ", "");
         println!(" -> ECU names stripped, escaped, no spaces: '{binding}'");
