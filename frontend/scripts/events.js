@@ -34,9 +34,7 @@ listen("update-card", (event) => {
     unitSpan.className = "unit";
 
     h3.textContent = event.payload.name;
-
-    if (event.payload.unit.toLowerCase() !== "no data")
-      unitSpan.textContent = event.payload.unit;
+    unitSpan.textContent = (event.payload.unit.toLowerCase() === "no data") ? "" : event.payload.unit;
 
     // if the unit is no data meaning that scalar has 'no data'
     // (see backend docs), then display 'N/A' for value
@@ -81,6 +79,9 @@ listen("update-card", (event) => {
             event.payload.unit.toLowerCase() === "no data"
               ? "N/A "
               : event.payload.value.toString() + " ";
+
+          const unitElem = valueElem.querySelector(".unit");
+          unitElem.textContent = (event.payload.unit.toLowerCase() === "no data") ? "" : event.payload.unit;
         }
       }
     }
