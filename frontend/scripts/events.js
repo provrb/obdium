@@ -164,6 +164,11 @@ listen("connection-status", async (event) => {
   }
 });
 
+listen("update-graph", (event) => {
+  // we will uodate a graph for a specific pid
+  // called in update-pids
+})
+
 listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");

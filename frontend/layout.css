@@ -115,6 +115,16 @@
   text-align: center;
 }
 
+.graphs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto 1fr;
+  gap: 20px; 
+  height: calc(100vh - 120px); 
+  padding: 0 0px; 
+  overflow: auto;
+}
+
 #connection-icon {
   width: 1em;
   height: 1em;

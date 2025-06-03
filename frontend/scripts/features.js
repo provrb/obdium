@@ -91,3 +91,7 @@ export function freezeFrameDisclaimer(show) {
 export function clearObdView() {
   obdGrid.innerHTML = "";
 }
+
+export function showGraph() {
+  
+}

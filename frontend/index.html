@@ -9,6 +9,7 @@
   <script type="module" src="scripts/settings.js"></script>
   <script type="module" src="scripts/main.js"></script>
   <script type="module" src="scripts/features.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="layout.css" />
   <link rel="stylesheet" href="scrollbar.css" />
@@ -74,9 +75,8 @@
       </svg>
     </button>
     <button class="sidebar-button" data-tooltip="I/M READINESS TESTS" data-screen="readiness-tests">
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"
-        class="sidebar-button-img">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="sidebar-button-img">
         <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
         <path d="m9 14 2 2 4-4" />
@@ -273,19 +273,103 @@
         I/M READINESS TESTS
       </div>
       <div class="button-row">
-        <button id="readiness-test-refresh" class="btn" style="background-color: #1f1f1f; width: 135px; margin-top: -5px">
+        <button id="readiness-test-refresh" class="btn"
+          style="background-color: #1f1f1f; width: 135px; margin-top: -5px">
           REFRESH
         </button>
-        <button id="readiness-test-export" class="btn" style="background-color: #1f1f1f; width: 135px; margin-top: -5px">
+        <button id="readiness-test-export" class="btn"
+          style="background-color: #1f1f1f; width: 135px; margin-top: -5px">
           EXPORT
         </button>
       </div>
       <div id="readiness-tests-list" class="info-row-scroll" style="margin-top: 10px;">
       </div>
-    </div> 
+    </div>
 
     <div id="graphs" class="screen" style="display: none">
       <div id="graphs-header" class="screen-label">GRAPHS</div>
+
+      <div class="graphs">
+        <div class="dropdown" id="protocol-dropdown-1" style="flex: 0 0 100%; margin-left: auto;">
+          <button class="dropdown-toggle" id="protocol-selected-1" data-value="0" style="width: 100%;">
+            ENGINE RPM
+          </button>
+          <ul class="dropdown-menu" id="protocol-menu-1" style="width: 100%;">
+            <li data-value="0">ENGINE RPM</li>
+            <li data-value="1">VEHICLE SPEED</li>
+            <li data-value="2">COOLANT TEMP</li>
+            <li data-value="3">THROTTLE POSITION</li>
+            <li data-value="4">FUEL LEVEL</li>
+            <li data-value="5">ENGINE LOAD</li>
+          </ul>
+        </div>
+
+        <div class="dropdown" id="protocol-dropdown-2" style="flex: 0 0 100%; margin-left: auto;">
+          <button class="dropdown-toggle" id="protocol-selected-2" data-value="1" style="width: 100%;">
+            VEHICLE SPEED
+          </button>
+          <ul class="dropdown-menu" id="protocol-menu-2" style="width: 100%;">
+            <li data-value="0">ENGINE RPM</li>
+            <li data-value="1">VEHICLE SPEED</li>
+            <li data-value="2">COOLANT TEMP</li>
+            <li data-value="3">THROTTLE POSITION</li>
+            <li data-value="4">FUEL LEVEL</li>
+            <li data-value="5">ENGINE LOAD</li>
+          </ul>
+        </div>
+
+        <div class="card" style="padding: 16px; display: flex; flex-direction: column; min-height: 300px;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <canvas id="myChart1" style="width: 100% !important; height: auto !important;"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 16px; display: flex; flex-direction: column; min-height: 300px;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <canvas id="myChart2" style="width: 100% !important; height: auto !important;"></canvas>
+          </div>
+        </div>
+
+        <div class="dropdown" id="protocol-dropdown-3" style="flex: 0 0 100%; margin-left: auto;">
+          <button class="dropdown-toggle" id="protocol-selected-3" data-value="2" style="width: 100%;">
+            COOLANT TEMP
+          </button>
+          <ul class="dropdown-menu" id="protocol-menu-3" style="width: 100%;">
+            <li data-value="0">ENGINE RPM</li>
+            <li data-value="1">VEHICLE SPEED</li>
+            <li data-value="2">COOLANT TEMP</li>
+            <li data-value="3">THROTTLE POSITION</li>
+            <li data-value="4">FUEL LEVEL</li>
+            <li data-value="5">ENGINE LOAD</li>
+          </ul>
+        </div>
+
+        <div class="dropdown" id="protocol-dropdown-4" style="flex: 0 0 100%; margin-left: auto;">
+          <button class="dropdown-toggle" id="protocol-selected-4" data-value="3" style="width: 100%;">
+            THROTTLE POSITION
+          </button>
+          <ul class="dropdown-menu" id="protocol-menu-4" style="width: 100%;">
+            <li data-value="0">ENGINE RPM</li>
+            <li data-value="1">VEHICLE SPEED</li>
+            <li data-value="2">COOLANT TEMP</li>
+            <li data-value="3">THROTTLE POSITION</li>
+            <li data-value="4">FUEL LEVEL</li>
+            <li data-value="5">ENGINE LOAD</li>
+          </ul>
+        </div>
+
+        <div class="card" style="padding: 16px; display: flex; flex-direction: column; min-height: 300px;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <canvas id="myChart3" style="width: 100% !important; height: auto !important;"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 16px; display: flex; flex-direction: column; min-height: 300px;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <canvas id="myChart4" style="width: 100% !important; height: auto !important;"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="vin" class="screen" style="display: none">
@@ -628,7 +712,89 @@
 </body>
 
 <script>
-  8;
+  // Initialize charts
+  const charts = {};
+
+  function createChart(canvasId, metric) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['1s', '2s', '3s', '4s', '5s', '6s'],
+        datasets: [{
+          label: metric,
+          data: [],
+          borderColor: "#f7f3ff",
+          borderWidth: 2,
+          fill: false,
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+          title: {
+            display: false
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#f7f3ff',
+              font: {
+                family: 'Montserrat, Arial, sans-serif',
+                size: 12,
+                weight: 'normal'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Time',
+              color: '#f7f3ff',
+              font: {
+                family: 'Montserrat, Arial, sans-serif',
+                size: 14,
+                weight: 'bold'
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#f7f3ff',
+              font: {
+                family: 'Montserrat, Arial, sans-serif',
+                size: 14,
+                weight: 'bold'
+              }
+            },
+            title: {
+              display: true,
+              text: "RPM",
+              color: '#f7f3ff',
+              font: {
+                family: 'Montserrat, Arial, sans-serif',
+                size: 14,
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Initialize all charts
+  charts.chart1 = createChart('myChart1', 'ENGINE RPM');
+  charts.chart2 = createChart('myChart2', 'VEHICLE SPEED');
+  charts.chart3 = createChart('myChart3', 'COOLANT TEMP');
+  charts.chart4 = createChart('myChart4', 'THROTTLE POSITION');
+
   const { listen, emit } = window.__TAURI__.event;
 
   /// Search bar functionality for dashboard
