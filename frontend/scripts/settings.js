@@ -53,7 +53,7 @@ export function saveConnectionConfig() {
   }
 }
 
-function settingChange(event) {
+async function settingChange(event) {
   // get existing settings
   let settings = JSON.parse(localStorage.getItem("userSettings"));
   if (!settings) {
@@ -107,12 +107,15 @@ function settingChange(event) {
     case "record-responses":
       // uncheck replay requests
       document.getElementById("replay-responses").checked = false;
+      await new Promise((r) => setTimeout(r, 2000));
       emit("settings-changed", { tId: "replay-responses", checked: false });
       emit("settings-changed", { tId, checked, data: window.logFilePath });
+      document.log("record response: ", checked);
       break;
     case "replay-responses":
       // uncheck record requests
       document.getElementById("record-responses").checked = false;
+      await new Promise((r) => setTimeout(r, 2000));
       emit("settings-changed", { tId: "record-responses", checked: false });
       emit("settings-changed", { tId, checked });
       break;

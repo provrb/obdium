@@ -36,6 +36,10 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         .for_each(|pid| pid.supported = supported_pids.contains(&&pid.pid.to_string()));
     supported_pids_info.sort_by(|a, b| b.supported.cmp(&a.supported));
 
+    if supported_pids_info.is_empty() {
+        supported_pids_info = PID_INFOS.to_vec();
+    }
+
     window.listen("get-pids", move |_| {
         let _ = window_arc.emit("update-pids", &supported_pids_info);
     });
@@ -47,7 +51,11 @@ pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("get-readiness-tests", move |_| {
         let mut obd = obd_arc.lock().unwrap();
-        let tests = [obd.get_common_tests_status().to_vec(), obd.get_advanced_tests_status().to_vec()].concat();
+        let tests = [
+            obd.get_common_tests_status().to_vec(),
+            obd.get_advanced_tests_status().to_vec(),
+        ]
+        .concat();
         let _ = window_arc.emit("update-readiness-tests", tests);
     });
 }
@@ -188,23 +196,24 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             window_arc_for_listen.listen("disconnect-elm", {
                 let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
                 move |_| {
-                    let mut obd = obd_for_listen.lock().unwrap();
-                    obd.disconnect();
-                    do_send_connection_status(
-                        &window_arc_for_listen,
-                        &obd,
-                        "Connection dropped".to_string(),
-                        false,
-                    );
+                    if let Ok(mut obd) = obd_for_listen.lock() {
+                        do_send_connection_status(
+                            &window_arc_for_listen,
+                            &obd,
+                            "Connection dropped".to_string(),
+                            false,
+                        );
+                        obd.disconnect();
+                    }
                 }
             });
 
             listen_send_connection_status(&window_arc, &obd);
             listen_change_obd_settings(&window_arc, &obd);
-            listen_send_dtcs(&window_arc, &obd);
-            listen_clear_dtcs(&window_arc, &obd);
             listen_send_pids(&window_arc, &obd);
             listen_send_readiness_test(&window_arc, &obd);
+            listen_send_dtcs(&window_arc, &obd);
+            listen_clear_dtcs(&window_arc, &obd);
         }
     });
 }
@@ -231,6 +240,8 @@ pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 if let Some(path) = setting.data {
                     println!("record response has a path: {path}");
                     obd.record_requests(setting.checked, path);
+                } else {
+                    obd.record_requests(setting.checked, "./data/requests.json".into());
                 }
             }
             "replay-responses" => obd.replay_requests(setting.checked),

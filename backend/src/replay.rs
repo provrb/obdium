@@ -5,6 +5,7 @@ use crate::{
     obd::OBD,
     response::Response,
 };
+use rand::seq::IndexedRandom;
 use serde_json::{json, Value};
 
 impl OBD {
@@ -57,8 +58,7 @@ impl OBD {
         let obj = json!({
             "request": request.as_string(),
             "request_type": request.command_type(),
-            "response": response.raw_response.as_deref().unwrap_or(""),
-            "played": false
+            "response": response.raw_response.as_deref().unwrap_or("")
         });
 
         contents_json.push(obj);
@@ -72,7 +72,7 @@ impl OBD {
         // add a delay to simulate vehicle
         std::thread::sleep(Duration::from_millis(300));
 
-        let mut contents_json: Vec<Value> = {
+        let contents_json: Vec<Value> = {
             let contents = fs::read_to_string(&self.requests_path).expect("file read error");
             if contents.trim().is_empty() {
                 vec![]
@@ -85,32 +85,28 @@ impl OBD {
             return Response::no_data();
         }
 
-        let mut found_index = None;
-        for (i, value) in contents_json.iter_mut().enumerate() {
-            if value["request"] == request.as_string() && value["played"] == false {
-                value["played"] = serde_json::Value::Bool(true);
-                found_index = Some(i);
+        let mut related_requests = Vec::new();
+        for value in contents_json.iter() {
+            if value["request"] == request.as_string() {
+                related_requests.push(value);
                 break;
             }
         }
 
-        if let Some(i) = found_index {
-            let pretty =
-                serde_json::to_string_pretty(&contents_json).expect("failed pretty'ing string");
+        if related_requests.is_empty() {
+            return Response::no_data();
+        }
 
-            fs::write(&self.requests_path, pretty).expect("failed to write requests file");
-
-            let value = &contents_json[i];
+        // Randomly select response to use from related_requests
+        if let Some(value) = related_requests.choose(&mut rand::rng()) {
             let escaped_response = value["response"].as_str().unwrap_or_default();
             if value["request_type"] == json!(CommandType::PIDCommand) {
                 return self
                     .parse_pid_response(escaped_response)
-                    .unwrap_or_default();
+                    .unwrap_or(Response::no_data());
             }
-
             return Response::new(escaped_response.to_string(), escaped_response.to_string());
         }
-
         Response::no_data()
     }
 

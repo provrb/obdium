@@ -8,6 +8,7 @@ const replayResponses = document.getElementById("replay-responses");
 const recordResponses = document.getElementById("record-responses");
 const connectButton = document.getElementById("btn-connect");
 const disconnectButton = document.getElementById("btn-disconnect");
+const demoStatus = document.getElementById("demo-status");
 
 listen("update-card", (event) => {
   if (window.obdViewPaused) return;
@@ -34,7 +35,8 @@ listen("update-card", (event) => {
     unitSpan.className = "unit";
 
     h3.textContent = event.payload.name;
-    unitSpan.textContent = (event.payload.unit.toLowerCase() === "no data") ? "" : event.payload.unit;
+    unitSpan.textContent =
+      event.payload.unit.toLowerCase() === "no data" ? "" : event.payload.unit;
 
     // if the unit is no data meaning that scalar has 'no data'
     // (see backend docs), then display 'N/A' for value
@@ -81,7 +83,10 @@ listen("update-card", (event) => {
               : event.payload.value.toString() + " ";
 
           const unitElem = valueElem.querySelector(".unit");
-          unitElem.textContent = (event.payload.unit.toLowerCase() === "no data") ? "" : event.payload.unit;
+          unitElem.textContent =
+            event.payload.unit.toLowerCase() === "no data"
+              ? ""
+              : event.payload.unit;
         }
       }
     }
@@ -111,8 +116,6 @@ listen("connection-status", async (event) => {
   const protocolSelected = document.getElementById("protocol-selected");
   const status = document.getElementById("connection-details");
 
-  console.log("Retrieved connection status:", event);
-
   if (event.payload.connected) {
     const serialPort = event.payload.serialPort;
     const baudRate = event.payload.baudRate;
@@ -124,8 +127,15 @@ listen("connection-status", async (event) => {
       "CONNECTED THROUGH SERIAL PORT " + serialPort.toUpperCase();
     connectionIcon.src = "/assets/icons/connected.png";
     window.connected = true;
-    recordResponses.disabled = false;
-    replayResponses.disabled = false;
+
+    // Features only accessible in real mode
+    if (serialPort !== "DEMO MODE") {
+      recordResponses.disabled = false;
+      replayResponses.disabled = false;
+    } else
+      // show demo mode status
+      demoStatus.style.display = "flex";
+
     connectButton.disabled = true;
     disconnectButton.disabled = false;
 
@@ -148,10 +158,17 @@ listen("connection-status", async (event) => {
       emit("get-dtcs");
     }
 
-    await new Promise((r) => setTimeout(r, 7000));
-    emit("get-pids");
-    await new Promise((r) => setTimeout(r, 2000));
-    emit("get-readiness-tests");
+    if (serialPort === "DEMO MODE") {
+      await new Promise((r) => setTimeout(r, 15000));
+      emit("get-pids");
+      await new Promise((r) => setTimeout(r, 2000));
+      emit("get-readiness-tests");
+    } else {
+      await new Promise((r) => setTimeout(r, 7000));
+      emit("get-pids");
+      await new Promise((r) => setTimeout(r, 2000));
+      emit("get-readiness-tests");
+    }
   } else {
     connectionLabel.textContent = "ELM327 NOT CONNECTED";
     status.textContent = "NO CONNECTION ESTABLISHED";
@@ -161,13 +178,15 @@ listen("connection-status", async (event) => {
     replayResponses.disabled = true;
     connectButton.disabled = false;
     disconnectButton.disabled = true;
+
+    if (demoStatus.style.display !== "none") demoStatus.style.display = "none";
   }
 });
 
 listen("update-graph", (event) => {
   // we will uodate a graph for a specific pid
   // called in update-pids
-})
+});
 
 listen("update-pids", (event) => {
   const pids = event.payload;
@@ -317,6 +336,11 @@ listen("update-dtcs", (event) => {
 const menu = document.getElementById("serial-port-dropdown-menu");
 const serialPortSelected = document.getElementById("serial-port-selected");
 
+const demoModePortOption = document.createElement("li");
+demoModePortOption.textContent = "DEMO MODE";
+demoModePortOption.dataset.value = "DEMO MODE";
+menu.appendChild(demoModePortOption);
+
 listen("update-serial-ports", (event) => {
   serialPortSelected.textContent = "NO PORTS SELECTED";
   menu.innerHTML = "";
@@ -330,12 +354,13 @@ listen("update-serial-ports", (event) => {
   portOption.dataset.value = event.payload;
 
   menu.appendChild(portOption);
+  menu.appendChild(demoModePortOption);
 });
 
 const readinessTests = document.getElementById("readiness-tests-list");
 listen("update-readiness-tests", (event) => {
   readinessTests.innerHTML = ``;
-  
+
   const tests = event.payload;
   for (const test of tests) {
     const testRow = document.createElement("div");
@@ -345,8 +370,8 @@ listen("update-readiness-tests", (event) => {
       <div class="name" id="test-name" style="flex: 2;">TEST: ${test.name.toUpperCase()}</div>
       <div class="name" id="test-availability" style="flex: 1;">${test.available ? "AVAILABLE" : "UNAVAILABLE"}</div>
       <div class="name" id="test-completeness" style="flex: 1;">${test.complete ? "COMPLETE" : "INCOMPLETE"}</div>
-    `
-    
+    `;
+
     readinessTests.appendChild(testRow);
   }
-})
+});

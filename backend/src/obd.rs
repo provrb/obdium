@@ -77,6 +77,106 @@ pub enum Service {
     Mode22,
 }
 
+// Fake serial port used for simulating.
+// Specifically demo mode.
+struct DummySerialPort;
+
+impl SerialPort for DummySerialPort {
+    fn name(&self) -> Option<String> {
+        Some("DEMO MODE".to_string())
+    }
+    fn baud_rate(&self) -> serialport::Result<u32> {
+        Ok(0)
+    }
+    fn data_bits(&self) -> serialport::Result<serialport::DataBits> {
+        Ok(serialport::DataBits::Eight)
+    }
+    fn flow_control(&self) -> serialport::Result<serialport::FlowControl> {
+        Ok(serialport::FlowControl::None)
+    }
+    fn parity(&self) -> serialport::Result<serialport::Parity> {
+        Ok(serialport::Parity::None)
+    }
+    fn stop_bits(&self) -> serialport::Result<serialport::StopBits> {
+        Ok(serialport::StopBits::One)
+    }
+    fn timeout(&self) -> Duration {
+        Duration::from_secs(0)
+    }
+    fn set_timeout(&mut self, _timeout: Duration) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn write_request_to_send(&mut self, _level: bool) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn write_data_terminal_ready(&mut self, _level: bool) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn read_clear_to_send(&mut self) -> serialport::Result<bool> {
+        Ok(true)
+    }
+    fn read_data_set_ready(&mut self) -> serialport::Result<bool> {
+        Ok(true)
+    }
+    fn read_ring_indicator(&mut self) -> serialport::Result<bool> {
+        Ok(false)
+    }
+    fn read_carrier_detect(&mut self) -> serialport::Result<bool> {
+        Ok(false)
+    }
+    fn bytes_to_read(&self) -> serialport::Result<u32> {
+        Ok(0)
+    }
+    fn bytes_to_write(&self) -> serialport::Result<u32> {
+        Ok(0)
+    }
+    fn clear(&self, _buffer: serialport::ClearBuffer) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn try_clone(&self) -> serialport::Result<Box<dyn SerialPort>> {
+        Ok(Box::new(DummySerialPort))
+    }
+    fn set_baud_rate(&mut self, _baud_rate: u32) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn set_data_bits(&mut self, _data_bits: serialport::DataBits) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn set_flow_control(
+        &mut self,
+        _flow_control: serialport::FlowControl,
+    ) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn set_parity(&mut self, _parity: serialport::Parity) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn set_stop_bits(&mut self, _stop_bits: serialport::StopBits) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn set_break(&self) -> serialport::Result<()> {
+        Ok(())
+    }
+    fn clear_break(&self) -> serialport::Result<()> {
+        Ok(())
+    }
+}
+
+impl Read for DummySerialPort {
+    fn read(&mut self, _buf: &mut [u8]) -> std::io::Result<usize> {
+        Ok(0)
+    }
+}
+
+impl Write for DummySerialPort {
+    fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
+        Ok(0)
+    }
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+}
+
 #[derive(Default)]
 pub struct OBD {
     connection: Option<Box<dyn SerialPort>>,
@@ -98,10 +198,16 @@ impl OBD {
     }
 
     pub fn connect(&mut self, port: &str, baud_rate: u32, protocol: u8) -> Result<(), Error> {
-        if self.replay_requests {
+        if port == "DEMO MODE" {
             // No connection required
+            self.replay_requests = true;
+            self.connection = Some(Box::new(DummySerialPort));
+
             return Ok(());
         }
+
+        self.replay_requests = false;
+        self.record_requests = false;
 
         if self.connection.is_some() {
             return Ok(());
@@ -419,7 +525,6 @@ impl OBD {
                 request_pid_bytes[1],
             ];
             let response = self.query(Command::new_pid(&command));
-            println!("Response: {:?}", &response.formatted_response);
 
             let split = format!("41{}", request_pid);
 
@@ -428,8 +533,6 @@ impl OBD {
                 &split,
                 i32::from_str_radix(request_pid, 16).unwrap_or_default(),
             );
-
-            println!("  -> Parsed: {parsed:?}");
 
             for (ecu_name, pids) in parsed.iter_mut() {
                 supported_pids
@@ -639,7 +742,7 @@ impl OBD {
                 }
                 0x2 => {
                     // consecutive frame
-                    if bytes.len() >= 1 {
+                    if !bytes.is_empty() {
                         payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
                     }
                 }
@@ -659,7 +762,7 @@ impl OBD {
         let mut vin = String::new();
         for byte in self.read_iso_tp_response().iter().skip(1) {
             vin.push(
-                u8::from_str_radix(&byte, 16)
+                u8::from_str_radix(byte, 16)
                     .map(|s| s as char)
                     .expect("call to u8::from_str_radix failed on str '{byte}'"),
             );

@@ -84,12 +84,12 @@ pauseObdButton.addEventListener("click", () => {
 });
 
 dropdowns.forEach((dropdown) => {
-  handleDropdown(dropdown, ".dropdown-toggle", ".dropdown-menu")
+  handleDropdown(dropdown, ".dropdown-toggle", ".dropdown-menu");
 });
 
 graphDropdowns.forEach((dropdown) => {
-  handleDropdown(dropdown, ".graph-dropdown-toggle", ".graph-dropdown-menu")
-})
+  handleDropdown(dropdown, ".graph-dropdown-toggle", ".graph-dropdown-menu");
+});
 
 document.addEventListener("click", () => {
   document.querySelectorAll(".dropdown-menu").forEach((menu) => {
@@ -178,19 +178,30 @@ const imTestList = document.getElementById("readiness-tests-list");
 
 imTestRefreshButton.addEventListener("click", () => {
   emit("get-readiness-tests");
-})
+});
 
-imTestExportButton.addEventListener("click", async () => {  
+imTestExportButton.addEventListener("click", async () => {
   let totalJSON = [];
   imTestList.childNodes.forEach((testRow) => {
     if (testRow.nodeType == 1) {
-      const available = testRow.querySelector("#test-availability").textContent.trim() == "AVAILABLE" ? true : false;
-      const complete = testRow.querySelector("#test-completeness").textContent.trim() == "COMPLETE" ? true : false;
+      const available =
+        testRow.querySelector("#test-availability").textContent.trim() ==
+        "AVAILABLE"
+          ? true
+          : false;
+      const complete =
+        testRow.querySelector("#test-completeness").textContent.trim() ==
+        "COMPLETE"
+          ? true
+          : false;
 
       const testJSON = {
-        name: testRow.querySelector("#test-name").textContent.replace("TEST: ", "").trim(),
+        name: testRow
+          .querySelector("#test-name")
+          .textContent.replace("TEST: ", "")
+          .trim(),
         available: available,
-        complete: complete
+        complete: complete,
       };
 
       totalJSON.push(testJSON);
@@ -208,4 +219,4 @@ imTestExportButton.addEventListener("click", async () => {
   }
 
   await writeFile({ path, contents: JSON.stringify(totalJSON, null, 2) });
-})
+});

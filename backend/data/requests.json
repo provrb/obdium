@@ -1,452 +1,5517 @@
 [
   {
-    "request": "010C",
+    "request": "014A",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 23 82 \n\n",
-    "played": true
+    "response": "7E8 03 41 4A 45 \n\n"
   },
   {
-    "request": "0174",
+    "request": "014B",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
+    "response": "NO DATA"
   },
   {
-    "request": "010D",
+    "request": "0164",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 72 \n\n",
-    "played": true
+    "response": "NO DATA"
   },
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 26 25 \n\n",
-    "played": false
+    "response": "7E8 04 41 0C 3B 2E \n\n"
   },
   {
     "request": "0174",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "NO DATA"
   },
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 48 \n\n",
-    "played": false
-  },
-  {
-    "request": "0104",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 56 \n\n",
-    "played": false
-  },
-  {
-    "request": "0163",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010A",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0122",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0123",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 23 1A 0E \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 18 9F \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 20 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 13 FB \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 29 \n\n",
-    "played": false
-  },
-  {
-    "request": "012E",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 2E 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "0132",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0142",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 42 39 5F \n\n",
-    "played": false
-  },
-  {
-    "request": "0101",
-    "request_type": "PIDCommand",
-    "response": "7E8 06 41 01 00 07 A1 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "011F",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 1F 00 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "01A2",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0150",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010E",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0E A6 \n\n",
-    "played": false
-  },
-  {
-    "request": "010B",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0B 26 \n\n",
-    "played": false
-  },
-  {
-    "request": "0133",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 61 \n\n",
-    "played": false
-  },
-  {
-    "request": "0118",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0119",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "011A",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "011B",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 3F 7A \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 0E \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 5F \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 0A \n\n",
-    "played": false
-  },
-  {
-    "request": "0111",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 11 2B \n\n",
-    "played": false
-  },
-  {
-    "request": "0145",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 45 42 \n\n",
-    "played": false
-  },
-  {
-    "request": "0147",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 47 E9 \n\n",
-    "played": false
-  },
-  {
-    "request": "0148",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0149",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 49 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 3B 2E \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 20 \n\n",
-    "played": false
-  },
-  {
-    "request": "0104",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 04 69 \n\n",
-    "played": false
-  },
-  {
-    "request": "0163",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010A",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0122",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "0123",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 23 1A 0E \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 15 2A \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 29 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 3F 7A \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 00 \n\n",
-    "played": false
-  },
-  {
-    "request": "010C",
-    "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 14 5F \n\n",
-    "played": false
-  },
-  {
-    "request": "0174",
-    "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
-  },
-  {
-    "request": "010D",
-    "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 44 \n\n",
-    "played": false
+    "response": "7E8 03 41 0D 29 \n\n"
   },
   {
     "request": "0110",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 10 18 1F \n\n",
-    "played": true
+    "response": "7E8 04 41 10 11 5B \n\n"
   },
   {
     "request": "019D",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
+    "response": "NO DATA"
   },
   {
     "request": "221470",
     "request_type": "Arbitrary",
-    "response": "NO DATA",
-    "played": true
+    "response": "NO DATA"
   },
   {
     "request": "0161",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
+    "response": "NO DATA"
   },
   {
     "request": "0162",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": true
+    "response": "NO DATA"
   },
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 00 00 \n\n",
-    "played": false
+    "response": "7E8 04 41 0C 15 2A \n\n"
   },
   {
     "request": "0174",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "NO DATA"
   },
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 5C \n\n",
-    "played": false
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 FF \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
   },
   {
     "request": "010C",
     "request_type": "PIDCommand",
-    "response": "7E8 04 41 0C 1F E0 \n7EA 04 41 0C 1F E0 \n\n",
-    "played": false
+    "response": "7E8 04 41 0C 09 F6 \n\n"
   },
   {
     "request": "0174",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "NO DATA"
   },
   {
     "request": "010D",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0D 30 \n7EA 03 41 0D 30 \n\n",
-    "played": false
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 C1 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 53 \n\n"
   },
   {
     "request": "01A2",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "NO DATA"
   },
   {
     "request": "0150",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "NO DATA"
   },
   {
     "request": "010E",
     "request_type": "PIDCommand",
-    "response": "NO DATA",
-    "played": false
+    "response": "7E8 03 41 0E 75 \n\n"
   },
   {
     "request": "010B",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 0B 73 \n\n",
-    "played": false
+    "response": "7E8 03 41 0B 25 \n\n"
   },
   {
     "request": "0133",
     "request_type": "PIDCommand",
-    "response": "7E8 03 41 33 65 \n\n",
-    "played": false
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0118",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0119",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 44 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 10 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 85 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 7F \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 42 \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 00 14 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 57 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 76 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 14 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 7D \n\n"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 15 C5 \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 16 DD \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0128",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0129",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 50 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 46 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7C \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 02 86 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 96 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 8E \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 26 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 32 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 27 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 92 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 73 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 8B \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0114",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0115",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 15 03 FF \n\n"
+  },
+  {
+    "request": "0116",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0117",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 03 05 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 80 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 00 \n7EA 03 41 04 00 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 78 \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 66 \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E A2 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 35 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 72 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 03 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7B \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 15 B3 \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 1B 27 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 10 16 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0124",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 24 80 4A 6B F1 \n\n"
+  },
+  {
+    "request": "0125",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0126",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0127",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 56 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 8F \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 1E \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2E \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 02 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7D \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 78 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 00 12 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 5F \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 32 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 64 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "0118",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0119",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 99 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 63 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 36 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 00 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 81 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 79 \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 5F \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 10 05 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 67 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 84 \n\n"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 05 82 \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 02 B9 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 8A \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 28 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0128",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0129",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2A \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 19 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 AD \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 01 3B \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 9F \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E A6 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 52 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 9A \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 48 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2F \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 42 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 E9 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "0114",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0115",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 15 94 FF \n\n"
+  },
+  {
+    "request": "0116",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0117",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 88 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 00 51 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 7E \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 44 \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 00 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 95 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 61 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2B \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 10 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 D3 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 23 0F \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 09 44 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0124",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 24 80 71 6B F1 \n\n"
+  },
+  {
+    "request": "0125",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0126",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0127",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 10 20 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 98 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 9A \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 60 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 79 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 70 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 46 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 95 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 38 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 6A \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 04 93 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0118",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0119",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 73 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E A8 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 63 \n7EA 03 41 0B 63 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 7C \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 4C \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 44 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 27 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 85 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 18 1F \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 8B \n\n"
+  },
+  {
+    "request": "0128",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0129",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 06 9E \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 06 B7 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 69 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E AB \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 36 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 50 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 03 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7C \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 01 46 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 D6 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 4B \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 75 \n\n"
+  },
+  {
+    "request": "0114",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0115",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 15 2A FF \n\n"
+  },
+  {
+    "request": "0116",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0117",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 75 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 25 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 32 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 02 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 92 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 7F \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 7F \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 64 \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 03 0A \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 41 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 76 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 14 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0124",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 24 7E 87 69 71 \n\n"
+  },
+  {
+    "request": "0125",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0126",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0127",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 22 36 \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 0E 77 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 72 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 00 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7B \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 11 5B \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "0146",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 46 43 \n\n"
+  },
+  {
+    "request": "014F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015D",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 5D 66 00 \n\n"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 FF \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 7D \n\n"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E 8E \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 26 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 2E \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 19 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 7D \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 46 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 12 87 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 72 \n\n"
+  },
+  {
+    "request": "012E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2E 00 \n\n"
+  },
+  {
+    "request": "0132",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0142",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 42 39 C1 \n\n"
+  },
+  {
+    "request": "0101",
+    "request_type": "PIDCommand",
+    "response": "7E8 06 41 01 00 07 A1 00 \n\n"
+  },
+  {
+    "request": "011F",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 1F 00 26 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0118",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0119",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "011B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3B 2E \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 48 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 15 2A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 20 \n\n"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 00 14 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 09 F6 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 29 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 23 82 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0E \n\n"
+  },
+  {
+    "request": "0108",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0104",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 04 57 \n\n"
+  },
+  {
+    "request": "0163",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0122",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0123",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 23 1A 0E \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 26 25 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 0A \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 18 9F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 37 \n\n"
+  },
+  {
+    "request": "0107",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 07 78 \n\n"
+  },
+  {
+    "request": "0109",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0105",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 05 55 \n\n"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "015C",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221154",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0167",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "01A2",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0150",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010E",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0E A2 \n\n"
+  },
+  {
+    "request": "010B",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0B 35 \n\n"
+  },
+  {
+    "request": "0133",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 33 61 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 13 FB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 27 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 3F 7A \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 33 \n\n"
+  },
+  {
+    "request": "0111",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 11 36 \n\n"
+  },
+  {
+    "request": "0145",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 45 42 \n\n"
+  },
+  {
+    "request": "0147",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 47 81 \n\n"
+  },
+  {
+    "request": "0148",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0149",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 49 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 14 5F \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 00 \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 00 00 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 44 \n\n"
+  },
+  {
+    "request": "014A",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 4A 45 \n\n"
+  },
+  {
+    "request": "014B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0164",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 41 C2 \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 5C \n\n"
+  },
+  {
+    "request": "010C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 0C 35 CB \n\n"
+  },
+  {
+    "request": "0174",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "010D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 0D 1D \n\n"
+  },
+  {
+    "request": "0106",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 06 80 \n\n"
+  },
+  {
+    "request": "012C",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2C 00 \n\n"
+  },
+  {
+    "request": "012D",
+    "request_type": "PIDCommand",
+    "response": "7E8 03 41 2D 80 \n\n"
+  },
+  {
+    "request": "013C",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3C 22 E0 \n\n"
+  },
+  {
+    "request": "013E",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 3E 03 69 \n\n"
+  },
+  {
+    "request": "013D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "013F",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0110",
+    "request_type": "PIDCommand",
+    "response": "7E8 04 41 10 02 86 \n\n"
+  },
+  {
+    "request": "019D",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "221470",
+    "request_type": "Arbitrary",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0161",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0162",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0128",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "0129",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012A",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
+  },
+  {
+    "request": "012B",
+    "request_type": "PIDCommand",
+    "response": "NO DATA"
   }
 ]

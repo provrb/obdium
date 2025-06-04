@@ -92,6 +92,4 @@ export function clearObdView() {
   obdGrid.innerHTML = "";
 }
 
-export function showGraph() {
-  
-}
+export function showGraph() {}
