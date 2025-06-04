@@ -28,6 +28,7 @@ let logFilePath = "";
 
 // UI Components
 const dropdowns = document.querySelectorAll(".dropdown");
+const graphDropdowns = document.querySelectorAll(".graph-dropdown");
 const connectButton = document.getElementById("btn-connect");
 const disconnectButton = document.getElementById("btn-disconnect");
 const clearObdButton = document.getElementById("obd-clear");
@@ -47,26 +48,16 @@ window.addEventListener("DOMContentLoaded", () => {
   console.log("frontend loaded");
 });
 
-clearObdButton.addEventListener("click", clearObdView);
-pauseObdButton.addEventListener("click", () => {
-  window.obdViewPaused = !window.obdViewPaused;
-  if (obdViewPaused) {
-    pauseObdButton.textContent = "RESUME";
-  } else {
-    pauseObdButton.textContent = "PAUSE";
-  }
-});
-
-dropdowns.forEach((dropdown) => {
-  const toggle = dropdown.querySelector(".dropdown-toggle");
-  const menu = dropdown.querySelector(".dropdown-menu");
+function handleDropdown(dropdown, toggleName, menuName) {
+  const toggle = dropdown.querySelector(toggleName);
+  const menu = dropdown.querySelector(menuName);
 
   toggle.addEventListener("click", (e) => {
     e.stopPropagation();
     if (menu.style.display === "block") {
       menu.style.display = "none";
     } else {
-      document.querySelectorAll(".dropdown-menu").forEach((m) => {
+      document.querySelectorAll(menuName).forEach((m) => {
         m.style.display = "none";
       });
       menu.style.display = "block";
@@ -80,7 +71,25 @@ dropdowns.forEach((dropdown) => {
       menu.style.display = "none";
     }
   });
+}
+
+clearObdButton.addEventListener("click", clearObdView);
+pauseObdButton.addEventListener("click", () => {
+  window.obdViewPaused = !window.obdViewPaused;
+  if (obdViewPaused) {
+    pauseObdButton.textContent = "RESUME";
+  } else {
+    pauseObdButton.textContent = "PAUSE";
+  }
 });
+
+dropdowns.forEach((dropdown) => {
+  handleDropdown(dropdown, ".dropdown-toggle", ".dropdown-menu")
+});
+
+graphDropdowns.forEach((dropdown) => {
+  handleDropdown(dropdown, ".graph-dropdown-toggle", ".graph-dropdown-menu")
+})
 
 document.addEventListener("click", () => {
   document.querySelectorAll(".dropdown-menu").forEach((menu) => {

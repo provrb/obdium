@@ -87,16 +87,85 @@ input[type="file"] {
 }
 
 .graph-container {
-  position: relative;
-  flex: 1 1 calc(50% - 8px);
-  height: calc(50% - 8px);
-  box-sizing: border-box;
+  background-color: #151515;
+  border-radius: 12px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
 }
 
-canvas {
-  flex: 1;
-  width: 70% !important;
+
+.graph-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 290px;
+  margin-right: 10px;
+}
+
+.graph-dropdown label {
+  margin-left: 1.5px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #f7f3ff;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.graph-dropdown-toggle {
+  font-family: "Montserrat", sans-serif;
+  width: 100%;
+  padding-top: 10px;
+  padding-left: 11px;
+  padding-right: 11px;
+  background-color: #151515;
+  border: none;
+  color: #f7f3ff;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.graph-dropdown-toggle::after {
+  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="%23f7f3ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" height="20" viewBox="0 0 24 24" width="24"><path d="m6 9 6 6 6-6"/></svg>');
+  color: #f7f3ff;
+  float: right;
+  font-size: 0.5em;
+  margin-bottom: 4px;
+  padding-right: 5px;
+}
+
+.graph-dropdown-menu {
+  list-style: none;
+  margin: 5px 0 0 0;
+  position: absolute;
+  width: 100%;
+  background-color: #151515;
+  border-radius: 0 0 5px 5px;
+  display: none;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.graph-dropdown-menu li {
+  padding: 8px;
+  padding-left: 11px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  color: #f7f3ff;
+  border-radius: 0 0 5px 5px;
+}
+
+.graph-dropdown-menu li:hover {
+  background-color: #0f0f0f;
 }
