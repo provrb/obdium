@@ -7,7 +7,7 @@
   <img alt="repo-language-count" src="https://img.shields.io/github/languages/count/provrb/obdium?style=flat&color=0080ff">
 </div>
 
-![AppImage](/docs/app_image.png)
+![AppImage](/docs/banner2.jpg)
 
 ## Table of Contents
 
@@ -92,13 +92,21 @@ For any questions about the implementation or logic behind OBDium, feel free to 
 
 ## Usage
 
+### Demo mode
+To replay already recorded requests simply:
+1. Navigate to the **Connection** panel
+2. Select "DEMO MODE" under the serial port dropdown
+3. Click 'Connect'
+
+Data will start popping up and simulate a real vehicle.
+
 ### Connecting
 
 1. Run the application
 2. Connect your ELM327 adapter to your vehicles OBD-II port and device.
 3. Navigate to the **Connection** panel:
    - Select the OBD-II protocol, serial port, and baud rate to use.
-   - If not serial ports appear, you can click the refresh button to reload serial ports.
+   - If no serial ports appear, you can click the refresh button to reload serial ports.
 4. Click 'Connect'
 
 ### Features
