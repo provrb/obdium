@@ -1,6 +1,7 @@
-const { emit } = window.__TAURI__.event;
+const { emit, listen } = window.__TAURI__.event;
 const { save } = window.__TAURI__.dialog;
 const { writeFile } = window.__TAURI__.fs;
+const invoke = window.__TAURI__.invoke;
 import { saveConnectionConfig } from "./settings.js";
 
 const connectButton = document.getElementById("btn-connect");
@@ -78,8 +79,6 @@ export async function connectElm(baudRate, serialPort, protocol) {
 }
 
 export async function disconnectElm() {
-  const status = document.getElementById("connection-details");
-
   connectButton.disabled = true;
   emit("disconnect-elm");
 }
@@ -92,4 +91,99 @@ export function clearObdView() {
   obdGrid.innerHTML = "";
 }
 
-export function showGraph() {}
+export async function addGraphDropdownOption(pid, name, unit, equation) {
+  if (!unit.trim() && !equation.trim()) {
+    // likely a statement or cannot be represented as a draph (enum)
+    // e,g: dtc's, fuel system status
+    return;
+  }
+
+  const graphs = document.querySelectorAll("canvas");
+  for (const graph of graphs) {
+    const graphId = graph.id;
+    const dropDownMenu = document.getElementById(graphId + "-menu");
+
+    const existingOption = dropDownMenu.querySelector(`li[data-value="${pid}"]`);
+    if (existingOption) continue;
+
+    const pidOption = document.createElement("li");
+    pidOption.textContent = name.toUpperCase();
+    pidOption.dataset.value = pid;
+
+    dropDownMenu.appendChild(pidOption);
+
+    // track click of dropdown menu
+    pidOption.addEventListener("click", () => {
+      // switch graph metrics
+      trackGraph(graphId, name, unit);
+    });
+  }
+}
+
+export async function trackGraph(graphId, name, unit) {
+  // reset all chart.js data
+  // track graph
+
+  let graph = Chart.getChart(graphId);
+  if (!graph) return;
+
+  // reset graph
+  graph.data.labels = [];
+  graph.data.datasets.forEach((dataset) => {
+    dataset.data = [];
+  });
+
+  // x axis label will always be time
+  graph.options.scales.x.title.text = "TIME";
+  graph.options.scales.y.title.text = unit;
+  graph.startTime = Date.now();
+  graph.update();
+
+  // track data
+  let lastValue = null;
+  let lastElapsed = null;
+
+  // listen for updates and store the latest value
+  listen("update-graphs", (event) => {
+    console.log(
+      "Comparing " +
+        event.payload.name.toUpperCase() +
+        " with " +
+        name.toUpperCase(),
+    );
+    if (event.payload.name.toUpperCase() === name.toUpperCase()) {
+      console.log(" -> Update!");
+      lastValue = event.payload.value;
+    }
+  });
+
+  // update graph every second, even if no new event
+  setInterval(() => {
+    if (
+      graph.config &&
+      graph.config.options &&
+      graph.options.scales.y.title.text === unit
+    ) {
+      const now = Date.now();
+      const elapsedMs = now - graph.startTime;
+      const minutes = Math.floor(elapsedMs / 60000);
+      const seconds = Math.floor((elapsedMs % 60000) / 1000);
+      const elapsed = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+      if (lastElapsed === elapsed) return;
+      lastElapsed = elapsed;
+
+      const maxPoints = 8;
+      if (graph.data.labels.length > maxPoints) {
+        graph.data.labels.shift();
+        graph.data.datasets[0].data.shift();
+      }
+
+      // Use lastValue if available, otherwise push null
+      graph.data.datasets[0].data.push(lastValue);
+      graph.data.labels.push(elapsed);
+
+      graph.update();
+    }
+  }, 1000);
+}

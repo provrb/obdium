@@ -1,5 +1,5 @@
 const { listen, emit } = window.__TAURI__.event;
-import { exportDtcs } from "./features.js";
+import { exportDtcs, addGraphDropdownOption } from "./features.js";
 import { saveConnectionConfig } from "./settings.js";
 
 const connectionLabel = document.getElementById("connection-label");
@@ -90,6 +90,12 @@ listen("update-card", (event) => {
         }
       }
     }
+  });
+
+  // update any graphs that might be using this
+  emit("update-graphs", {
+    name: event.payload.name,
+    value: event.payload.value,
   });
 });
 
@@ -183,11 +189,6 @@ listen("connection-status", async (event) => {
   }
 });
 
-listen("update-graph", (event) => {
-  // we will uodate a graph for a specific pid
-  // called in update-pids
-});
-
 listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");
@@ -234,10 +235,6 @@ listen("update-pids", (event) => {
 
     pidList.appendChild(pidGroup);
 
-    // Increment results counter
-    const header = document.getElementById("pid-list-header");
-    header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
-
     // Add expand/collapse event listener
     const row = pidGroup.querySelector(".info-row");
     const details = pidGroup.querySelector(".pid-details");
@@ -272,7 +269,18 @@ listen("update-pids", (event) => {
         }
       });
     });
+    
+    addGraphDropdownOption(
+      pidInfo.pid,
+      pidInfo.pidName,
+      pidInfo.unit,
+      pidInfo.formula,
+    );
   }
+
+  // Increment results counter
+  const header = document.getElementById("pid-list-header");
+  header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
 });
 
 const dtcList = document.getElementById("dtc-list");

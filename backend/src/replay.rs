@@ -1,4 +1,4 @@
-use std::{fs, time::Duration};
+use std::fs;
 
 use crate::{
     cmd::{Command, CommandType},
@@ -69,9 +69,6 @@ impl OBD {
     }
 
     pub(crate) fn get_recorded_response(&self, request: &Command) -> Response {
-        // add a delay to simulate vehicle
-        std::thread::sleep(Duration::from_millis(300));
-
         let contents_json: Vec<Value> = {
             let contents = fs::read_to_string(&self.requests_path).expect("file read error");
             if contents.trim().is_empty() {
@@ -89,9 +86,10 @@ impl OBD {
         for value in contents_json.iter() {
             if value["request"] == request.as_string() {
                 related_requests.push(value);
-                break;
             }
         }
+
+        println!("{} related requests", related_requests.len());
 
         if related_requests.is_empty() {
             return Response::no_data();
@@ -100,6 +98,7 @@ impl OBD {
         // Randomly select response to use from related_requests
         if let Some(value) = related_requests.choose(&mut rand::rng()) {
             let escaped_response = value["response"].as_str().unwrap_or_default();
+            println!(" -> selected: {escaped_response}");
             if value["request_type"] == json!(CommandType::PIDCommand) {
                 return self
                     .parse_pid_response(escaped_response)

@@ -789,7 +789,7 @@ impl OBD {
         chunks.join(" ")
     }
 
-    pub(crate) fn query(&mut self, mut request: Command) -> Response {
+    pub fn query(&mut self, mut request: Command) -> Response {
         if self.freeze_frame_query && *request.command_type() == CommandType::PIDCommand {
             let pid = request.get_pid();
             if pid.starts_with(b"01") {

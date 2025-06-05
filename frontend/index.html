@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OBDII Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="scripts/events.js"></script>
     <script type="module" src="scripts/settings.js"></script>
     <script type="module" src="scripts/main.js"></script>
     <script type="module" src="scripts/features.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="layout.css" />
     <link rel="stylesheet" href="scrollbar.css" />
@@ -503,12 +503,11 @@
         <div class="graphs" style="padding-right: 10px">
           <div
             class="graph-dropdown"
-            id="protocol-dropdown-1"
             style="flex: 0 0 100%; border-radius: 3px; width: 100%"
           >
             <button
               class="graph-dropdown-toggle"
-              id="protocol-selected-1"
+              id="chart1-selected"
               data-value="0"
               style="
                 width: 100%;
@@ -520,30 +519,22 @@
                 height: 40px;
               "
             >
-              ENGINE RPM
+              NONE SELECTED
             </button>
             <ul
               class="graph-dropdown-menu"
-              id="protocol-menu-1"
+              id="chart1-menu"
               style="width: 100%; box-shadow: none"
-            >
-              <li data-value="0">ENGINE RPM</li>
-              <li data-value="1">VEHICLE SPEED</li>
-              <li data-value="2">COOLANT TEMP</li>
-              <li data-value="3">THROTTLE POSITION</li>
-              <li data-value="4">FUEL LEVEL</li>
-              <li data-value="5">ENGINE LOAD</li>
-            </ul>
+            ></ul>
           </div>
 
           <div
             class="graph-dropdown"
-            id="protocol-dropdown-1"
             style="flex: 0 0 100%; border-radius: 3px; width: 100%"
           >
             <button
               class="graph-dropdown-toggle"
-              id="protocol-selected-1"
+              id="chart2-selected"
               data-value="0"
               style="
                 width: 100%;
@@ -555,20 +546,13 @@
                 height: 40px;
               "
             >
-              ENGINE RPM
+              NONE SELECTED
             </button>
             <ul
               class="graph-dropdown-menu"
-              id="protocol-menu-1"
+              id="chart2-menu"
               style="width: 100%; box-shadow: none"
-            >
-              <li data-value="0">ENGINE RPM</li>
-              <li data-value="1">VEHICLE SPEED</li>
-              <li data-value="2">COOLANT TEMP</li>
-              <li data-value="3">THROTTLE POSITION</li>
-              <li data-value="4">FUEL LEVEL</li>
-              <li data-value="5">ENGINE LOAD</li>
-            </ul>
+            ></ul>
           </div>
 
           <div
@@ -591,7 +575,7 @@
               "
             >
               <canvas
-                id="myChart1"
+                id="chart1"
                 style="width: auto !important; height: auto !important"
               ></canvas>
             </div>
@@ -617,7 +601,7 @@
               "
             >
               <canvas
-                id="myChart2"
+                id="chart2"
                 style="width: auto !important; height: auto !important"
               ></canvas>
             </div>
@@ -625,12 +609,11 @@
 
           <div
             class="graph-dropdown"
-            id="protocol-dropdown-1"
             style="flex: 0 0 100%; border-radius: 3px; width: 100%"
           >
             <button
               class="graph-dropdown-toggle"
-              id="protocol-selected-1"
+              id="graph3-selected"
               data-value="0"
               style="
                 width: 100%;
@@ -642,30 +625,22 @@
                 height: 40px;
               "
             >
-              ENGINE RPM
+              NONE SELECTED
             </button>
             <ul
               class="graph-dropdown-menu"
-              id="protocol-menu-1"
+              id="chart3-menu"
               style="width: 100%; box-shadow: none"
-            >
-              <li data-value="0">ENGINE RPM</li>
-              <li data-value="1">VEHICLE SPEED</li>
-              <li data-value="2">COOLANT TEMP</li>
-              <li data-value="3">THROTTLE POSITION</li>
-              <li data-value="4">FUEL LEVEL</li>
-              <li data-value="5">ENGINE LOAD</li>
-            </ul>
+            ></ul>
           </div>
 
           <div
             class="graph-dropdown"
-            id="protocol-dropdown-1"
             style="flex: 0 0 100%; border-radius: 3px; width: 100%"
           >
             <button
               class="graph-dropdown-toggle"
-              id="protocol-selected-1"
+              id="graph4-selected"
               data-value="0"
               style="
                 width: 100%;
@@ -677,20 +652,13 @@
                 height: 40px;
               "
             >
-              ENGINE RPM
+              NONE SELECTED
             </button>
             <ul
               class="graph-dropdown-menu"
-              id="protocol-menu-1"
+              id="chart4-menu"
               style="width: 100%; box-shadow: none"
-            >
-              <li data-value="0">ENGINE RPM</li>
-              <li data-value="1">VEHICLE SPEED</li>
-              <li data-value="2">COOLANT TEMP</li>
-              <li data-value="3">THROTTLE POSITION</li>
-              <li data-value="4">FUEL LEVEL</li>
-              <li data-value="5">ENGINE LOAD</li>
-            </ul>
+            ></ul>
           </div>
 
           <div
@@ -713,7 +681,7 @@
               "
             >
               <canvas
-                id="myChart3"
+                id="chart3"
                 style="width: auto !important; height: auto !important"
               ></canvas>
             </div>
@@ -739,7 +707,7 @@
               "
             >
               <canvas
-                id="myChart4"
+                id="chart4"
                 style="width: auto !important; height: auto !important"
               ></canvas>
             </div>
@@ -1110,22 +1078,22 @@
   </body>
 
   <script>
-    const charts = {};
+    const { listen, emit } = window.__TAURI__.event;
 
-    const handleResize = (chart) => {
-      chart.resize();
-    };
+    window.charts = {};
 
-    function createChart(canvasId, metric) {
-      const ctx = document.getElementById(canvasId).getContext("2d");
+    function createChart(graphId) {
+      const chart = document.getElementById(graphId);
+      if (!chart) return;
+
+      const ctx = chart.getContext("2d");
 
       return new Chart(ctx, {
         type: "line",
         data: {
-          labels: ["1s", "2s", "3s", "4s", "5s", "6s"],
+          labels: [],
           datasets: [
             {
-              label: metric,
               data: [],
               borderColor: "#f7f3ff",
               borderWidth: 2,
@@ -1135,9 +1103,9 @@
           ],
         },
         options: {
+          animation: false,
           responsive: true,
           maintainAspectRatio: false,
-          onResize: handleResize,
           plugins: {
             legend: {
               display: false,
@@ -1158,11 +1126,11 @@
               },
               title: {
                 display: true,
-                text: "Time",
+                text: "",
                 color: "#f7f3ff",
                 font: {
                   family: "Montserrat, Arial, sans-serif",
-                  size: 14,
+                  size: 12,
                   weight: "bold",
                 },
               },
@@ -1174,12 +1142,12 @@
                 font: {
                   family: "Montserrat, Arial, sans-serif",
                   size: 12,
-                  weight: "bold",
+                  weight: "normal",
                 },
               },
               title: {
                 display: true,
-                text: "RPM",
+                text: "",
                 color: "#f7f3ff",
                 font: {
                   family: "Montserrat, Arial, sans-serif",
@@ -1189,22 +1157,25 @@
               },
             },
           },
+          elements: {
+            point: {
+              radius: 0,
+            },
+          },
         },
       });
     }
 
-    charts.chart1 = createChart("myChart1", "ENGINE RPM");
-    charts.chart2 = createChart("myChart2", "VEHICLE SPEED");
-    charts.chart3 = createChart("myChart3", "COOLANT TEMP");
-    charts.chart4 = createChart("myChart4", "THROTTLE POSITION");
+    window.charts.chart1 = createChart("chart1");
+    window.charts.chart2 = createChart("chart2");
+    window.charts.chart3 = createChart("chart3");
+    window.charts.chart4 = createChart("chart4");
 
     window.addEventListener("resize", function () {
-      Object.values(charts).forEach((chart) => {
+      Object.values(window.charts).forEach((chart) => {
         chart.resize();
       });
     });
-
-    const { listen, emit } = window.__TAURI__.event;
 
     /// Search bar functionality for dashboard
 
