@@ -344,25 +344,24 @@ listen("update-dtcs", (event) => {
 const menu = document.getElementById("serial-port-dropdown-menu");
 const serialPortSelected = document.getElementById("serial-port-selected");
 
-const demoModePortOption = document.createElement("li");
-demoModePortOption.textContent = "DEMO MODE";
-demoModePortOption.dataset.value = "DEMO MODE";
-menu.appendChild(demoModePortOption);
-
 listen("update-serial-ports", (event) => {
   serialPortSelected.textContent = "NO PORTS SELECTED";
   menu.innerHTML = "";
 
+  const demoModePortOption = document.createElement("li");
+  demoModePortOption.textContent = "DEMO MODE";
+  demoModePortOption.dataset.value = "DEMO MODE";
+  menu.appendChild(demoModePortOption);
+
   if (event.payload === "") {
+
     return;
   }
 
   const portOption = document.createElement("li");
   portOption.textContent = event.payload;
   portOption.dataset.value = event.payload;
-
   menu.appendChild(portOption);
-  menu.appendChild(demoModePortOption);
 });
 
 const readinessTests = document.getElementById("readiness-tests-list");
