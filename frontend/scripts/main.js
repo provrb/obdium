@@ -1,6 +1,7 @@
 const { listen, emit } = window.__TAURI__.event;
 const { save } = window.__TAURI__.dialog;
-const { writeFile } = window.__TAURI__.fs;
+const { writeFile, removeFile } = window.__TAURI__.fs;
+const { appWindow } = window.__TAURI__.window;
 
 import {
   clearDtcs,
@@ -44,8 +45,6 @@ window.addEventListener("DOMContentLoaded", () => {
   emit("get-serial-ports");
 
   emit("get-connection-status");
-
-  console.log("frontend loaded");
 });
 
 function handleDropdown(dropdown, toggleName, menuName) {
@@ -249,4 +248,15 @@ vinExportButton.addEventListener("click", async () => {
   }
 
   await writeFile({ path, contents: JSON.stringify(vinObj, null, 2) });
+});
+
+window.listen('tauri://close-requested', async () => {
+  // check if delete logs on exit setting is set
+  if (!window.deleteLogsOnExit)
+    return;
+
+  if (!window.logFilePath) 
+    return;
+
+  removeFile(window.logFilePath);
 });

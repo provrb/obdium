@@ -23,6 +23,7 @@
       "fs": {
         "all": false,
         "writeFile": true,
+        "removeFile": true,
         "scope": ["*/**"]
       }
     },
