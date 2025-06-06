@@ -9,7 +9,7 @@ use std::time::Duration;
 
 use crate::cmd::{Command, CommandType};
 use crate::response::Response;
-use crate::scalar::{Scalar, Unit};
+use crate::scalar::{Scalar, Unit, UnitPreferences};
 use crate::vin::VIN;
 use crate::MODE22_PIDS_DB_PATH;
 
@@ -187,6 +187,8 @@ pub struct OBD {
     pub(crate) requests_path: String,
     pub(crate) record_requests: bool,
     pub(crate) replay_requests: bool,
+
+    pub(crate) unit_preferences: UnitPreferences,
 }
 
 impl OBD {
@@ -768,8 +770,6 @@ impl OBD {
             );
         }
 
-        println!("got vin: {vin}");
-
         match VIN::new(&vin) {
             Ok(vin) => Some(vin),
             Err(err) => {
@@ -958,6 +958,7 @@ impl OBD {
             Ok(res) => Ok(Scalar::new(
                 res as f32,
                 Unit::from_str(unit).unwrap_or(Unit::Unknown),
+                Some(self.unit_preferences),
             )),
             Err(err) => {
                 println!("when evaluating dynamic equation {equation}. {err}");

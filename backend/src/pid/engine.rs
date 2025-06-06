@@ -31,18 +31,33 @@ impl fmt::Display for EngineType {
 
 impl OBD {
     pub fn rpm(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010C"))
-            .map_no_data(|r| Scalar::new(((256.0 * r.a_value()) + r.b_value()) / 4.0, Unit::RPM))
+        self.query(Command::new_pid(b"010C")).map_no_data(|r| {
+            Scalar::new(
+                ((256.0 * r.a_value()) + r.b_value()) / 4.0,
+                Unit::RPM,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn engine_load(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0104"))
-            .map_no_data(|r| Scalar::new(r.a_value() / 2.55, Unit::Percent))
+        self.query(Command::new_pid(b"0104")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() / 2.55,
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn coolant_temp(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0105"))
-            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
+        self.query(Command::new_pid(b"0105")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn coolant_temp_sensors(&mut self) -> (Scalar, Scalar) {
@@ -55,19 +70,32 @@ impl OBD {
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
 
         if sensors_supported.contains(&SensorNumber::Sensor1) {
-            coolant_temp.0 = Scalar::new(response.b_value() - 40.0, Unit::Celsius)
+            coolant_temp.0 = Scalar::new(
+                response.b_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
         }
 
         if sensors_supported.contains(&SensorNumber::Sensor2) {
-            coolant_temp.1 = Scalar::new(response.c_value() - 40.0, Unit::Celsius);
+            coolant_temp.1 = Scalar::new(
+                response.c_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            );
         }
 
         coolant_temp
     }
 
     pub fn engine_fuel_rate(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"019D"))
-            .map_no_data(|r| Scalar::new(r.a_value(), Unit::GramsPerSecond))
+        self.query(Command::new_pid(b"019D")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value(),
+                Unit::GramsPerSecond,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn engine_runtime(&mut self) -> Scalar {
@@ -75,8 +103,13 @@ impl OBD {
             return self.engine_runtime_diesel();
         }
 
-        self.query(Command::new_pid(b"011F"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Seconds))
+        self.query(Command::new_pid(b"011F")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::Seconds,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     fn engine_runtime_diesel(&mut self) -> Scalar {
@@ -96,6 +129,7 @@ impl OBD {
         Scalar::new(
             (b * b_power) + (c * c_power) + (d * d_power) + e,
             Unit::Seconds,
+            Some(self.unit_preferences),
         )
     }
 
@@ -117,6 +151,7 @@ impl OBD {
         Scalar::new(
             ((a * a_power) + (b * b_power) + (c * c_power) + d) / 10.0,
             Unit::Kilometers,
+            Some(self.unit_preferences),
         )
     }
 
@@ -126,8 +161,13 @@ impl OBD {
             Service::Mode22 => Command::new_arb("221154"),
         };
 
-        self.query(command)
-            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
+        self.query(command).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn engine_oil_temp_sensors(&mut self) -> (Scalar, Scalar) {
@@ -140,34 +180,62 @@ impl OBD {
         let sensors_supported = self.sensors_supported_for(response.a_value() as u8);
 
         if sensors_supported.contains(&SensorNumber::Sensor1) {
-            oil_temp.0 = Scalar::new(response.b_value() - 40.0, Unit::Celsius)
+            oil_temp.0 = Scalar::new(
+                response.b_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
         }
 
         if sensors_supported.contains(&SensorNumber::Sensor2) {
-            oil_temp.1 = Scalar::new(response.c_value() - 40.0, Unit::Celsius);
+            oil_temp.1 = Scalar::new(
+                response.c_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            );
         }
 
         oil_temp
     }
 
     pub fn engine_oil_pressure(&mut self) -> Scalar {
-        self.query(Command::new_arb("221470"))
-            .map_no_data(|r| Scalar::new(r.a_value() * 3.985, Unit::KiloPascal))
+        self.query(Command::new_arb("221470")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() * 3.985,
+                Unit::KiloPascal,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn drivers_demand_engine_torque(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0161"))
-            .map_no_data(|r| Scalar::new(r.a_value() - 125.0, Unit::Percent))
+        self.query(Command::new_pid(b"0161")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 125.0,
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn actual_engine_torque(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0162"))
-            .map_no_data(|r| Scalar::new(r.a_value() - 125.0, Unit::Percent))
+        self.query(Command::new_pid(b"0162")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 125.0,
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn reference_engine_torque(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0163"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::NewtonMeters))
+        self.query(Command::new_pid(b"0163")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::NewtonMeters,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Returns 5 values.
@@ -195,11 +263,11 @@ impl OBD {
         let engine_point_4 = response.e_value() - 125.0;
 
         (
-            Scalar::new(idle, Unit::Percent),
-            Scalar::new(engine_point_1, Unit::Percent),
-            Scalar::new(engine_point_2, Unit::Percent),
-            Scalar::new(engine_point_3, Unit::Percent),
-            Scalar::new(engine_point_4, Unit::Percent),
+            Scalar::new(idle, Unit::Percent, Some(self.unit_preferences)),
+            Scalar::new(engine_point_1, Unit::Percent, Some(self.unit_preferences)),
+            Scalar::new(engine_point_2, Unit::Percent, Some(self.unit_preferences)),
+            Scalar::new(engine_point_3, Unit::Percent, Some(self.unit_preferences)),
+            Scalar::new(engine_point_4, Unit::Percent, Some(self.unit_preferences)),
         )
     }
 

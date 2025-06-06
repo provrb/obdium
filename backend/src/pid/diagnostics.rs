@@ -391,12 +391,17 @@ impl OBD {
 
     pub fn warm_ups_since_codes_cleared(&mut self) -> Scalar {
         self.query(Command::new_pid(b"0130"))
-            .map_no_data(|r| Scalar::new(r.a_value(), Unit::NoData))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::NoData, Some(self.unit_preferences)))
     }
 
     pub fn distance_traveled_since_codes_cleared(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0131"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Kilometers))
+        self.query(Command::new_pid(b"0131")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::Kilometers,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn get_num_trouble_codes(&mut self) -> u32 {
@@ -552,23 +557,42 @@ impl OBD {
     }
 
     pub fn distance_traveled_with_mil(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0121"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Kilometers))
+        self.query(Command::new_pid(b"0121")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::Kilometers,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn time_run_with_mil(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"014D"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Minutes))
+        self.query(Command::new_pid(b"014D")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::Minutes,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn control_module_voltage(&mut self) -> Scalar {
         self.query(Command::new_pid(b"0142")).map_no_data(|r| {
-            Scalar::new(((256.0 * r.a_value()) + r.b_value()) / 1000.0, Unit::Volts)
+            Scalar::new(
+                ((256.0 * r.a_value()) + r.b_value()) / 1000.0,
+                Unit::Volts,
+                Some(self.unit_preferences),
+            )
         })
     }
 
     pub fn time_since_codes_cleared(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"014E"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::Minutes))
+        self.query(Command::new_pid(b"014E")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::Minutes,
+                Some(self.unit_preferences),
+            )
+        })
     }
 }

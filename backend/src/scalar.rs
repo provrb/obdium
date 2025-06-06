@@ -5,7 +5,7 @@ use std::{
     str::FromStr,
 };
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Unit {
     Percent,
     Ratio,
@@ -48,7 +48,7 @@ impl FromStr for Unit {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "%" => Ok(Unit::Percent),
-            "" => Ok(Unit::Ratio),
+            "ratio" => Ok(Unit::Ratio),
             "°C" => Ok(Unit::Celsius),
             "°F" => Ok(Unit::Fahrenheit),
             "°" => Ok(Unit::Degrees),
@@ -69,6 +69,12 @@ impl FromStr for Unit {
             "ppm" => Ok(Unit::PartsPerMillion),
             "mg/stroke" => Ok(Unit::MiligramsPerStroke),
             "PSI" => Ok(Unit::PSI),
+            "mph" => Ok(Unit::MilesPerHour),
+            "m" => Ok(Unit::Meters),
+            "mi" => Ok(Unit::Miles),
+            "ft" => Ok(Unit::Feet),
+            "gal/h" => Ok(Unit::GallonsPerHour),
+            "ft-lb" => Ok(Unit::FootPounds),
             _ => Err(ParseUnitError),
         }
     }
@@ -105,8 +111,14 @@ impl Unit {
             Unit::PartsPerMillion => "ppm",
             Unit::MiligramsPerStroke => "mg/stroke",
             Unit::PSI => "PSI",
+            Unit::MilesPerHour => "mph",
+            Unit::Meters => "m",
+            Unit::Miles => "mi",
+            Unit::Feet => "ft",
+            Unit::GallonsPerHour => "gal/h",
+            Unit::FootPounds => "ft-lb",
             Unit::NoData => "NO DATA",
-            _ => "",
+            Unit::Unknown => "",
         }
     }
 }
@@ -132,7 +144,7 @@ impl Sub for Scalar {
     type Output = Scalar;
 
     fn sub(self, other: Self) -> Self::Output {
-        Scalar::new(self.value - other.value, self.unit)
+        Scalar::new(self.value - other.value, self.unit, None)
     }
 }
 
@@ -141,12 +153,90 @@ impl Add for Scalar {
     type Output = Scalar;
 
     fn add(self, other: Self) -> Self::Output {
-        Scalar::new(self.value + other.value, self.unit)
+        Scalar::new(self.value + other.value, self.unit, None)
     }
 }
 
 impl Scalar {
-    pub fn new(value: f32, unit: Unit) -> Self {
+    pub fn convert(&self, target_unit: Unit) -> Option<Self> {
+        use Unit::*;
+
+        match (&self.unit, target_unit) {
+            // Distance and speed
+            (Kilometers, Meters) => Some(Scalar::new(self.value * 1000.0, Meters, None)),
+            (Meters, Kilometers) => Some(Scalar::new(self.value / 1000.0, Kilometers, None)),
+
+            (KilometersPerHour, MilesPerHour) | (Kilometers, Miles) => {
+                Some(Scalar::new(self.value / 1.609, target_unit, None))
+            }
+
+            (MilesPerHour, KilometersPerHour) | (Miles, Kilometers) => {
+                Some(Scalar::new(self.value * 1.609, target_unit, None))
+            }
+
+            (Kilometers, Feet) => Some(Scalar::new(self.value * 83281.0, Feet, None)),
+            (Feet, Kilometers) => Some(Scalar::new(self.value / 83281.0, Kilometers, None)),
+
+            // Temperature
+            (Celsius, Fahrenheit) => Some(Scalar::new((self.value * 1.8) + 32.0, Fahrenheit, None)),
+            (Fahrenheit, Celsius) => Some(Scalar::new((self.value - 32.0) * 1.8, Celsius, None)),
+
+            // Time
+            (Seconds, Minutes) => Some(Scalar::new(self.value / 60.0, Minutes, None)),
+            (Seconds, Hours) => Some(Scalar::new(self.value / 3600.0, Hours, None)),
+            (Minutes, Seconds) => Some(Scalar::new(self.value * 60.0, Seconds, None)),
+            (Minutes, Hours) => Some(Scalar::new(self.value / 60.0, Hours, None)),
+            (Hours, Seconds) => Some(Scalar::new(self.value * 3600.0, Seconds, None)),
+            (Hours, Minutes) => Some(Scalar::new(self.value * 60.0, Minutes, None)),
+
+            // Volume
+            (LitresPerHour, GallonsPerHour) => {
+                Some(Scalar::new(self.value * 0.264172, GallonsPerHour, None))
+            }
+            (GallonsPerHour, LitresPerHour) => {
+                Some(Scalar::new(self.value / 0.264172, LitresPerHour, None))
+            }
+
+            // Energy
+            (NewtonMeters, FootPounds) => Some(Scalar::new(self.value * 0.73756, FootPounds, None)),
+            (FootPounds, NewtonMeters) => {
+                Some(Scalar::new(self.value / 0.73756, NewtonMeters, None))
+            }
+
+            // Pressure
+            (KiloPascal, PSI) => Some(Scalar::new(self.value / 6.895, Unit::PSI, None)),
+            (PSI, KiloPascal) => Some(Scalar::new(self.value * 6.895, Unit::KiloPascal, None)),
+            (KiloPascal, Pascal) => Some(Scalar::new(self.value * 1000.0, Unit::Pascal, None)),
+            (Pascal, KiloPascal) => Some(Scalar::new(self.value / 1000.0, Unit::KiloPascal, None)),
+
+            (_, _) => None,
+        }
+    }
+
+    pub fn new(value: f32, unit: Unit, preferences: Option<UnitPreferences>) -> Self {
+        if let Some(preferences) = preferences {
+            let target_unit = *match &unit {
+                Unit::KilometersPerHour | Unit::MilesPerHour => preferences.speed(),
+                Unit::Kilometers | Unit::Miles | Unit::Meters | Unit::Feet => {
+                    preferences.distance()
+                }
+                Unit::Celsius | Unit::Fahrenheit | Unit::Degrees => preferences.temp(),
+                Unit::NewtonMeters | Unit::FootPounds => preferences.torque(),
+                Unit::KiloPascal | Unit::Pascal | Unit::PSI => preferences.pressure(),
+                Unit::LitresPerHour | Unit::GallonsPerHour => preferences.flow_rate(),
+                _ => &unit,
+            };
+
+            if target_unit != unit {
+                if let Some(converted) = Scalar::new(value, unit, None).convert(target_unit) {
+                    return converted;
+                }
+            }
+
+            // unit is already target unit
+            return Self { value, unit };
+        }
+
         Self { value, unit }
     }
 
@@ -156,56 +246,70 @@ impl Scalar {
             unit: Unit::NoData,
         }
     }
+}
 
-    pub fn to(&self, target_unit: Unit) -> Option<Self> {
-        use Unit::*;
+#[derive(Clone, Copy, Debug)]
+pub struct UnitPreferences {
+    speed: Unit,
+    distance: Unit,
+    temperature: Unit,
+    torque: Unit,
+    pressure: Unit,
+    flow_rate: Unit,
+}
 
-        match (&self.unit, target_unit) {
-            // Distance and speed
-            (Kilometers, Meters) => Some(Scalar::new(self.value * 1000.0, Meters)),
-            (Meters, Kilometers) => Some(Scalar::new(self.value / 1000.0, Kilometers)),
+impl Default for UnitPreferences {
 
-            (KilometersPerHour, MilesPerHour) | (Kilometers, Miles) => {
-                Some(Scalar::new(self.value / 1.609, Miles))
-            }
-            (MilesPerHour, KilometersPerHour) | (Miles, Kilometers) => {
-                Some(Scalar::new(self.value * 1.609, Kilometers))
-            }
+    /// Default global unit preferences
+    /// The defaults can be changed here.
 
-            (Kilometers, Feet) => Some(Scalar::new(self.value * 83281.0, Feet)),
-            (Feet, Kilometers) => Some(Scalar::new(self.value / 83281.0, Kilometers)),
-
-            // Temperature
-            (Celsius, Fahrenheit) => Some(Scalar::new((self.value * 1.8) + 32.0, Fahrenheit)),
-            (Fahrenheit, Celsius) => Some(Scalar::new((self.value - 32.0) * 1.8, Celsius)),
-
-            // Time
-            (Seconds, Minutes) => Some(Scalar::new(self.value / 60.0, Minutes)),
-            (Seconds, Hours) => Some(Scalar::new(self.value / 3600.0, Hours)),
-            (Minutes, Seconds) => Some(Scalar::new(self.value * 60.0, Seconds)),
-            (Minutes, Hours) => Some(Scalar::new(self.value / 60.0, Hours)),
-            (Hours, Seconds) => Some(Scalar::new(self.value * 3600.0, Seconds)),
-            (Hours, Minutes) => Some(Scalar::new(self.value * 60.0, Minutes)),
-
-            // Volume
-            (LitresPerHour, GallonsPerHour) => {
-                Some(Scalar::new(self.value * 0.264172, GallonsPerHour))
-            }
-            (GallonsPerHour, LitresPerHour) => {
-                Some(Scalar::new(self.value / 0.264172, LitresPerHour))
-            }
-
-            // Energy
-            (NewtonMeters, FootPounds) => Some(Scalar::new(self.value * 0.73756, FootPounds)),
-            (FootPounds, NewtonMeters) => Some(Scalar::new(self.value / 0.73756, NewtonMeters)),
-
-            // Pressure
-            (KiloPascal, PSI) => Some(Scalar::new(self.value / 6.895, Unit::PSI)),
-            (PSI, KiloPascal) => Some(Scalar::new(self.value * 6.895, Unit::KiloPascal)),
-            (KiloPascal, Pascal) => Some(Scalar::new(self.value * 1000.0, Unit::Pascal)),
-            (Pascal, KiloPascal) => Some(Scalar::new(self.value / 1000.0, Unit::KiloPascal)),
-
-            (_, _) => None,
+    fn default() -> Self {
+        Self {
+            speed: Unit::KilometersPerHour,
+            distance: Unit::Kilometers,
+            temperature: Unit::Celsius,
+            torque: Unit::NewtonMeters,
+            pressure: Unit::KiloPascal,
+            flow_rate: Unit::LitresPerHour,
         }
+    }
+}
+
+impl UnitPreferences {
+    pub fn speed(&self) -> &Unit {
+        &self.speed
+    }
+    pub fn distance(&self) -> &Unit {
+        &self.distance
+    }
+    pub fn temp(&self) -> &Unit {
+        &self.temperature
+    }
+    pub fn torque(&self) -> &Unit {
+        &self.torque
+    }
+    pub fn pressure(&self) -> &Unit {
+        &self.pressure
+    }
+    pub fn flow_rate(&self) -> &Unit {
+        &self.flow_rate
+    }
+    pub fn set_speed(&mut self, new: Unit) {
+        self.speed = new;
+    }
+    pub fn set_distance(&mut self, new: Unit) {
+        self.distance = new;
+    }
+    pub fn set_temp(&mut self, new: Unit) {
+        self.temperature = new;
+    }
+    pub fn set_torque(&mut self, new: Unit) {
+        self.torque = new;
+    }
+    pub fn set_pressure(&mut self, new: Unit) {
+        self.pressure = new;
+    }
+    pub fn set_flow_rate(&mut self, new: Unit) {
+        self.flow_rate = new;
     }
 }

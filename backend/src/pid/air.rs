@@ -27,13 +27,19 @@ impl OBD {
     }
 
     pub fn intake_air_temp(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010F"))
-            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
+        self.query(Command::new_pid(b"010F")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn intake_manifold_abs_pressure(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010B"))
-            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KiloPascal))
+        self.query(Command::new_pid(b"010B")).map_no_data(|r| {
+            Scalar::new(r.a_value(), Unit::KiloPascal, Some(self.unit_preferences))
+        })
     }
 
     pub fn maf_air_flow_rate(&mut self) -> Scalar {
@@ -41,18 +47,29 @@ impl OBD {
             Scalar::new(
                 ((r.a_value() * 256.0) + r.b_value()) / 100.0,
                 Unit::GramsPerSecond,
+                Some(self.unit_preferences),
             )
         })
     } // Mass airflow sensor
 
     pub fn ambient_air_temp(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0146"))
-            .map_no_data(|r| Scalar::new(r.a_value() - 40.0, Unit::Celsius))
+        self.query(Command::new_pid(b"0146")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() - 40.0,
+                Unit::Celsius,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn max_air_flow_rate_from_maf(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0150"))
-            .map_no_data(|r| Scalar::new(r.a_value() * 10.0, Unit::GramsPerSecond))
+        self.query(Command::new_pid(b"0150")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() * 10.0,
+                Unit::GramsPerSecond,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Returns 2 values
@@ -76,10 +93,15 @@ impl OBD {
         }
 
         (
-            Scalar::new(response.a_value() / 200.0, Unit::Volts),
+            Scalar::new(
+                response.a_value() / 200.0,
+                Unit::Volts,
+                Some(self.unit_preferences),
+            ),
             Scalar::new(
                 ((100.0 / 128.0) * response.b_value()) - 100.0,
                 Unit::Percent,
+                Some(self.unit_preferences),
             ),
         )
     }
@@ -113,8 +135,8 @@ impl OBD {
         let ratio = (2.0 / 65536.0) * ((256.0 * response.a_value()) + response.b_value());
         let voltage = (8.0 / 65536.0) * ((256.0 * response.c_value()) + response.d_value());
         (
-            Scalar::new(ratio, Unit::Ratio),
-            Scalar::new(voltage, Unit::Volts),
+            Scalar::new(ratio, Unit::Ratio, Some(self.unit_preferences)),
+            Scalar::new(voltage, Unit::Volts, Some(self.unit_preferences)),
         )
     }
 
@@ -133,6 +155,7 @@ impl OBD {
             data.0 = Scalar::new(
                 ((256.0 * response.b_value()) + response.c_value()) / 32.0,
                 Unit::GramsPerSecond,
+                Some(self.unit_preferences),
             );
         }
 
@@ -140,6 +163,7 @@ impl OBD {
             data.1 = Scalar::new(
                 ((256.0 * response.d_value()) + response.e_value()) / 32.0,
                 Unit::GramsPerSecond,
+                Some(self.unit_preferences),
             );
         }
 
@@ -147,7 +171,8 @@ impl OBD {
     }
 
     pub fn abs_barometric_pressure(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0133"))
-            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KiloPascal))
+        self.query(Command::new_pid(b"0133")).map_no_data(|r| {
+            Scalar::new(r.a_value(), Unit::KiloPascal, Some(self.unit_preferences))
+        })
     }
 }

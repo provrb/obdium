@@ -89,8 +89,6 @@ impl OBD {
             }
         }
 
-        println!("{} related requests", related_requests.len());
-
         if related_requests.is_empty() {
             return Response::no_data();
         }
@@ -98,7 +96,6 @@ impl OBD {
         // Randomly select response to use from related_requests
         if let Some(value) = related_requests.choose(&mut rand::rng()) {
             let escaped_response = value["response"].as_str().unwrap_or_default();
-            println!(" -> selected: {escaped_response}");
             if value["request_type"] == json!(CommandType::PIDCommand) {
                 return self
                     .parse_pid_response(escaped_response)

@@ -5,13 +5,23 @@ use crate::{
 
 impl OBD {
     pub fn vehicle_speed(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010D"))
-            .map_no_data(|r| Scalar::new(r.a_value(), Unit::KilometersPerHour))
+        self.query(Command::new_pid(b"010D")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value(),
+                Unit::KilometersPerHour,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn timing_advance(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"010E"))
-            .map_no_data(|r| Scalar::new((r.a_value() / 2.0) - 64.0, Unit::Degrees))
+        self.query(Command::new_pid(b"010E")).map_no_data(|r| {
+            Scalar::new(
+                (r.a_value() / 2.0) - 64.0,
+                Unit::Degrees,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     /// Fuel-air equivalance ratio, o2 sensor voltage, current, and instake abs pressure
@@ -27,49 +37,92 @@ impl OBD {
         }
 
         (
-            Scalar::new(response.a_value(), Unit::Ratio),
-            Scalar::new(response.b_value(), Unit::Volts),
-            Scalar::new(response.c_value(), Unit::Milliampere),
-            Scalar::new(response.d_value() * 10.0, Unit::KiloPascal),
+            Scalar::new(response.a_value(), Unit::Ratio, Some(self.unit_preferences)),
+            Scalar::new(response.b_value(), Unit::Volts, Some(self.unit_preferences)),
+            Scalar::new(
+                response.c_value(),
+                Unit::Milliampere,
+                Some(self.unit_preferences),
+            ),
+            Scalar::new(
+                response.d_value() * 10.0,
+                Unit::KiloPascal,
+                Some(self.unit_preferences),
+            ),
         )
     }
 
     pub fn throttle_position(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0111"))
-            .map_no_data(|r| Scalar::new(r.a_value() * (100.0 / 255.0), Unit::Percent))
+        self.query(Command::new_pid(b"0111")).map_no_data(|r| {
+            Scalar::new(
+                r.a_value() * (100.0 / 255.0),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn relative_throttle_pos(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0145"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"0145")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn abs_throttle_position_b(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0147"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"0147")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn abs_throttle_position_c(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0148"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"0148")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Accelerator pedal position d
     pub fn acc_pedal_position_d(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0149"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"0149")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Accelerator pedal position e
     pub fn acc_pedal_position_e(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"014A"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"014A")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Accelerator pedal position f
     pub fn acc_pedal_position_f(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"014B"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"014B")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub(crate) fn sensors_supported_for(&self, byte: u8) -> Vec<SensorNumber> {

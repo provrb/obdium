@@ -6,14 +6,24 @@ use crate::{
 impl OBD {
     // Commanded exhaust gas recirculation
     pub fn commanded_egr(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"012C"))
-            .map_no_data(|r| Scalar::new((100.0 / 255.0) * r.a_value(), Unit::Percent))
+        self.query(Command::new_pid(b"012C")).map_no_data(|r| {
+            Scalar::new(
+                (100.0 / 255.0) * r.a_value(),
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // Exhaust gas recirculation error
     pub fn egr_error(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"012D"))
-            .map_no_data(|r| Scalar::new(((100.0 / 128.0) * r.a_value()) - 100.0, Unit::Percent))
+        self.query(Command::new_pid(b"012D")).map_no_data(|r| {
+            Scalar::new(
+                ((100.0 / 128.0) * r.a_value()) - 100.0,
+                Unit::Percent,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     pub fn catalyst_temp(&mut self, bank: BankNumber, sensor: SensorNumber) -> Scalar {
@@ -32,6 +42,7 @@ impl OBD {
             Scalar::new(
                 (((256.0 * r.a_value()) + r.b_value()) / 10.0) - 40.0,
                 Unit::Celsius,
+                Some(self.unit_preferences),
             )
         })
     }
@@ -42,12 +53,17 @@ impl OBD {
 
         // result in kPa, gets converted to PSI. if conversion fails, do no data
         // conversion never fail. map and baro will always be Unit::Kilopascal
-        (map - baro).to(Unit::PSI).unwrap_or(Scalar::no_data())
+        (map - baro).convert(Unit::PSI).unwrap_or(Scalar::no_data())
     }
 
     pub fn turbocharger_rpm(&mut self) -> Scalar {
-        self.query(Command::new_pid(b"0174"))
-            .map_no_data(|r| Scalar::new((256.0 * r.a_value()) + r.b_value(), Unit::RPM))
+        self.query(Command::new_pid(b"0174")).map_no_data(|r| {
+            Scalar::new(
+                (256.0 * r.a_value()) + r.b_value(),
+                Unit::RPM,
+                Some(self.unit_preferences),
+            )
+        })
     }
 
     // TODO!

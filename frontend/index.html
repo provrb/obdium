@@ -179,7 +179,7 @@
           <path d="m9 14 2 2 4-4" />
         </svg>
       </button>
-      <button
+      <!-- <button
         class="sidebar-button"
         data-tooltip="OBD TESTS"
         data-screen="tests"
@@ -201,7 +201,7 @@
           <path d="M6.453 15h11.094" />
           <path d="M8.5 2h7" />
         </svg>
-      </button>
+      </button> -->
       <button
         class="sidebar-button"
         data-tooltip="VIEW PIDS"
@@ -465,7 +465,7 @@
         ></div>
       </div>
 
-      <div id="tests" class="screen" style="display: none"></div>
+      <!-- <div id="tests" class="screen" style="display: none"></div> -->
 
       <div id="edit" class="screen" style="display: none">
         <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
@@ -846,67 +846,64 @@
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">SPEED</div>
             <button class="dropdown-toggle" id="speed-unit-selected">
-              KMH (default)
+              KMH
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="km/h">KMH</li>
+              <li data-value="mph">MPH</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">DISTANCE</div>
             <button class="dropdown-toggle" id="distance-selected">
-              KM (default)
+              KILOMETERS
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="m">METERS</li>
+              <li data-value="km">KILOMETERS</li>
+              <li data-value="mi">MILES</li>
+              <li data-value="ft">FEET</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">TEMPERATURE</div>
             <button class="dropdown-toggle" id="temperature-unit-selected">
-              °C (default)
+              °C
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="°C">°C</li>
+              <li data-value="°F">°F</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">TORQUE</div>
             <button class="dropdown-toggle" id="speed-unit-selected">
-              NM (default)
+              NM
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="Nm">NM</li>
+              <li data-value="ft-lb">FT-LB</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">PRESSURE</div>
             <button class="dropdown-toggle" id="distance-selected">
-              KPA (default)
+              KPA
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="Pa">Pa</li>
+              <li data-value="kPa">KPA</li>
+              <li data-value="PSI">PSI</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">FLOW RATE</div>
-            <button class="dropdown-toggle" id="temperature-unit-selected">
-              L/H (default)
+            <button class="dropdown-toggle" id="flow-rate-selected">
+              L/H
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value=""></li>
-              <li data-value=""></li>
-              <li data-value=""></li>
+              <li data-value="L/h">L/H</li>
+              <li data-value="gal/h">GAL/H</li>
             </ul>
           </div>
         </div>
