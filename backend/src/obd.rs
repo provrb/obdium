@@ -823,6 +823,10 @@ impl OBD {
         response
     }
 
+    pub fn set_unit_preferences(&mut self, preferences: UnitPreferences) {
+        self.unit_preferences = preferences;
+    }
+
     pub fn get_protocol_name(&mut self) -> Result<String, Error> {
         let mut request = Command::new_at(b"AT DP");
         self.send_command(&mut request)?;

@@ -25,6 +25,10 @@
         "writeFile": true,
         "removeFile": true,
         "scope": ["*/**"]
+      },
+      "window": {
+        "all": false,
+        "close": true
       }
     },
     "windows": [

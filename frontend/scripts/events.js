@@ -1,6 +1,9 @@
 const { listen, emit } = window.__TAURI__.event;
 import { exportDtcs, addGraphDropdownOption } from "./features.js";
-import { saveConnectionConfig } from "./settings.js";
+import {
+  saveConnectionConfig,
+  updateUnitConversionDropdowns,
+} from "./settings.js";
 
 const connectionLabel = document.getElementById("connection-label");
 const connectionIcon = document.getElementById("connection-icon");
@@ -162,6 +165,11 @@ listen("connection-status", async (event) => {
 
     if (window.autoCheckCodes) {
       emit("get-dtcs");
+    }
+
+    if (window.unitPreferences) {
+      emit("set-unit-preferences", window.unitPreferences);
+      updateUnitConversionDropdowns();
     }
 
     if (serialPort === "DEMO MODE") {

@@ -845,65 +845,89 @@
         <div style="display: flex">
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">SPEED</div>
-            <button class="dropdown-toggle" id="speed-unit-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="speed"
+              id="unit-preference"
+            >
               KMH
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="km/h">KMH</li>
-              <li data-value="mph">MPH</li>
+              <li data-value="KilometersPerHour">KMH</li>
+              <li data-value="MilesPerHour">MPH</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">DISTANCE</div>
-            <button class="dropdown-toggle" id="distance-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="distance"
+              id="unit-preference"
+            >
               KILOMETERS
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="m">METERS</li>
-              <li data-value="km">KILOMETERS</li>
-              <li data-value="mi">MILES</li>
-              <li data-value="ft">FEET</li>
+              <li data-value="Meters">METERS</li>
+              <li data-value="Kilometers">KILOMETERS</li>
+              <li data-value="Miles">MILES</li>
+              <li data-value="Feet">FEET</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">TEMPERATURE</div>
-            <button class="dropdown-toggle" id="temperature-unit-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="temperature"
+              id="unit-preference"
+            >
               °C
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="°C">°C</li>
-              <li data-value="°F">°F</li>
+              <li data-value="Celsius">°C</li>
+              <li data-value="Fahrenheit">°F</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">TORQUE</div>
-            <button class="dropdown-toggle" id="speed-unit-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="torque"
+              id="unit-preference"
+            >
               NM
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="Nm">NM</li>
-              <li data-value="ft-lb">FT-LB</li>
+              <li data-value="NewtonMeters">NM</li>
+              <li data-value="FootPounds">FT-LB</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">PRESSURE</div>
-            <button class="dropdown-toggle" id="distance-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="pressure"
+              id="unit-preference"
+            >
               KPA
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="Pa">Pa</li>
-              <li data-value="kPa">KPA</li>
+              <li data-value="Pascal">PA</li>
+              <li data-value="Kilopascal">KPA</li>
               <li data-value="PSI">PSI</li>
             </ul>
           </div>
           <div class="dropdown" style="width: 150px; margin-bottom: 8px">
             <div class="settings-label">FLOW RATE</div>
-            <button class="dropdown-toggle" id="flow-rate-selected">
+            <button
+              class="dropdown-toggle"
+              data-target="flowRate"
+              id="unit-preference"
+            >
               L/H
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
-              <li data-value="L/h">L/H</li>
-              <li data-value="gal/h">GAL/H</li>
+              <li data-value="LitresPerHour">L/H</li>
+              <li data-value="GallonsPerHour">GAL/H</li>
             </ul>
           </div>
         </div>

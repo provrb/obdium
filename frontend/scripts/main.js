@@ -11,6 +11,8 @@ import {
   clearObdView,
 } from "./features.js";
 
+import { saveUnitPreference } from "./settings.js";
+
 // ELM connection
 // Changes when connection-status is fired
 let connected = false;
@@ -68,6 +70,14 @@ function handleDropdown(dropdown, toggleName, menuName) {
       toggle.textContent = e.target.textContent;
       toggle.dataset.value = e.target.dataset.value;
       menu.style.display = "none";
+
+      if (toggle.id == "unit-preference" && window.unitPreferences) {
+        // change unit
+        const unitType = toggle.getAttribute("data-target");
+        const unit = toggle.dataset.value;
+
+        saveUnitPreference(unitType, unit);
+      }
     }
   });
 }
@@ -250,13 +260,15 @@ vinExportButton.addEventListener("click", async () => {
   await writeFile({ path, contents: JSON.stringify(vinObj, null, 2) });
 });
 
-window.listen('tauri://close-requested', async () => {
+appWindow.listen("tauri://close-requested", async () => {
   // check if delete logs on exit setting is set
-  if (!window.deleteLogsOnExit)
-    return;
+  if (window.deleteLogsOnExit && window.logFilePath) {
+    try {
+      removeFile(window.logFilePath);
+    } catch (err) {
+      console.error("Error when trying to delete log:", err);
+    }
+  }
 
-  if (!window.logFilePath) 
-    return;
-
-  removeFile(window.logFilePath);
+  await appWindow.close();
 });

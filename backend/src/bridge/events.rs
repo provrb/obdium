@@ -6,6 +6,7 @@ use super::{ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleI
 /// to perform actions
 use crate::{connect_obd, track_data, OBD};
 use obdium::dicts::PID_INFOS;
+use obdium::scalar::UnitPreferences;
 use obdium::vin::VIN;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -208,6 +209,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
                 }
             });
 
+            listen_set_unit_preferences(&window_arc, &obd);
             listen_send_connection_status(&window_arc, &obd);
             listen_change_obd_settings(&window_arc, &obd);
             listen_send_pids(&window_arc, &obd);
@@ -291,6 +293,28 @@ pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>
     window.listen("get-connection-status", move |_| {
         let obd = obd_arc.lock().unwrap();
         do_send_connection_status(&window_arc, &obd, "".into(), obd.connected());
+    });
+}
+
+pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd_arc = Arc::clone(obd);
+    window.listen("set-unit-preferences", move |event| {
+        let payload = match event.payload() {
+            Some(payload) => payload,
+            None => return,
+        };
+        println!("Setting unit preference to {}", payload);
+
+        let mut obd = obd_arc.lock().unwrap();
+        let unit_preferences: UnitPreferences = match serde_json::from_str(payload) {
+            Ok(unit_preferences) => unit_preferences,
+            Err(err) => {
+                println!("error serializing UnitPreferences from frontned: {err}");
+                return;
+            }
+        };
+
+        obd.set_unit_preferences(unit_preferences);
     });
 }
 

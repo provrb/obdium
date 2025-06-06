@@ -248,7 +248,8 @@ impl Scalar {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UnitPreferences {
     speed: Unit,
     distance: Unit,
@@ -259,10 +260,8 @@ pub struct UnitPreferences {
 }
 
 impl Default for UnitPreferences {
-
     /// Default global unit preferences
     /// The defaults can be changed here.
-
     fn default() -> Self {
         Self {
             speed: Unit::KilometersPerHour,

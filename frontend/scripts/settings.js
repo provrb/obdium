@@ -4,7 +4,26 @@ const { emit } = window.__TAURI__.event;
 function importSettings() {
   let settings = JSON.parse(localStorage.getItem("userSettings"));
   if (!settings) {
-    return;
+    settings = {
+      saveDtcs: false,
+      autoCheckCodes: false,
+      autoConnect: false,
+      connectionConfig: {
+        protocol: 0,
+        baudRate: "0",
+        serialPort: "0",
+      },
+      showPartialVin: false,
+      deleteLogsOnExit: false,
+      unitPreferences: {
+        speed: "KilometersPerHour",
+        distance: "Kilometers",
+        temperature: "Celsius",
+        torque: "NewtonMeters",
+        pressure: "KiloPascal",
+        flowRate: "LitresPerHour",
+      },
+    };
   }
 
   console.log("Importing settings:", settings);
@@ -28,6 +47,7 @@ function importSettings() {
   window.deleteLogsOnExit = settings.deleteLogsOnExit;
   window.autoCheckCodes = settings.autoCheckCodes;
   window.autoSaveCodes = settings.saveDtcs;
+  window.unitPreferences = settings.unitPreferences;
 
   // show buttons depending on which are toggled
   document.getElementById("save-dtcs").checked = settings.saveDtcs;
@@ -53,23 +73,60 @@ export function saveConnectionConfig() {
   }
 }
 
+export async function saveUnitPreference(unitType, unit) {
+  if (!unitType || !window.unitPreferences[unitType]) return;
+
+  if (window.unitPreferences[unitType] == unit) {
+    // already set
+    return;
+  }
+
+  window.unitPreferences[unitType] = unit;
+  console.log("Unit type:", unitType, "Unit:", unit);
+  console.log("Unit preferences:", window.unitPreferences);
+  emit("set-unit-preferences", window.unitPreferences);
+
+  // save setting
+  let settings = JSON.parse(localStorage.getItem("userSettings"));
+  if (!settings) return;
+
+  settings.unitPreferences = window.unitPreferences;
+
+  localStorage.setItem("userSettings", JSON.stringify(settings));
+
+  updateUnitConversionDropdowns();
+}
+
+export async function updateUnitConversionDropdowns() {
+  // update unit conversion dropdowns
+  for (const [unitTypeKey, unitValue] of Object.entries(
+    window.unitPreferences,
+  )) {
+    document.querySelectorAll("#unit-preference").forEach((dropdown) => {
+      console.log(` -> ${dropdown.getAttribute("data-target")}`);
+      if (dropdown.getAttribute("data-target") == unitTypeKey) {
+        const ul =
+          dropdown.nextElementSibling &&
+          dropdown.nextElementSibling.classList.contains("dropdown-menu")
+            ? dropdown.nextElementSibling
+            : null;
+        console.log(dropdown.children);
+        if (ul) {
+          ul.querySelectorAll("li").forEach((li) => {
+            if (li.getAttribute("data-value") === unitValue) {
+              dropdown.textContent = li.textContent;
+            }
+          });
+        }
+      }
+    });
+  }
+}
+
 async function settingChange(event) {
   // get existing settings
   let settings = JSON.parse(localStorage.getItem("userSettings"));
-  if (!settings) {
-    settings = {
-      saveDtcs: false,
-      autoCheckCodes: false,
-      autoConnect: false,
-      connectionConfig: {
-        protocol: 0,
-        baudRate: "0",
-        serialPort: "0",
-      },
-      showPartialVin: false,
-      deleteLogsOnExit: false,
-    };
-  }
+  if (!settings) return;
 
   // settings to save to localStorage
   // save dtcs
