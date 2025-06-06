@@ -16,7 +16,7 @@
 .vin-results {
   overflow-y: auto;
   display: flex;
-  gap: 70px;
+  gap: 40px;
   margin-top: 20px;
   flex-wrap: wrap;
   height: 100%;
@@ -25,18 +25,18 @@
 .vin-column {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 11px;
 }
 
 .vin-label .label {
-  font-size: 16px;
+  font-size: 11px;
   color: #d4dadf;
   font-weight: 500;
   text-transform: uppercase;
 }
 
 .vin-label .value {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   color: #f7f3ff;
   margin-bottom: -7px;

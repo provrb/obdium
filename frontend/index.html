@@ -92,6 +92,29 @@
       </button>
       <button
         class="sidebar-button"
+        data-tooltip="VIN DECODING"
+        data-screen="vin"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="sidebar-button-img"
+        >
+          <path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6" />
+          <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7" />
+          <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1" />
+          <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1" />
+          <path d="M9 6v12" />
+        </svg>
+      </button>
+      <button
+        class="sidebar-button"
         data-tooltip="OBD DASHBOARD"
         data-screen="dashboard"
       >
@@ -219,29 +242,6 @@
             stroke-linejoin="round"
             d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
           />
-        </svg>
-      </button>
-      <button
-        class="sidebar-button"
-        data-tooltip="VIN DECODING"
-        data-screen="vin"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="sidebar-button-img"
-        >
-          <path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6" />
-          <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7" />
-          <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1" />
-          <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1" />
-          <path d="M9 6v12" />
         </svg>
       </button>
       <button
@@ -719,190 +719,25 @@
 
       <div id="vin" class="screen" style="display: none">
         <div id="vin-decoding-header" class="screen-label">DECODING VIN</div>
-        <input class="vin-input" type="text" placeholder="Enter VIN" />
-        <div class="vin-results">
-          <div class="vin-column">
-            <div id="vin-full" class="vin-label">
-              <div class="label">VEHICLE IDENTIFICATION NUMBER</div>
-              <div class="value"></div>
-            </div>
-            <img src="/assets/images/vehicle.png" class="car-image" />
-            <div id="vehicle-title" class="vin-label">
-              <div class="label">VEHICLE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="make">
-              <div class="label">MAKE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="model">
-              <div class="label">MODEL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="model-year">
-              <div class="label">MODEL YEAR</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-model">
-              <div class="label">ENGINE MODEL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="cylinder-count">
-              <div class="label">CYLINDER COUNT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="axel-count">
-              <div class="label">AXEL COUNT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="traction-control">
-              <div class="label">TRACTION CONTROL</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-country">
-              <div class="label">PLANT COUNTRY</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-city">
-              <div class="label">PLANT CITY</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="plant-state">
-              <div class="label">PLANT STATE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="semi-auto-headlamp-beam-switching">
-              <div class="label">SEMI-AUTO HEADLAMP BEAM SWITCHING</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="dynamic-brake-support">
-              <div class="label">DYNAMIC BRAKE SUPPORT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-knee">
-              <div class="label">AIRBAG LOCATIONS: KNEE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-side">
-              <div class="label">AIRBAG LOCATIONS: SIDE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="body-style">
-              <div class="label">BODY STYLE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="fuel-type">
-              <div class="label">FUEL TYPE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="fuel-delivery-type">
-              <div class="label">FUEL DELIVERY TYPE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-manufacturer">
-              <div class="label">ENGINE MANUFACTURER</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="anti-lock-braking-system">
-              <div class="label">ANTI-LOCK BRAKING SYSTEM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="transmission-style">
-              <div class="label">TRANSMISSION STYLE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="steering-location">
-              <div class="label">STEERING LOCATION</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="keyless-ignition">
-              <div class="label">KEYLESS IGNITION</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="top-speed">
-              <div class="label">TOP SPEED</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="backup-camera">
-              <div class="label">BACKUP CAMERA</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="daytime-running-light">
-              <div class="label">DAYTIME RUNNING LIGHT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="window-auto-reverse">
-              <div class="label">WINDOW AUTO-REVERSE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-front">
-              <div class="label">AIRBAG LOCATIONS: FRONT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="drive-type">
-              <div class="label">DRIVE TYPE</div>
-              <div class="value"></div>
-            </div>
-          </div>
-          <div class="vin-column">
-            <div class="vin-label" id="front-wheel-size">
-              <div class="label">FRONT WHEEL SIZE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="rear-wheel-size">
-              <div class="label">REAR WHEEL SIZE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="automatic-crash-notification">
-              <div class="label">AUTOMATIC CRASH NOTIFICAITON</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="trim">
-              <div class="label">TRIM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="transmission-speeds">
-              <div class="label">TRANSMISSION SPEEDS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="vehicle-base-price">
-              <div class="label">VEHICLE BASE PRICE</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="number-of-rows">
-              <div class="label">NUMBER OF ROWS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="number-of-seats">
-              <div class="label">NUMBER OF SEATS</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="brake-system">
-              <div class="label">BRAKE SYSTEM</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="engine-displacement">
-              <div class="label">ENGINE DISPLACEMENT</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="gross-vehicle-weight-rating">
-              <div class="label">GROSS VEHICLE WEIGHT RATING</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="airbag-locations-curtain">
-              <div class="label">AIRBAG LOCATIONS: CURTAIN</div>
-              <div class="value"></div>
-            </div>
-            <div class="vin-label" id="vehicle-manufacturer">
-              <div class="label">VEHICLE MANUFACTURER</div>
-              <div class="value"></div>
-            </div>
-          </div>
+        <div class="button-row" style="margin-bottom: 20px">
+          <button
+            id="vin-export"
+            disabled
+            class="btn"
+            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+          >
+            EXPORT
+          </button>
+          <button
+            id="vin-decode-start"
+            class="btn"
+            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+          >
+            DECODE
+          </button>
+          <input class="vin-input" type="text" placeholder="Enter VIN" />
         </div>
+        <div class="grid" id="vin-container"></div>
       </div>
 
       <div id="settings" class="screen" style="display: none">
@@ -1204,20 +1039,21 @@
       });
     });
 
+    const decodeVinBtn = document.getElementById("vin-decode-start");
     const vinInput = document.querySelector(".vin-input");
+    const vinExportBtn = document.getElementById("vin-export");
 
-    vinInput.addEventListener("keydown", async function (event) {
-      if (event.key == "Enter") {
-        const query = vinInput.value.trim();
-        if (query !== "") {
-          // request backend to decode vin
-          await emit("decode-vin", query);
-        }
+    decodeVinBtn.addEventListener("click", async function (event) {
+      const query = vinInput.value.trim();
+      if (query !== "") {
+        // request backend to decode vin
+        await emit("decode-vin", query);
       }
     });
 
     const vinLabel = document.getElementById("vin-full");
     const vehicleName = document.getElementById("vehicle-title");
+    const exportButton = document.getElementById("vin-export");
 
     // show vehicle info if no error
     listen("decode-vin", (event) => {
@@ -1228,40 +1064,41 @@
       }
 
       console.log(data.error_msg);
+      const container = document.getElementById("vin-container");
+      if (!container) {
+        return;
+      }
+
+      container.innerHTML = "";
 
       // show all fields
-      for (const key in data) {
-        const name = key.replaceAll("_", "-");
-        const label = document.getElementById(name);
-        if (label) {
-          const value = label.querySelector(".value");
-          console.log(name, data[key]);
-          value.textContent = data[key].toUpperCase();
-          if (value.textContent == "N/A" || value.textContent == "-1") {
-            label.style.display = "none";
-          } else {
-            label.style.display = "block";
-          }
-        }
+      for (const [key, value] of Object.entries(event.payload)) {
+        if (key === "error_msg" || value == "N/A" || value == "-1") continue;
+
+        const name = key.replaceAll("_", " ").toUpperCase();
+
+        const card = document.createElement("div");
+        const h3 = document.createElement("h3");
+        const valueDiv = document.createElement("div");
+
+        card.className = "card";
+        valueDiv.className = "value";
+
+        h3.textContent = name;
+        valueDiv.textContent = value.toUpperCase();
+        valueDiv.style.fontSize = "1.3rem";
+        valueDiv.style.wordBreak = "break-word";
+        valueDiv.style.whiteSpace = "normal";
+        valueDiv.style.maxWidth = "320px";
+
+        // append elements to card
+        card.appendChild(h3);
+        card.appendChild(valueDiv);
+
+        container.appendChild(card);
       }
 
-      // show vin
-      const vinFull = vinLabel.querySelector(".value");
-      if (vinFull) {
-        vinFull.textContent = data.vin;
-      }
-
-      // show vehicle name
-      const vehicleNameLabel = vehicleName.querySelector(".value");
-      if (vehicleNameLabel) {
-        vehicleNameLabel.textContent = (
-          data.model_year +
-          " " +
-          data.make +
-          " " +
-          data.model
-        ).toUpperCase();
-      }
+      exportButton.disabled = false;
     });
 
     /// Toggle different screens when sidebar buttons are clicked

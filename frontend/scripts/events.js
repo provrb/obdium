@@ -269,7 +269,7 @@ listen("update-pids", (event) => {
         }
       });
     });
-    
+
     addGraphDropdownOption(
       pidInfo.pid,
       pidInfo.pidName,
@@ -354,7 +354,6 @@ listen("update-serial-ports", (event) => {
   menu.appendChild(demoModePortOption);
 
   if (event.payload === "") {
-
     return;
   }
 

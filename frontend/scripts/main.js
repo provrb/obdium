@@ -220,3 +220,33 @@ imTestExportButton.addEventListener("click", async () => {
 
   await writeFile({ path, contents: JSON.stringify(totalJSON, null, 2) });
 });
+
+const vinExportButton = document.getElementById("vin-export");
+const vinDetails = document.getElementById("vin-container");
+
+vinExportButton.addEventListener("click", async () => {
+  let vinObj = {};
+  vinDetails.childNodes.forEach((card) => {
+    if (card.nodeType == 1) {
+      console.log(card);
+      const key = card
+        .querySelector("h3")
+        .textContent.replaceAll(" ", "_")
+        .toLowerCase();
+      const value = card.querySelector(".value").textContent.trim();
+      vinObj[key] = value;
+    }
+  });
+
+  const path = await save({
+    title: "Save as JSON",
+    defaultPath: "vin_details.json",
+    filters: [{ name: "JSON", extensions: ["json"] }],
+  });
+
+  if (!path) {
+    return;
+  }
+
+  await writeFile({ path, contents: JSON.stringify(vinObj, null, 2) });
+});

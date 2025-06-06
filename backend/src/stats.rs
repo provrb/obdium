@@ -230,11 +230,7 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             cycles = (cycles + 1) % 2;
             match cycles {
                 0 => {
-                    let (
-                        stft_bank_1,
-                        intake_air_temp,
-                        intake_manifold_abs_pressure
-                    ) = {
+                    let (stft_bank_1, intake_air_temp, intake_manifold_abs_pressure) = {
                         let mut obd = obd.lock().unwrap();
                         if !obd.connected() {
                             break;
@@ -242,11 +238,11 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                         (
                             obd.short_term_fuel_trim(&BankNumber::Bank1),
                             obd.intake_air_temp(),
-                            obd.intake_manifold_abs_pressure()
+                            obd.intake_manifold_abs_pressure(),
                         )
                     };
 
-                    update!(&window, 
+                    update!(&window,
                         "Short Term Fuel Trim (Bank 1)" => stft_bank_1,
                         "Intake Air Temp." => intake_air_temp,
                         "Intake Manifold Abs. Pressure" => intake_manifold_abs_pressure

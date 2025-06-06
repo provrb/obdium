@@ -103,7 +103,9 @@ export async function addGraphDropdownOption(pid, name, unit, equation) {
     const graphId = graph.id;
     const dropDownMenu = document.getElementById(graphId + "-menu");
 
-    const existingOption = dropDownMenu.querySelector(`li[data-value="${pid}"]`);
+    const existingOption = dropDownMenu.querySelector(
+      `li[data-value="${pid}"]`,
+    );
     if (existingOption) continue;
 
     const pidOption = document.createElement("li");
