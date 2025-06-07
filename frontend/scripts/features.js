@@ -149,7 +149,10 @@ export async function trackGraph(graphId, name, unit) {
     if (event.payload.name.toUpperCase() === name.toUpperCase()) {
       console.log(" -> Update!");
       lastValue = event.payload.value;
-      if (graph.options.scales.y.title.text.toUpperCase() != event.payload.unit.toUpperCase()) {
+      if (
+        graph.options.scales.y.title.text.toUpperCase() !=
+        event.payload.unit.toUpperCase()
+      ) {
         graph.options.scales.y.title.text = event.payload.unit.toUpperCase();
       }
     }
@@ -157,10 +160,7 @@ export async function trackGraph(graphId, name, unit) {
 
   // update graph every second, even if no new event
   setInterval(() => {
-    if (
-      graph.config &&
-      graph.config.options
-    ) {
+    if (graph.config && graph.config.options) {
       const now = Date.now();
       const elapsedMs = now - graph.startTime;
       const minutes = Math.floor(elapsedMs / 60000);
