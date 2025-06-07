@@ -137,7 +137,6 @@ export async function trackGraph(graphId, name, unit) {
 
   // x axis label will always be time
   graph.options.scales.x.title.text = "TIME";
-  graph.options.scales.y.title.text = unit;
   graph.startTime = Date.now();
   graph.update();
 
@@ -147,15 +146,12 @@ export async function trackGraph(graphId, name, unit) {
 
   // listen for updates and store the latest value
   listen("update-graphs", (event) => {
-    console.log(
-      "Comparing " +
-        event.payload.name.toUpperCase() +
-        " with " +
-        name.toUpperCase(),
-    );
     if (event.payload.name.toUpperCase() === name.toUpperCase()) {
       console.log(" -> Update!");
       lastValue = event.payload.value;
+      if (graph.options.scales.y.title.text.toUpperCase() != event.payload.unit.toUpperCase()) {
+        graph.options.scales.y.title.text = event.payload.unit.toUpperCase();
+      }
     }
   });
 
@@ -163,8 +159,7 @@ export async function trackGraph(graphId, name, unit) {
   setInterval(() => {
     if (
       graph.config &&
-      graph.config.options &&
-      graph.options.scales.y.title.text === unit
+      graph.config.options
     ) {
       const now = Date.now();
       const elapsedMs = now - graph.startTime;

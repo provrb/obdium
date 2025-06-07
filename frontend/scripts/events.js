@@ -99,6 +99,7 @@ listen("update-card", (event) => {
   emit("update-graphs", {
     name: event.payload.name,
     value: event.payload.value,
+    unit: event.payload.unit,
   });
 });
 
