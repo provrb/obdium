@@ -536,6 +536,7 @@ pub fn once_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let time_with = obd.time_run_with_mil();
         let odometer = obd.odometer();
         let ethanol_fuel_percent = obd.ethanol_fuel_percentage();
+        let engine_oil_life = obd.engine_oil_life();
 
         update!(
             &window,
@@ -546,6 +547,7 @@ pub fn once_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 "Time With Check Engine Light" => time_with,
                 "Odometer" => odometer,
                 "Ethanol Fuel Percentage" => ethanol_fuel_percent,
+                "Engine Oil Life" => engine_oil_life,
         );
     });
 }
