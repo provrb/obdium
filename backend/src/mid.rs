@@ -18,7 +18,7 @@ pub struct MonitorTest {
     max: u64,
 
     value: u64,
-    mid: [u8; 4],
+    mid: [u8; 2],
 }
 
 impl MonitorTest {
@@ -29,7 +29,7 @@ impl MonitorTest {
 
 impl OBD {
     pub fn get_supported_mids(&mut self) -> HashMap<String, Vec<String>> {
-        self.get_service_supported_pids("06")
+        todo!()
     }
 
     pub fn test_oxygen_sensor_monitor(&mut self, bank: BankNumber, sensor: SensorNumber) -> MonitorTest {

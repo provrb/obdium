@@ -515,10 +515,8 @@ impl OBD {
             requests = vec!["00", "20", "40", "60", "80", "A0", "C0"];
         } else if service == "05" || service == "09" {
             requests = vec!["00"];
-        } else if service == "06" {
-            requests = vec!["00", "20", "40", "60", "80", "A0"];
         }
-
+        
         for request_pid in requests {
             let request_pid_bytes = request_pid.as_bytes();
             let command = [
