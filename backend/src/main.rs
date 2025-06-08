@@ -10,7 +10,7 @@ use bridge::events::{
 use obdium::{scalar::Unit, OBD};
 use stats::{
     critical_frequency_calls, frequent_calls, high_frequency_calls, less_frequent_calls,
-    once_calls, oxygen_sensors,
+    monitor_tests, once_calls, oxygen_sensors,
 };
 
 use std::{
@@ -31,6 +31,7 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     less_frequent_calls(window, obd);
     oxygen_sensors(window, obd);
     once_calls(window, obd);
+    monitor_tests(window, obd);
 }
 
 fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> Option<OBD> {

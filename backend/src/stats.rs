@@ -1,4 +1,4 @@
-use obdium::{scalar::Scalar, BankNumber};
+use obdium::{engine::CylinderNumber, mid::EvapLeakSize, scalar::Scalar, BankNumber};
 use obdium::{SensorNumber, Service, OBD};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -549,5 +549,114 @@ pub fn once_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 "Ethanol Fuel Percentage" => ethanol_fuel_percent,
                 "Engine Oil Life" => engine_oil_life,
         );
+    });
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct MonitorTestResult {
+    name: String,
+    value: u64,
+    min: u64,
+    max: u64,
+    passed: bool,
+}
+
+pub fn monitor_tests(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let window = Arc::clone(window);
+    let obd = Arc::clone(obd);
+    spawn(async move {
+        let mut interval = time::interval(Duration::from_secs(5));
+        loop {
+            interval.tick().await;
+
+            let mut obd = obd.lock().unwrap();
+            if !obd.is_connected() {
+                break;
+            }
+
+            // Get supported MIDs
+            let supported_mids = obd.get_supported_mids();
+
+            // Run tests for each supported MID
+            for (mid, descriptions) in supported_mids {
+                let test_result = match mid.as_str() {
+                    // O2 Sensor Tests
+                    mid if mid >= "0601" && mid <= "0608" => {
+                        let bank = if mid.starts_with("0601")
+                            || mid.starts_with("0602")
+                            || mid.starts_with("0603")
+                            || mid.starts_with("0604")
+                        {
+                            BankNumber::Bank1
+                        } else {
+                            BankNumber::Bank2
+                        };
+                        let sensor = match mid.chars().nth(3).unwrap() {
+                            '1' => SensorNumber::Sensor1,
+                            '2' => SensorNumber::Sensor2,
+                            '3' => SensorNumber::Sensor3,
+                            '4' => SensorNumber::Sensor4,
+                            _ => continue,
+                        };
+                        obd.test_oxygen_sensor_monitor(bank, sensor)
+                    }
+                    // Catalyst Tests
+                    mid if mid >= "0621" && mid <= "0624" => {
+                        let bank = if mid.starts_with("0621") {
+                            BankNumber::Bank1
+                        } else {
+                            BankNumber::Bank2
+                        };
+                        obd.test_catalyst_monitor(bank)
+                    }
+                    // EGR Tests
+                    mid if mid >= "0631" && mid <= "0634" => {
+                        let bank = if mid.starts_with("0631") {
+                            BankNumber::Bank1
+                        } else {
+                            BankNumber::Bank2
+                        };
+                        obd.test_egr_monitor(bank)
+                    }
+                    // EVAP Tests
+                    "0639" => obd.test_evap_monitor(EvapLeakSize::Large),
+                    "063A" => obd.test_evap_monitor(EvapLeakSize::Medium),
+                    "063B" => obd.test_evap_monitor(EvapLeakSize::Small),
+                    "063C" => obd.test_evap_monitor(EvapLeakSize::Tiny),
+                    // Misfire Tests
+                    "06A1" => obd.test_misfire_monitor_general(),
+                    mid if mid >= "06A2" && mid <= "06AD" => {
+                        let cylinder = match mid.chars().nth(3).unwrap() {
+                            '2' => CylinderNumber::Cylinder1,
+                            '3' => CylinderNumber::Cylinder2,
+                            '4' => CylinderNumber::Cylinder3,
+                            '5' => CylinderNumber::Cylinder4,
+                            '6' => CylinderNumber::Cylinder5,
+                            '7' => CylinderNumber::Cylinder6,
+                            '8' => CylinderNumber::Cylinder7,
+                            '9' => CylinderNumber::Cylinder8,
+                            'A' => CylinderNumber::Cylinder9,
+                            'B' => CylinderNumber::Cylinder10,
+                            'C' => CylinderNumber::Cylinder11,
+                            'D' => CylinderNumber::Cylinder12,
+                            _ => continue,
+                        };
+                        obd.test_misfire_cylinder_monitor(cylinder)
+                    }
+                    // Other tests can be added here
+                    _ => continue,
+                };
+
+                let result = MonitorTestResult {
+                    name: descriptions[0].clone(),
+                    value: test_result.value,
+                    min: test_result.min,
+                    max: test_result.max,
+                    passed: test_result.has_passed(),
+                };
+
+                window.emit("monitor-test-result", result).unwrap();
+            }
+        }
     });
 }
