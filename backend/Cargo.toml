@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 serialport = "4.7.1"
-sqlite = "0.37.0"
+sqlite = { version = "0.37.0", features = ["bundled"] }
 chrono = "0.4.41"
 num_enum = "0.7.3"
 thiserror = "2.0.12"
