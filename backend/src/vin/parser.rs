@@ -212,7 +212,7 @@ impl VIN {
         })
     }
 
-    pub fn test_database_connection(&self) -> bool {
+    pub fn is_connected(&self) -> bool {
         self.vpic_db_con.is_some()
     }
 

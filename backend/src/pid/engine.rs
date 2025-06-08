@@ -5,6 +5,22 @@ use crate::{
     Command, SensorNumber, Service, OBD,
 };
 
+#[derive(Clone, Copy, Debug)]
+pub enum CylinderNumber {
+    Cylinder1,
+    Cylinder2,
+    Cylinder3,
+    Cylinder4,
+    Cylinder5,
+    Cylinder6,
+    Cylinder7,
+    Cylinder8,
+    Cylinder9,
+    Cylinder10,
+    Cylinder11,
+    Cylinder12,
+}
+
 #[derive(PartialEq, Eq)]
 pub enum EngineType {
     SparkIgnition,

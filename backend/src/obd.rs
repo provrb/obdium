@@ -220,7 +220,7 @@ impl OBD {
             .open()
             .ok();
 
-        if self.connected() {
+        if self.is_connected() {
             let initialized = self.init();
             let mut command = match protocol {
                 0 => Command::new_at(b"ATSP0"),
@@ -252,7 +252,7 @@ impl OBD {
         }
     }
 
-    pub fn connected(&self) -> bool {
+    pub fn is_connected(&self) -> bool {
         self.connection.is_some()
     }
 
@@ -514,8 +514,9 @@ impl OBD {
         if service == "01" {
             requests = vec!["00", "20", "40", "60", "80", "A0", "C0"];
         } else if service == "05" || service == "09" {
-            // the request to send to service 05 and 09 to get supported pids from 01-20
             requests = vec!["00"];
+        } else if service == "06" {
+            requests = vec!["00", "20", "40", "60", "80", "A0"];
         }
 
         for request_pid in requests {

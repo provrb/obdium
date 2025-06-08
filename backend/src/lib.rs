@@ -6,6 +6,7 @@ mod replay;
 mod response;
 pub mod scalar;
 pub mod vin;
+pub mod mid;
 
 pub use cmd::*;
 pub use obd::*;

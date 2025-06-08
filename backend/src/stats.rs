@@ -45,7 +45,7 @@ pub fn critical_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             interval.tick().await;
 
             let mut obd = obd.lock().unwrap();
-            if !obd.connected() {
+            if !obd.is_connected() {
                 break;
             }
 
@@ -87,7 +87,7 @@ pub fn high_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                         actual_engine_torque,
                     ) = {
                         let mut obd = obd.lock().unwrap();
-                        if !obd.connected() {
+                        if !obd.is_connected() {
                             break;
                         }
 
@@ -232,7 +232,7 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 0 => {
                     let (stft_bank_1, intake_air_temp, intake_manifold_abs_pressure) = {
                         let mut obd = obd.lock().unwrap();
-                        if !obd.connected() {
+                        if !obd.is_connected() {
                             break;
                         }
                         (
@@ -287,7 +287,7 @@ pub fn less_frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                         engine_oil_temp_sensors,
                     ) = {
                         let mut obd = obd.lock().unwrap();
-                        if !obd.connected() {
+                        if !obd.is_connected() {
                             break;
                         }
                         (
@@ -415,7 +415,7 @@ pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 0 => {
                     let (o2_sensor_1, o2_sensor_2, o2_sensor_3, o2_sensor_4) = {
                         let mut obd = obd.lock().unwrap();
-                        if !obd.connected() {
+                        if !obd.is_connected() {
                             break;
                         }
                         (

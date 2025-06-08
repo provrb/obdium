@@ -179,7 +179,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
                 loop {
                     sleep(Duration::from_secs(1)).await;
                     let obd = obd_clone.lock().unwrap();
-                    if !obd.connected() {
+                    if !obd.is_connected() {
                         do_send_connection_status(
                             &window_arc_clone,
                             &obd,
@@ -292,7 +292,7 @@ pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>
     let window_arc = Arc::clone(window);
     window.listen("get-connection-status", move |_| {
         let obd = obd_arc.lock().unwrap();
-        do_send_connection_status(&window_arc, &obd, "".into(), obd.connected());
+        do_send_connection_status(&window_arc, &obd, "".into(), obd.is_connected());
     });
 }
 

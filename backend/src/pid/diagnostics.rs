@@ -384,7 +384,7 @@ impl OBD {
         }
     }
 
-    pub fn check_engine_light(&mut self) -> bool {
+    pub fn has_check_engine_light(&mut self) -> bool {
         let response = self.query(Command::new_pid(b"0101"));
         (response.a_value() as u32 & 0x80) != 0
     }
