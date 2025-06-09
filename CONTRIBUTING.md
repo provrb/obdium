@@ -44,12 +44,6 @@ OBDium deals with raw vehicle diagnostics (e.g Mode $01, $06, $09), hex decoding
 - AI-generated PRs with no understanding
 - Guess and check PRs
 
-## Communication
-
-- Use GitHub Issues for discussion or questions.
-- Be respectful. This project isn’t a tutorial or mentorship platform.
-- If you're just learning OBD-II, that’s fine. But learn first—**don’t submit protocol PRs unless you’re confident in what you're changing**.
-
 ## Where Do I Start?
 There are plenty of great resources to start. The first step is to have a decent understanding of what goes on under the hood. Here are a couple great resources:
 
