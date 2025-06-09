@@ -70,7 +70,11 @@ impl OBD {
 
     pub(crate) fn get_recorded_response(&self, request: &Command) -> Response {
         let contents_json: Vec<Value> = {
-            let contents = fs::read_to_string(&self.requests_path).expect("file read error");
+            let contents = match fs::read_to_string(&self.requests_path) {
+                Ok(contents) => contents,
+                Err(_) => return Response::no_data(),
+            };
+
             if contents.trim().is_empty() {
                 vec![]
             } else {
