@@ -10,6 +10,7 @@ const dtcList = document.getElementById("dtc-list");
 const dtcHeader = document.getElementById("dtc-header");
 const freezeFrameBar = document.getElementById("freeze-frame-status");
 const obdGrid = document.getElementById("dashboard-cards");
+const terminalOutput = document.getElementById("terminal-output");
 
 export function clearDtcs() {
   console.log("test", dtcList.innerHTML);
@@ -183,4 +184,14 @@ export async function trackGraph(graphId, name, unit) {
       graph.update();
     }
   }, 1000);
+}
+
+export function appendTerminalOutput(msg) {
+  const now = new Date();
+  const timeStr =
+    now.toLocaleTimeString("en-US", { hour12: false }) +
+    ":" +
+    now.getMilliseconds().toString().padStart(3, "0");
+  terminalOutput.innerText += `${timeStr} ${msg}\n`;
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
 }

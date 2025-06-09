@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
 use crate::{
-    engine::CylinderNumber, scalar::{Scalar, Unit}, BankNumber, Command, SensorNumber, OBD
+    engine::CylinderNumber,
+    scalar::{Scalar, Unit},
+    BankNumber, Command, SensorNumber, OBD,
 };
 
 pub enum EvapLeakSize {
@@ -32,7 +34,11 @@ impl OBD {
         todo!()
     }
 
-    pub fn test_oxygen_sensor_monitor(&mut self, bank: BankNumber, sensor: SensorNumber) -> MonitorTest {
+    pub fn test_oxygen_sensor_monitor(
+        &mut self,
+        bank: BankNumber,
+        sensor: SensorNumber,
+    ) -> MonitorTest {
         todo!()
     }
 
@@ -58,10 +64,14 @@ impl OBD {
         todo!()
     }
 
-    pub fn test_oxygen_sensor_heater(&mut self, bank: BankNumber, sensor: SensorNumber) -> MonitorTest {
+    pub fn test_oxygen_sensor_heater(
+        &mut self,
+        bank: BankNumber,
+        sensor: SensorNumber,
+    ) -> MonitorTest {
         todo!()
     }
-    
+
     pub fn test_heated_catalyst_monitor(&mut self, bank: BankNumber) -> MonitorTest {
         todo!()
     }

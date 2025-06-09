@@ -244,6 +244,27 @@
           />
         </svg>
       </button>
+      <div style="flex: 1 1 auto"></div>
+      <button
+        class="sidebar-button"
+        data-tooltip="TERMINAL"
+        data-screen="terminal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="sidebar-button-img"
+        >
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="m10 8 4 4-4 4" />
+        </svg>
+      </button>
       <button
         class="sidebar-button"
         data-tooltip="SETTINGS"
@@ -382,7 +403,7 @@
           </button>
         </div>
 
-        <div class="error-hint" style="display: flex">
+        <div class="text-hint" style="display: flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="15"
@@ -738,6 +759,18 @@
           <input class="vin-input" type="text" placeholder="Enter VIN" />
         </div>
         <div class="grid" id="vin-container"></div>
+      </div>
+
+      <div id="terminal" class="screen" style="display: none">
+        <div class="screen-label">TERMINAL</div>
+        <div class="connection-details">SEND COMMANDS VIA ELM</div>
+        <div class="terminal-output" id="terminal-output"></div>
+        <input
+          type="text"
+          class="terminal-input"
+          value="> "
+          id="terminal-input"
+        />
       </div>
 
       <div id="settings" class="screen" style="display: none">

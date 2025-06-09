@@ -7,14 +7,13 @@ mod stats;
 use bridge::events::{
     do_send_connection_status, listen_connect_elm, listen_decode_vin, listen_send_ports,
 };
-use obdium::{scalar::Unit, OBD};
+use obdium::OBD;
 use stats::{
     critical_frequency_calls, frequent_calls, high_frequency_calls, less_frequent_calls,
     once_calls, oxygen_sensors,
 };
 
 use std::{
-    str::FromStr,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
@@ -64,14 +63,8 @@ fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> O
     }
 }
 
-#[tauri::command]
-fn unit_abbrv_to_full(unit: String) -> Result<Unit, String> {
-    Unit::from_str(&unit).map_err(|_| format!("Failed to parse unit {unit} from frontend."))
-}
-
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![unit_abbrv_to_full])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
             let frontend_ready = Arc::new(AtomicBool::new(false));

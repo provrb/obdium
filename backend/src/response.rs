@@ -121,6 +121,10 @@ impl Response {
         self.formatted_response.clone()
     }
 
+    pub fn raw_response(&self) -> Option<String> {
+        self.raw_response.clone()
+    }
+
     pub fn get_payload_size(&self) -> &usize {
         &self.payload_size
     }

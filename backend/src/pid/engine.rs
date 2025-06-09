@@ -255,13 +255,8 @@ impl OBD {
     }
 
     pub fn engine_oil_life(&mut self) -> Scalar {
-        self.query(Command::new_arb("221940")).map_no_data(|r| {
-            Scalar::new(
-                r.a_value(),
-                Unit::Percent,
-                None,
-            )
-        })
+        self.query(Command::new_arb("221940"))
+            .map_no_data(|r| Scalar::new(r.a_value(), Unit::Percent, None))
     }
 
     // Returns 5 values.

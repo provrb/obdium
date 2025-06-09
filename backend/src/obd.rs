@@ -39,7 +39,6 @@ pub enum Error {
     InitFailed,
 
     InvalidResponse,
-    InvalidCommand,
     NoData,
     DTCClearFailed,
 
@@ -52,7 +51,6 @@ impl Error {
     pub fn as_str(&self) -> &str {
         match self {
             Error::InvalidResponse => "invalid response from ecu.",
-            Error::InvalidCommand => "an invalid user command was going to be sent to the ecu.",
             Error::NoConnection => "no serial connection active.",
             Error::NoData => "'NO DATA' received from ECU.",
             Error::ECUUnavailable => "ecu not available.",
@@ -516,7 +514,7 @@ impl OBD {
         } else if service == "05" || service == "09" {
             requests = vec!["00"];
         }
-        
+
         for request_pid in requests {
             let request_pid_bytes = request_pid.as_bytes();
             let command = [

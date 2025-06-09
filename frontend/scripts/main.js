@@ -9,6 +9,7 @@ import {
   connectElm,
   disconnectElm,
   clearObdView,
+  appendTerminalOutput,
 } from "./features.js";
 
 import { saveUnitPreference } from "./settings.js";
@@ -271,4 +272,36 @@ appWindow.listen("tauri://close-requested", async () => {
   }
 
   await appWindow.close();
+});
+
+const input = document.getElementById("terminal-input");
+
+input.addEventListener("input", (e) => {
+  if (!input.value.startsWith("> ")) {
+    input.value = "> ";
+  }
+});
+
+input.addEventListener("keydown", (e) => {
+  if (input.selectionStart < 2) {
+    e.preventDefault();
+  }
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    if (input.value.trim() === "") {
+      return;
+    }
+
+    const command = input.value.slice(2).trim();
+    console.log("command:", command);
+    if (command.length > 0) {
+      console.log("send");
+      appendTerminalOutput(command);
+      emit("terminal-command", command);
+      input.value = "> ";
+    }
+    e.preventDefault();
+  }
 });

@@ -61,7 +61,7 @@ impl Command {
         }
     }
 
-    pub(crate) fn new_arb(arbitrary_msg: &str) -> Self {
+    pub fn new_arb(arbitrary_msg: &str) -> Self {
         Self {
             command_type: CommandType::Arbitrary,
             arbitrary_message: arbitrary_msg.to_owned(),

@@ -1,5 +1,9 @@
 const { listen, emit } = window.__TAURI__.event;
-import { exportDtcs, addGraphDropdownOption } from "./features.js";
+import {
+  exportDtcs,
+  addGraphDropdownOption,
+  appendTerminalOutput,
+} from "./features.js";
 import {
   saveConnectionConfig,
   updateUnitConversionDropdowns,
@@ -389,4 +393,8 @@ listen("update-readiness-tests", (event) => {
 
     readinessTests.appendChild(testRow);
   }
+});
+
+listen("update-command-output", (event) => {
+  appendTerminalOutput(event.payload);
 });

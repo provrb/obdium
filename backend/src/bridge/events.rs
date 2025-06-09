@@ -8,6 +8,7 @@ use crate::{connect_obd, track_data, OBD};
 use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
 use obdium::vin::VIN;
+use obdium::Command;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tauri::{async_runtime::spawn, Window};
@@ -212,6 +213,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             listen_set_unit_preferences(&window_arc, &obd);
             listen_send_connection_status(&window_arc, &obd);
             listen_change_obd_settings(&window_arc, &obd);
+            listen_run_user_command(&window_arc, &obd);
             listen_send_pids(&window_arc, &obd);
             listen_send_readiness_test(&window_arc, &obd);
             listen_send_dtcs(&window_arc, &obd);
@@ -296,6 +298,41 @@ pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>
     });
 }
 
+pub fn listen_run_user_command(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let obd_arc = Arc::clone(obd);
+    let window_arc = Arc::clone(window);
+    window.listen("terminal-command", move |event| {
+        let command = match event.payload() {
+            Some(command) => command.replace("\"", ""),
+            None => return,
+        };
+
+        let mut obd = obd_arc.lock().unwrap();
+        if let Err(err) = obd.send_command(&mut Command::new_arb(&command)) {
+            do_send_command_output(&window_arc, format!("Response: {}", err));
+        }
+
+        match obd.get_pid_response() {
+            Ok(response) => {
+                do_send_command_output(
+                    &window_arc,
+                    format!(
+                        "Response: {}",
+                        response
+                            .raw_response()
+                            .unwrap_or("n/a".to_string())
+                            .replace("\n", " ")
+                    ),
+                );
+            }
+            Err(err) => {
+                do_send_command_output(&window_arc, format!("Response: {}", err));
+            }
+        }
+        //do_send_command_output(&window_arc, &obd, "".into(), obd.is_connected());
+    });
+}
+
 pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     window.listen("set-unit-preferences", move |event| {
@@ -323,6 +360,10 @@ pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) 
 // frontend to do something.
 //
 // In this case, the frontend would be listening for these events.
+
+pub fn do_send_command_output(window: &Arc<Window>, msg: String) {
+    let _ = window.emit("update-command-output", msg);
+}
 
 pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let obd = Arc::clone(obd);
