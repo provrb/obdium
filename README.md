@@ -94,9 +94,13 @@ For any questions about the implementation or logic behind OBDium, feel free to 
 
 ### Demo mode
 To replay already recorded requests simply:
-1. Navigate to the **Connection** panel
-2. Select "DEMO MODE" under the serial port dropdown
-3. Click 'Connect'
+1. Download an existing recorded requests file [here](https://github.com/provrb/obdium/blob/main/backend/data/requests.json)
+   - You can also share your vehicles recorded requests for people from the community to use!
+2. Drag and drop the file into your data directory
+   - This allows you to use your own recorded requests from your vehicle at a later time without having to be hooked up
+3. Navigate to the **Connection** panel
+4. Select "DEMO MODE" under the serial port dropdown
+5. Click 'Connect'
 
 Data will start popping up and simulate a real vehicle.
 
