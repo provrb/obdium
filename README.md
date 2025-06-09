@@ -148,14 +148,7 @@ Data will start popping up and simulate a real vehicle.
 <p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
 
 ## Contributing
-
-Contributions are welcome! Please open issues or submit pull requests for bug fixes, new features, or improvements.  
-To contribute:
-
-- Fork the repository
-- Create a new branch for your feature or fix
-- Make your changes and add tests as appropriate
-- Submit a pull request describing your changes
+Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
 
 ## Project Structure
 

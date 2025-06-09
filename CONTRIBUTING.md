@@ -18,7 +18,14 @@ OBDium deals with raw vehicle diagnostics (e.g Mode $01, $06, $09), hex decoding
 3. **Communicate**
    If you have any questions about an idea, please, feel free to open an [Issue](../../issues).
 
----
+## To Contribute
+1. Fork the repository
+
+2. Create a new branch for your feature or fix
+
+3. Make your changes
+
+4. Submit a pull request describing your changes and include how this was tested
 
 ## What a Good PR Looks Like
 
@@ -45,7 +52,6 @@ OBDium deals with raw vehicle diagnostics (e.g Mode $01, $06, $09), hex decoding
 
 ## Where Do I Start?
 There are plenty of great resources to start. The first step is to have a decent understanding of what goes on under the hood. Here are a couple great resources:
-
 
 - [Wikipedia - OBD-II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
 - [SAE J1979 - Detailed PDF](https://law.resource.org/pub/us/cfr/ibr/005/sae.j1979.2002.pdf)
