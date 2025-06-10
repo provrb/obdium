@@ -1848,6 +1848,7 @@ dependencies = [
  "chrono",
  "evalexpr",
  "num_enum 0.7.3",
+ "once_cell",
  "rand 0.9.1",
  "regex",
  "serde",

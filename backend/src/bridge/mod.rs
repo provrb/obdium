@@ -1,8 +1,33 @@
 pub mod events;
 
+use std::sync::{Arc, Mutex};
+
+use obdium::OBD;
+
 /// Structs that are used as payloads
 /// between frontend and backend.
 use serde::{Deserialize, Serialize};
+use once_cell::sync::Lazy;
+use tauri::{EventHandler, Window};
+
+pub static ACTIVE_OBD: Lazy<Mutex<Option<Arc<Mutex<OBD>>>>> = Lazy::new(|| Mutex::new(None));
+pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventHandler>>> = Lazy::new(|| Mutex::new(None));
+pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventHandler>>> = Lazy::new(|| Mutex::new(None));
+
+pub fn unlisten_events(window: &Arc<Window>) {
+    {
+        let mut handler = USER_COMMAND_LISTENER.lock().unwrap();
+        if let Some(id) = handler.take() {
+            window.unlisten(id);
+        }
+    }
+    {
+        let mut handler = READINESS_TESTS_LISTENER.lock().unwrap();
+        if let Some(id) = handler.take() {
+            window.unlisten(id);
+        }
+    }
+}
 
 /// Very brief vehicle information
 /// No detailed information- use VehicleInfoExtended

@@ -1,9 +1,11 @@
-use super::{ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleInfoExtended};
 /// Events to bridge the frontend with
 /// the backend.
 ///
 /// Includes listening for requests from the frontend
 /// to perform actions
+/// 
+use super::{ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleInfoExtended, ACTIVE_OBD};
+use crate::bridge::{unlisten_events, READINESS_TESTS_LISTENER, USER_COMMAND_LISTENER};
 use crate::{connect_obd, track_data, OBD};
 use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
@@ -55,7 +57,7 @@ pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let window_arc = Arc::new(window.clone());
     let obd_arc = Arc::clone(obd);
     let window_clone = Arc::clone(&window_arc);
-    window_clone.listen("get-readiness-tests", move |_| {
+    let readiness_test_event = window_clone.listen("get-readiness-tests", move |_| {
         PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
         std::thread::sleep(Duration::from_millis(50));
 
@@ -70,6 +72,11 @@ pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
         let _ = window_arc.emit("update-readiness-tests", tests);
     });
+
+    {
+        let mut handler = READINESS_TESTS_LISTENER.lock().unwrap();
+        *handler = Some(readiness_test_event);
+    }
 }
 
 pub fn listen_send_ports(window: &Arc<Window>) {
@@ -157,8 +164,13 @@ pub fn listen_decode_vin(window: &Window) {
 pub fn listen_connect_elm(window: &Arc<Window>) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
+
     window_clone.listen("connect-elm", move |event| {
-        let payload = event.payload().unwrap_or("");
+        let payload = match event.payload() {
+            Some(payload) => payload,
+            None => return,
+        };
+
         let connect_payload: ConnectPaylod = match serde_json::from_str(payload) {
             Ok(p) => p,
             Err(e) => {
@@ -175,8 +187,12 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
         );
 
         if let Some(obd) = obd {
-            // Arc's
             let obd = Arc::new(Mutex::new(obd));
+
+            {
+                let mut active = ACTIVE_OBD.lock().unwrap();
+                *active = Some(Arc::clone(&obd));
+            }
 
             // Usually called once
             do_send_vehicle_details(&window_arc, &obd);
@@ -198,31 +214,14 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
                             "Connection dropped".to_string(),
                             false,
                         );
+                        let mut active = ACTIVE_OBD.lock().unwrap();
+                        *active = None;
                         break;
                     }
                 }
             });
 
-            // Listen for disconnect-elm event outside of async block to avoid lifetime issues
-            let window_arc_for_listen = Arc::clone(&window_arc);
-            let obd_for_listen = Arc::clone(&obd);
-            window_arc_for_listen.listen("disconnect-elm", {
-                let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
-                move |_| {
-                    PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
-                    std::thread::sleep(Duration::from_millis(50));
-                    if let Ok(mut obd) = obd_for_listen.lock() {
-                        do_send_connection_status(
-                            &window_arc_for_listen,
-                            &obd,
-                            "Connection dropped".to_string(),
-                            false,
-                        );
-                        obd.disconnect();
-                    }
-                    PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
-                }
-            });
+            listen_disconnect_elm(&window_arc);
 
             listen_set_unit_preferences(&window_arc, &obd);
             listen_send_connection_status(&window_arc, &obd);
@@ -233,7 +232,39 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             listen_send_dtcs(&window_arc, &obd);
             listen_clear_dtcs(&window_arc, &obd);
             
-            listen_run_user_command(&window_arc, &obd);
+            listen_run_user_command(&window_arc);
+        }
+    });
+}
+
+pub fn listen_disconnect_elm(window: &Arc<Window>) {
+    let window_arc_for_listen = Arc::clone(&window);
+    window_arc_for_listen.listen("disconnect-elm", {
+        let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
+        move |_| {
+            PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+            std::thread::sleep(Duration::from_millis(50));
+
+            let maybe_obd = {
+                let mut active = ACTIVE_OBD.lock().unwrap();
+                active.take()
+            };
+
+            if let Some(obd_arc) = maybe_obd {
+                if let Ok(mut obd) = obd_arc.lock() {
+                    do_send_connection_status(
+                        &window_arc_for_listen,
+                        &obd,
+                        "Connection dropped".to_string(),
+                        false,
+                    );
+                    obd.disconnect();
+                }
+
+                unlisten_events(&window_arc_for_listen);
+            }
+
+            PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
         }
     });
 }
@@ -314,10 +345,9 @@ pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>
     });
 }
 
-pub fn listen_run_user_command(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
-    let obd_arc = Arc::clone(obd);
+pub fn listen_run_user_command(window: &Arc<Window>) {
     let window_arc = Arc::clone(window);
-    window.listen("terminal-command", move |event| {
+    let user_command_event = window.listen("terminal-command", move |event| {
         PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
         std::thread::sleep(Duration::from_millis(50));
 
@@ -326,31 +356,44 @@ pub fn listen_run_user_command(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             None => return,
         };
 
-        let mut obd = obd_arc.lock().unwrap();
-        if let Err(err) = obd.send_command(&mut Command::new_arb(&command)) {
-            do_send_command_output(&window_arc, format!("Response: {}", err));
-        }
+        let obd_arc = {
+            let active = ACTIVE_OBD.lock().unwrap();
+            active.clone()
+        };
 
-        match obd.get_pid_response() {
-            Ok(response) => {
-                do_send_command_output(
-                    &window_arc,
-                    format!(
-                        "Response: {}",
-                        response
-                            .raw_response()
-                            .unwrap_or("n/a".to_string())
-                            .replace("\n", " ")
-                    ),
-                );
-            }
-            Err(err) => {
+        if let Some(obd_arc) = obd_arc {
+            let mut obd = obd_arc.lock().unwrap();
+            if let Err(err) = obd.send_command(&mut Command::new_arb(&command)) {
                 do_send_command_output(&window_arc, format!("Response: {}", err));
             }
+    
+            match obd.get_pid_response() {
+                Ok(response) => {
+                    do_send_command_output(
+                        &window_arc,
+                        format!(
+                            "Response: {}",
+                            response
+                                .raw_response()
+                                .unwrap_or("n/a".to_string())
+                                .replace("\n", " ")
+                        ),
+                    );
+                }
+                Err(err) => {
+                    do_send_command_output(&window_arc, format!("Response: {}", err));
+                }
+            }
         }
+
 
         PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
     });
+
+    {
+        let mut handler = USER_COMMAND_LISTENER.lock().unwrap();
+        *handler = Some(user_command_event);
+    }
 }
 
 pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
