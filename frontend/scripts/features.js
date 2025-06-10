@@ -123,67 +123,81 @@ export async function addGraphDropdownOption(pid, name, unit, equation) {
   }
 }
 
-export async function trackGraph(graphId, name, unit) {
-  // reset all chart.js data
-  // track graph
+const activeTrackers = new Map(); // graphId -> cleanupFn
 
-  let graph = Chart.getChart(graphId);
+export async function trackGraph(graphId, name, unit) {
+  if (activeTrackers.has(graphId)) {
+    const cleanup = activeTrackers.get(graphId);
+    cleanup();
+  }
+
+  const graph = Chart.getChart(graphId);
   if (!graph) return;
 
-  // reset graph
+  // Reset graph data
   graph.data.labels = [];
   graph.data.datasets.forEach((dataset) => {
     dataset.data = [];
   });
 
-  // x axis label will always be time
   graph.options.scales.x.title.text = "TIME";
   graph.startTime = Date.now();
   graph.update();
 
-  // track data
   let lastValue = null;
+  let lastSeenValue = null;
   let lastElapsed = null;
+  const myName = name.trim().toUpperCase();
 
-  // listen for updates and store the latest value
-  listen("update-graphs", (event) => {
-    if (event.payload.name.toUpperCase() === name.toUpperCase()) {
-      console.log(" -> Update!");
+  const listener = (event) => {
+    const incomingName = event.payload.name?.trim().toUpperCase();
+    if (incomingName === myName) {
       lastValue = event.payload.value;
+
       if (
-        graph.options.scales.y.title.text.toUpperCase() !=
+        graph.options.scales.y.title.text.toUpperCase() !==
         event.payload.unit.toUpperCase()
       ) {
         graph.options.scales.y.title.text = event.payload.unit.toUpperCase();
       }
     }
-  });
+  };
 
-  // update graph every second, even if no new event
-  setInterval(() => {
-    if (graph.config && graph.config.options) {
-      const now = Date.now();
-      const elapsedMs = now - graph.startTime;
-      const minutes = Math.floor(elapsedMs / 60000);
-      const seconds = Math.floor((elapsedMs % 60000) / 1000);
-      const elapsed = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const unlisten = await listen("update-graphs", listener);
+  const intervalId = setInterval(() => {
+    if (!graph.config?.options) return;
 
-      if (lastElapsed === elapsed) return;
-      lastElapsed = elapsed;
+    const now = Date.now();
+    const elapsedMs = now - graph.startTime;
+    const minutes = Math.floor(elapsedMs / 60000);
+    const seconds = Math.floor((elapsedMs % 60000) / 1000);
+    const elapsed = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-      const maxPoints = 8;
-      if (graph.data.labels.length > maxPoints) {
-        graph.data.labels.shift();
-        graph.data.datasets[0].data.shift();
-      }
+    if (lastElapsed === elapsed) return;
+    lastElapsed = elapsed;
 
-      // Use lastValue if available, otherwise push null
-      graph.data.datasets[0].data.push(lastValue);
-      graph.data.labels.push(elapsed);
-
-      graph.update();
+    if (graph.data.labels.length > 8) {
+      graph.data.labels.shift();
+      graph.data.datasets[0].data.shift();
     }
+
+    if (lastValue !== null && lastValue !== undefined) {
+      lastSeenValue = lastValue;
+    }
+
+    graph.data.datasets[0].data.push(lastSeenValue);
+    graph.data.labels.push(elapsed);
+
+    graph.update();
   }, 1000);
+
+  const cleanup = () => {
+    clearInterval(intervalId);
+    unlisten();
+    activeTrackers.delete(graphId);
+  };
+
+  activeTrackers.set(graphId, cleanup);
 }
 
 export function appendTerminalOutput(msg) {
