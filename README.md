@@ -31,7 +31,7 @@ Our goal with OBDium is to fill a gap in the ecosystem, providing the best free,
 - **⚠️ View Troube Codes:** Read diagnostic trouble codes, including **Powertrain, Body, Chassis,** and **Network** alongside a description
 - **🧠 Live Vehicle Metrics:** Reads and decodes various OBD-II PIDs (engine, fuel, air, exhaust, diagnostics, etc.) with plans for manufacturer specific PIDs soon
 - **🔎 Advanced VIN Decoding:** In-depth VIN decoding using a custom parser and SQLite-backed lookups based off of the NHTSA's VPIC MSSQL database
-- **🔌 Serial Communication:** Connects to ELM327 OBD-II adapters via serial port
+- **🧪 I/M Readiness Tests:** Verify that your car's emissions systems are functioning properly for both compression and spark ignition engines.
 - **📱 Modern GUI:** No more ugly and outdated native applications. Developed with modern web development technologies using Tauri with JS/HTML/CSS
 - **🖥️ Cross-platform:** Available on any operating system include both Linux and Windows
 
@@ -108,10 +108,11 @@ Data will start popping up and simulate a real vehicle.
 
 1. Run the application
 2. Connect your ELM327 adapter to your vehicles OBD-II port and device.
-3. Navigate to the **Connection** panel:
+3. Turn on your ignition or start your vehicle
+4. Navigate to the **Connection** panel:
    - Select the OBD-II protocol, serial port, and baud rate to use.
    - If no serial ports appear, you can click the refresh button to reload serial ports.
-4. Click 'Connect'
+5. Click 'Connect'
 
 ### Features
 
@@ -125,27 +126,31 @@ Data will start popping up and simulate a real vehicle.
 - View an index of all PIDs in the **PID List** panel.
 
 ## Showcase
+<details>
+   <summary><b>Click to view app screenshots!</b></summary>
 
-![connect-screen](/examples/connect-screen.png)
-<p align="center"><em>Connection Screen - Not Connected</em></p>
+   ![connect-screen](/examples/connect-screen.png)
+   <p align="center"><em>Connection Screen - Not Connected</em></p>
 
-![connected-screen](/examples/connected-screen.png)
-<p align="center"><em>Connection Screen - Connected</em></p>
+   ![connected-screen](/examples/connected-screen.png)
+   <p align="center"><em>Connection Screen - Connected</em></p>
 
-![obd-overview](/examples/obd-overview-screen.png)
-<p align="center"><em>OBD Overview Screen</em></p>
+   ![obd-overview](/examples/obd-overview-screen.png)
+   <p align="center"><em>OBD Overview Screen</em></p>
 
-![readiness-tests](/examples/readiness-tests-screen.png)
-<p align="center"><em>I/M Readiness Test Status</em></p>
+   ![readiness-tests](/examples/readiness-tests-screen.png)
+   <p align="center"><em>I/M Readiness Test Status</em></p>
 
-![supported-pids](/examples/supported-pids-screen.png)
-<p align="center"><em>A List of Supported Pids</em></p>
+   ![supported-pids](/examples/supported-pids-screen.png)
+   <p align="center"><em>A List of Supported Pids</em></p>
 
-![vin-decoding](/examples/vin-decoding-screen.png)
-<p align="center"><em>OBDium VIN Decoder</em></p>
+   ![vin-decoding](/examples/vin-decoding-screen.png)
+   <p align="center"><em>OBDium VIN Decoder</em></p>
 
-![settings](/examples/settings-screen.png)
-<p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
+   ![settings](/examples/settings-screen.png)
+   <p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
+  
+</details>
 
 ## Contributing
 Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
