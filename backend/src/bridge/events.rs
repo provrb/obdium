@@ -8,7 +8,8 @@ use crate::{connect_obd, track_data, OBD};
 use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
 use obdium::vin::VIN;
-use obdium::Command;
+use obdium::{Command, PAUSE_OBD_COUNT};
+use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tauri::{async_runtime::spawn, Window};
@@ -20,7 +21,8 @@ use tokio::time::sleep;
 // All listen events are prefixed with 'listen'
 
 pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
-    std::thread::sleep(Duration::from_secs(2));
+    PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+    std::thread::sleep(Duration::from_millis(50));
 
     let window_arc = Arc::new(window.clone());
     let pids = {
@@ -42,6 +44,8 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         supported_pids_info = PID_INFOS.to_vec();
     }
 
+    PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
+
     window.listen("get-pids", move |_| {
         let _ = window_arc.emit("update-pids", &supported_pids_info);
     });
@@ -52,12 +56,18 @@ pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("get-readiness-tests", move |_| {
+        PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+        std::thread::sleep(Duration::from_millis(50));
+
         let mut obd = obd_arc.lock().unwrap();
         let tests = [
             obd.get_common_tests_status().to_vec(),
             obd.get_advanced_tests_status().to_vec(),
         ]
         .concat();
+
+        PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
+
         let _ = window_arc.emit("update-readiness-tests", tests);
     });
 }
@@ -66,6 +76,7 @@ pub fn listen_send_ports(window: &Arc<Window>) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("get-serial-ports", move |_| {
+        println!("sending serial ports!");
         let _ = window_arc.emit("update-serial-ports", OBD::get_open_serial_port());
     });
 }
@@ -198,6 +209,8 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             window_arc_for_listen.listen("disconnect-elm", {
                 let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
                 move |_| {
+                    PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+                    std::thread::sleep(Duration::from_millis(50));
                     if let Ok(mut obd) = obd_for_listen.lock() {
                         do_send_connection_status(
                             &window_arc_for_listen,
@@ -207,17 +220,20 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
                         );
                         obd.disconnect();
                     }
+                    PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
                 }
             });
 
             listen_set_unit_preferences(&window_arc, &obd);
             listen_send_connection_status(&window_arc, &obd);
             listen_change_obd_settings(&window_arc, &obd);
-            listen_run_user_command(&window_arc, &obd);
+            
             listen_send_pids(&window_arc, &obd);
             listen_send_readiness_test(&window_arc, &obd);
             listen_send_dtcs(&window_arc, &obd);
             listen_clear_dtcs(&window_arc, &obd);
+            
+            listen_run_user_command(&window_arc, &obd);
         }
     });
 }
@@ -302,6 +318,9 @@ pub fn listen_run_user_command(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     let window_arc = Arc::clone(window);
     window.listen("terminal-command", move |event| {
+        PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+        std::thread::sleep(Duration::from_millis(50));
+
         let command = match event.payload() {
             Some(command) => command.replace("\"", ""),
             None => return,
@@ -329,7 +348,8 @@ pub fn listen_run_user_command(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 do_send_command_output(&window_arc, format!("Response: {}", err));
             }
         }
-        //do_send_command_output(&window_arc, &obd, "".into(), obd.is_connected());
+
+        PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
     });
 }
 
@@ -369,8 +389,9 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     let obd = Arc::clone(obd);
     let window = Arc::clone(window);
     spawn(async move {
+        PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
+        std::thread::sleep(Duration::from_millis(4000));
         let mut obd = obd.lock().unwrap();
-        std::thread::sleep(Duration::from_secs(2));
 
         // send the vin and vehicle details to the frontend
         match obd.get_vin() {
@@ -378,7 +399,7 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 let make = match vin.get_vehicle_make() {
                     Ok(make) => make,
                     Err(err) => {
-                        println!("failed to resolve vehicle make from vin: {}", vin.get_vin());
+                        println!("failed to resolve vehicle make from vin: '{}'", vin.get_vin());
                         println!("error: {err}");
                         "??".to_string()
                     }
@@ -388,7 +409,7 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                     Ok(model) => model,
                     Err(err) => {
                         println!(
-                            "failed to resolve vehicle model from vin: {}",
+                            "failed to resolve vehicle model from vin: '{}'",
                             vin.get_vin()
                         );
                         println!("error: {err}");
@@ -408,6 +429,8 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 println!("error: getting vin. vin is none.");
             }
         };
+
+        PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
     });
 }
 
@@ -422,5 +445,6 @@ pub fn do_send_connection_status(window: &Window, obd: &OBD, message: String, co
         protocol: obd.get_protocol_number(),
     };
 
+    println!("connection status: {conn_status:?}");
     let _ = window.emit("connection-status", conn_status);
 }

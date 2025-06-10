@@ -69,7 +69,7 @@ struct VehicleInfoExtended {
 
 /// Tells the frontend the serial port
 /// connection status.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 struct ConnectionStatus {
     connected: bool,

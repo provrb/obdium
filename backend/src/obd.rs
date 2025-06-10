@@ -214,7 +214,7 @@ impl OBD {
         }
 
         self.connection = serialport::new(port, baud_rate)
-            .timeout(Duration::from_secs(3))
+            .timeout(Duration::from_secs(1))
             .open()
             .ok();
 

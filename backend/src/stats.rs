@@ -1,6 +1,7 @@
 use obdium::{scalar::Scalar, BankNumber};
-use obdium::{SensorNumber, Service, OBD};
+use obdium::{SensorNumber, Service, OBD, PAUSE_OBD_COUNT};
 use serde::{Deserialize, Serialize};
+use std::sync::atomic::Ordering;
 use std::{
     sync::{Arc, Mutex},
     time::Duration,
@@ -43,6 +44,9 @@ pub fn critical_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let mut interval = time::interval(Duration::from_millis(500));
         loop {
             interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
 
             let mut obd = obd.lock().unwrap();
             if !obd.is_connected() {
@@ -74,6 +78,10 @@ pub fn high_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let mut cycle = 0;
         loop {
             interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
+
             cycle = (cycle + 1) % 5;
 
             match cycle {
@@ -226,6 +234,9 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let mut cycles = 0;
         loop {
             interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
 
             cycles = (cycles + 1) % 2;
             match cycles {
@@ -273,6 +284,10 @@ pub fn less_frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let mut cycles = 0;
         loop {
             interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
+
             cycles = (cycles + 1) % 4;
 
             match cycles {
@@ -409,6 +424,10 @@ pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
         let mut cycles = 0;
         loop {
             interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
+
             cycles = (cycles + 1) % 4;
 
             match cycles {
