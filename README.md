@@ -9,13 +9,38 @@
 
 ![AppImage](/docs/banner2.jpg)
 
+<details>
+   <summary><b>Click to view app screenshots!</b></summary>
+
+   ![connect-screen](/examples/connect-screen.png)
+   <p align="center"><em>Connection Screen - Not Connected</em></p>
+
+   ![connected-screen](/examples/connected-screen.png)
+   <p align="center"><em>Connection Screen - Connected</em></p>
+
+   ![obd-overview](/examples/obd-overview-screen.png)
+   <p align="center"><em>OBD Overview Screen</em></p>
+
+   ![readiness-tests](/examples/readiness-tests-screen.png)
+   <p align="center"><em>I/M Readiness Test Status</em></p>
+
+   ![supported-pids](/examples/supported-pids-screen.png)
+   <p align="center"><em>A List of Supported Pids</em></p>
+
+   ![vin-decoding](/examples/vin-decoding-screen.png)
+   <p align="center"><em>OBDium VIN Decoder</em></p>
+
+   ![settings](/examples/settings-screen.png)
+   <p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
+  
+</details>
+
 ## Table of Contents
 
 - [Overview](#overview)
 - [Implementation](#implementation-and-logic)
 - [Features](#features)
 - [Usage](#usage)
-- [Showcase](#showcase)
 - [License](#license)
 - [Contributing](#contributing)
 - [Project Structure](#project-structure)
@@ -124,33 +149,6 @@ Data will start popping up and simulate a real vehicle.
   - Resume tracking by clicking on it again at the very bottom of the dashboard.
 - Modify preferences like units, privacy, or startup settings in the **Settings** panel.
 - View an index of all PIDs in the **PID List** panel.
-
-## Showcase
-<details>
-   <summary><b>Click to view app screenshots!</b></summary>
-
-   ![connect-screen](/examples/connect-screen.png)
-   <p align="center"><em>Connection Screen - Not Connected</em></p>
-
-   ![connected-screen](/examples/connected-screen.png)
-   <p align="center"><em>Connection Screen - Connected</em></p>
-
-   ![obd-overview](/examples/obd-overview-screen.png)
-   <p align="center"><em>OBD Overview Screen</em></p>
-
-   ![readiness-tests](/examples/readiness-tests-screen.png)
-   <p align="center"><em>I/M Readiness Test Status</em></p>
-
-   ![supported-pids](/examples/supported-pids-screen.png)
-   <p align="center"><em>A List of Supported Pids</em></p>
-
-   ![vin-decoding](/examples/vin-decoding-screen.png)
-   <p align="center"><em>OBDium VIN Decoder</em></p>
-
-   ![settings](/examples/settings-screen.png)
-   <p align="center"><em>Preferences Screen - With Freeze Frame Active</em></p>
-  
-</details>
 
 ## Contributing
 Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
