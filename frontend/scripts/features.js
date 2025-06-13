@@ -13,7 +13,11 @@ const obdGrid = document.getElementById("dashboard-cards");
 const terminalOutput = document.getElementById("terminal-output");
 
 export function clearDtcs() {
-  console.log("test", dtcList.innerHTML);
+  addNotification(
+    "TROUBLE CODES",
+    "Cleared all pending diagnostic trouble codes.",
+  );
+
   if (dtcList.innerHTML.trim() == "") {
     return;
   }
@@ -208,4 +212,46 @@ export function appendTerminalOutput(msg) {
     now.getMilliseconds().toString().padStart(3, "0");
   terminalOutput.innerText += `${timeStr} ${msg}\n`;
   terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+export function removeNotification(el) {
+  el.style.transition = "opacity 0.2ss";
+  el.style.opacity = "0";
+  setTimeout(() => el.remove(), 200);
+}
+
+export function addNotification(title, desc) {
+  const container = document.getElementById("notification-container");
+
+  const notification = document.createElement("div");
+  notification.className = "notification";
+  notification.innerHTML = `
+    <div class="notification-hint">NOTIFICATION</div>
+    <button class="notification-close">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </button>
+    <div class="notification-title">${title}</div>
+    <div class="notification-desc">${desc}</div>
+    <div class="notification-progress"></div>
+  `;
+
+  notification
+    .querySelector(".notification-close")
+    .addEventListener("click", function () {
+      removeNotification(notification);
+    });
+
+  container.appendChild(notification);
+
+  // if there are more than 3 notifications present
+  // remove the bottom one
+  if (container.children.length > 3) {
+    removeNotification(container.children[0]);
+  }
+
+  setTimeout(() => removeNotification(notification), 6000);
 }

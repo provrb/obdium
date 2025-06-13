@@ -10,6 +10,8 @@ import {
   disconnectElm,
   clearObdView,
   appendTerminalOutput,
+  addNotification,
+  removeNotification,
 } from "./features.js";
 
 import { saveUnitPreference } from "./settings.js";
@@ -124,6 +126,8 @@ disconnectButton.addEventListener("click", disconnectElm);
 const dtcScanButton = document.getElementById("dtc-scan-button");
 dtcScanButton.addEventListener("click", async () => {
   await new Promise((r) => setTimeout(r, 500));
+
+  addNotification("TROUBLE CODES", "Scanned for diagnostic trouble codes.");
 
   emit("get-dtcs");
 });

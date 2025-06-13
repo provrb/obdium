@@ -3,6 +3,8 @@ import {
   exportDtcs,
   addGraphDropdownOption,
   appendTerminalOutput,
+  addNotification,
+  removeNotification,
 } from "./features.js";
 import {
   saveConnectionConfig,
@@ -18,8 +20,6 @@ const disconnectButton = document.getElementById("btn-disconnect");
 const demoStatus = document.getElementById("demo-status");
 
 listen("update-card", (event) => {
-  if (window.obdViewPaused) return;
-
   const cards = document.querySelectorAll(".card");
   const exists = Array.from(cards).some((card) => {
     return card.textContent.includes(event.payload.name);
@@ -129,8 +129,11 @@ listen("connection-status", async (event) => {
   const protocolDropdown = document.getElementById("protocol-menu");
   const protocolSelected = document.getElementById("protocol-selected");
   const status = document.getElementById("connection-details");
+  console.log(event);
 
   if (event.payload.connected) {
+    if (window.connected) return;
+
     const serialPort = event.payload.serialPort;
     const baudRate = event.payload.baudRate;
     const protocol = event.payload.protocol;
@@ -166,6 +169,8 @@ listen("connection-status", async (event) => {
       protocol: parseInt(protocol),
     };
 
+    addNotification("CONNECTED VIA ELM", event.payload.message);
+
     saveConnectionConfig();
 
     if (window.autoCheckCodes) {
@@ -189,6 +194,8 @@ listen("connection-status", async (event) => {
       emit("get-readiness-tests");
     }
   } else {
+    if (!window.connected) return;
+
     connectionLabel.textContent = "ELM327 NOT CONNECTED";
     status.textContent = "NO CONNECTION ESTABLISHED";
     connectionIcon.src = "/assets/icons/not-connected.png";
@@ -198,6 +205,8 @@ listen("connection-status", async (event) => {
     connectButton.disabled = false;
     disconnectButton.disabled = true;
 
+    addNotification("DISCONNECTED FROM ELM", event.payload.message);
+
     if (demoStatus.style.display !== "none") demoStatus.style.display = "none";
   }
 });
@@ -206,8 +215,6 @@ listen("update-pids", (event) => {
   const pids = event.payload;
   const pidList = document.getElementById("pid-list");
   pidList.innerHTML = ``;
-
-  console.log("updating pids", event);
 
   for (const pidInfo of pids) {
     const pidGroup = document.createElement("div");
@@ -293,6 +300,10 @@ listen("update-pids", (event) => {
 
   // Increment results counter
   const header = document.getElementById("pid-list-header");
+  if (header.textContent != "VIEW PIDS (" + pidList.children.length + ")") {
+    addNotification("PID INDEX", "Updated list of supported parameter ID's.");
+  }
+
   header.textContent = "VIEW PIDS (" + pidList.children.length + ")";
 });
 
@@ -300,9 +311,6 @@ const dtcList = document.getElementById("dtc-list");
 const dtcHeader = document.getElementById("dtc-header");
 
 listen("update-dtcs", (event) => {
-  console.log("received event to update dtcs", event);
-  // set title
-
   const dtcs = event.payload;
   if (!dtcs) {
     dtcHeader.textContent = "DIAGNOSTIC TROUBLE CODES (0)";
@@ -323,28 +331,28 @@ listen("update-dtcs", (event) => {
     dtcRow.className = "info-row";
     dtcRow.style = "height: 60px; position: relative;";
     dtcRow.innerHTML = `
-        <div class="category" id="dtc-category" style="font-size: 40px; font-weight: 900; margin-left: 6px; min-width: 70px; text-align: center; display: inline-block;">
-            ${troubleCode.category}
-        </div>
-        <div class="name" style="display: inline-block; vertical-align: top;">
-            <span class="name" id="dtc-name" style="font-size: 25px; font-weight: 700;">${troubleCode.name}</span>
-            <div class="name" id="dtc-location" style="color: #BDBDBD; font-size: 15px; margin-top: -5px; font-weight: 600;">
-            ${troubleCode.location}
-            </div>
-        </div>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-            style="margin-left: 190px; position: absolute; top: 50%; transform: translateY(-50%);">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-        </svg>
-        
-        <div class="name" id="dtc-description"
-            style="position: absolute; color: #BDBDBD; left: 240px; top: 0; bottom: 0; max-width: 600px; overflow-wrap: break-word; display: flex; align-items: center; height: 100%;">
-            ${description}
-        </div>
-        `;
+          <div class="category" id="dtc-category" style="font-size: 40px; font-weight: 900; margin-left: 6px; min-width: 70px; text-align: center; display: inline-block;">
+              ${troubleCode.category}
+          </div>
+          <div class="name" style="display: inline-block; vertical-align: top;">
+              <span class="name" id="dtc-name" style="font-size: 25px; font-weight: 700;">${troubleCode.name}</span>
+              <div class="name" id="dtc-location" style="color: #BDBDBD; font-size: 15px; margin-top: -5px; font-weight: 600;">
+              ${troubleCode.location}
+              </div>
+          </div>
+          
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+              style="margin-left: 190px; position: absolute; top: 50%; transform: translateY(-50%);">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+          </svg>
+          
+          <div class="name" id="dtc-description"
+              style="position: absolute; color: #BDBDBD; left: 240px; top: 0; bottom: 0; max-width: 600px; overflow-wrap: break-word; display: flex; align-items: center; height: 100%;">
+              ${description}
+          </div>
+          `;
 
     dtcList.appendChild(dtcRow);
   }
@@ -379,6 +387,8 @@ listen("update-serial-ports", (event) => {
 const readinessTests = document.getElementById("readiness-tests-list");
 listen("update-readiness-tests", (event) => {
   readinessTests.innerHTML = ``;
+
+  addNotification("READINESS TESTS", "Updated I/M readiness test information.");
 
   const tests = event.payload;
   for (const test of tests) {

@@ -1,65 +1,104 @@
 .notification {
-    background-color: #151515;
-    color: #d4dadf;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    border-radius: 5px;
-    padding: 10px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    height: 120px;
-    width: 350px;
-    z-index: 1000;
-    border: 1px solid #242424;
+  position: relative;
+  background-color: #151515;
+  color: #d4dadf;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  height: 120px;
+  width: 350px;
+  border: 1px solid #242424;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    margin 0.2s ease;
 }
 
 .notification-hint {
-    font-size: 0.8rem;
-    color: #9a9fa3;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  padding-left: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 0.75rem;
+  color: #9a9fa3;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #242424;
 }
 
 .notification-title {
-    font-size: 1rem;
-    padding-top: 10px;
-    color: #f7f3ff;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  font-size: 1rem;
+  padding-top: 7px;
+  padding-left: 12px;
+  color: #f7f3ff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .notification-desc {
-    font-size: 0.9rem;
-    padding-top: 3px;
-    color: #f7f3ff;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  font-size: 0.9rem;
+  padding-top: 3px;
+  padding-left: 12px;
+  color: #f7f3ff;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .notification-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 12px;
-    right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 5px;
+  right: 10px;
 }
 
 .notification-close svg {
-    width: 12px;
-    height: 12px;
-    color: #d4dadf;
-    transition: fill 0.2s;
+  width: 12px;
+  height: 12px;
+  color: #d4dadf;
+  transition: fill 0.2s;
 }
 
 .notification-close:hover svg {
-    color: #ff5c5c;
+  color: #ff5c5c;
+}
+
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: #c2c2c2;
+  width: 0%;
+  animation: fillBar 6s linear forwards;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+@keyframes fillBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+#notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  z-index: 1000;
 }
