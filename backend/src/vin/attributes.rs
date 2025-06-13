@@ -52,8 +52,8 @@ impl VIN {
             _ => {
                 return Err(Error::InvalidCharacter {
                     ch: pos10,
-                    pos: Some(9),
-                    msg: "got invalid character for model year.",
+                    pos: 9,
+                    msg: "Invalid character for model year.",
                 })
             }
         };

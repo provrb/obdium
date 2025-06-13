@@ -366,7 +366,6 @@ const menu = document.getElementById("serial-port-dropdown-menu");
 const serialPortSelected = document.getElementById("serial-port-selected");
 
 listen("update-serial-ports", (event) => {
-  serialPortSelected.textContent = "NO PORTS SELECTED";
   menu.innerHTML = "";
 
   const demoModePortOption = document.createElement("li");
@@ -407,4 +406,53 @@ listen("update-readiness-tests", (event) => {
 
 listen("update-command-output", (event) => {
   appendTerminalOutput(event.payload);
+});
+
+const exportButton = document.getElementById("vin-export");
+
+// show vehicle info if no error
+listen("decode-vin", (event) => {
+  const data = event.payload;
+
+  if (!data.error_msg) {
+    return;
+  }
+
+  addNotification("VIN DECODING", data.error_msg);
+
+  const container = document.getElementById("vin-container");
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  // show all fields
+  for (const [key, value] of Object.entries(event.payload)) {
+    if (key === "error_msg" || value == "N/A" || value == "-1") continue;
+
+    const name = key.replaceAll("_", " ").toUpperCase();
+
+    const card = document.createElement("div");
+    const h3 = document.createElement("h3");
+    const valueDiv = document.createElement("div");
+
+    card.className = "card";
+    valueDiv.className = "value";
+
+    h3.textContent = name;
+    valueDiv.textContent = value.toUpperCase();
+    valueDiv.style.fontSize = "1.3rem";
+    valueDiv.style.wordBreak = "break-word";
+    valueDiv.style.whiteSpace = "normal";
+    valueDiv.style.maxWidth = "320px";
+
+    // append elements to card
+    card.appendChild(h3);
+    card.appendChild(valueDiv);
+
+    container.appendChild(card);
+  }
+
+  exportButton.disabled = false;
 });

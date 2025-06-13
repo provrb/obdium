@@ -44,7 +44,7 @@ fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> O
             do_send_connection_status(
                 window,
                 &obd,
-                format!("Connected to port {port} on {band} band"),
+                format!("Connected to port {port} on {band} baud"),
                 true,
             );
 

@@ -374,7 +374,7 @@
             </div>
 
             <button class="dropdown-toggle" id="serial-port-selected">
-              NO PORTS FOUND
+              DEMO MODE
             </button>
             <ul class="dropdown-menu" id="serial-port-dropdown-menu">
               <li data-value="DEMO MODE">DEMO MODE</li>
@@ -1109,6 +1109,8 @@
     const decodeVinBtn = document.getElementById("vin-decode-start");
     const vinInput = document.querySelector(".vin-input");
     const vinExportBtn = document.getElementById("vin-export");
+    const vinLabel = document.getElementById("vin-full");
+    const vehicleName = document.getElementById("vehicle-title");
 
     decodeVinBtn.addEventListener("click", async function (event) {
       const query = vinInput.value.trim();
@@ -1116,56 +1118,6 @@
         // request backend to decode vin
         await emit("decode-vin", query);
       }
-    });
-
-    const vinLabel = document.getElementById("vin-full");
-    const vehicleName = document.getElementById("vehicle-title");
-    const exportButton = document.getElementById("vin-export");
-
-    // show vehicle info if no error
-    listen("decode-vin", (event) => {
-      const data = event.payload;
-
-      if (!data.error_msg) {
-        return;
-      }
-
-      console.log(data.error_msg);
-      const container = document.getElementById("vin-container");
-      if (!container) {
-        return;
-      }
-
-      container.innerHTML = "";
-
-      // show all fields
-      for (const [key, value] of Object.entries(event.payload)) {
-        if (key === "error_msg" || value == "N/A" || value == "-1") continue;
-
-        const name = key.replaceAll("_", " ").toUpperCase();
-
-        const card = document.createElement("div");
-        const h3 = document.createElement("h3");
-        const valueDiv = document.createElement("div");
-
-        card.className = "card";
-        valueDiv.className = "value";
-
-        h3.textContent = name;
-        valueDiv.textContent = value.toUpperCase();
-        valueDiv.style.fontSize = "1.3rem";
-        valueDiv.style.wordBreak = "break-word";
-        valueDiv.style.whiteSpace = "normal";
-        valueDiv.style.maxWidth = "320px";
-
-        // append elements to card
-        card.appendChild(h3);
-        card.appendChild(valueDiv);
-
-        container.appendChild(card);
-      }
-
-      exportButton.disabled = false;
     });
 
     /// Toggle different screens when sidebar buttons are clicked

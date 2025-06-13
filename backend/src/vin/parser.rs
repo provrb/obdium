@@ -6,39 +6,39 @@ use crate::vin::{ElementId, VPIC_DB_PATH};
 
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("connection to vpic db failed.")]
+    #[error("Connection to VPIC database failed.")]
     VPICConnectFailed,
-    #[error("not connected to vpic db")]
+    #[error("Not connected to VPIC database.")]
     VPICNoConnection,
-    #[error("no lookup table for element id {0:?}")]
+    #[error("No lookup table for element id {0:?}.")]
     VPICNoLookupTable(ElementId),
-    #[error("when querying vpic db. query: {0}")]
+    #[error("When querying VPIC database - Query: {0}.")]
     VPICQueryError(&'static str),
-    #[error("when converting attribute id to data type")]
+    #[error("When converting attribute id to data type.")]
     ParseError,
-    #[error("vin length invalid. must be 17 characters")]
+    #[error("VIN length invalid. Must be 17 characters.")]
     InvalidVinLength,
-    #[error("when calculate vin wmi")]
+    #[error("When calculating VIN WMI.")]
     WMIError,
-    #[error("when calculating model year from vin")]
+    #[error("When calculating model year from VIN.")]
     ModelYearError,
-    #[error("no results found for query {0}")]
+    #[error("No results found for query {0}.")]
     NoResultsFound(&'static str),
-    #[error("vin schema id is invalid")]
+    #[error("VIN schema ID invalid.")]
     InvalidVinSchemaId,
-    #[error("model year is invalid")]
+    #[error("Model year is invalid.")]
     InvalidModelYear,
-    #[error("vehicle spec schema id is invalid")]
+    #[error("Vehicle spec schema ID is invalid.")]
     InvalidVSpecSchemaId,
-    #[error("vehicle spec pattern id is invalid")]
+    #[error("Vehicle spec pattern ID is invalid.")]
     InvalidVSpecPatternId,
-    #[error("invalid vin character: {ch} at position {pos:?}. {msg}")]
+    #[error("Invalid VIN character: '{ch}' at position '{pos}'. {msg}")]
     InvalidCharacter {
         ch: char,
-        pos: Option<usize>,
+        pos: usize,
         msg: &'static str,
     },
-    #[error("check digit does not calculate properly. expected {expected}, found {found}")]
+    #[error("Check digit does not calculate properly. Expected '{expected}', Found '{found}'")]
     InvalidCheckDigit { expected: char, found: char },
 }
 
@@ -81,7 +81,6 @@ impl VIN {
             }
         }
 
-        _vin.checksum()?;
         _vin.get_wmi();
 
         if _vin.connect_to_vpic_db().is_err() {
@@ -98,7 +97,7 @@ impl VIN {
         }
     }
 
-    fn get_transliteration(ch: &char) -> Result<u8, Error> {
+    fn get_transliteration(ch: &char, ch_index: usize) -> Result<u8, Error> {
         // Numeric digits use their own digits as transliteration
         if ch.is_numeric() {
             return Ok(ch.to_digit(10).unwrap() as u8);
@@ -116,8 +115,8 @@ impl VIN {
             'R' | 'Z' => Ok(9),
             _ => Err(Error::InvalidCharacter {
                 ch: *ch,
-                pos: None,
-                msg: "unexpected character when transliterating.",
+                pos: ch_index,
+                msg: "Unexpected character when transliterating.",
             }),
         }
     }
@@ -153,7 +152,7 @@ impl VIN {
         //    - Get the weight of the character based on its index in the vin
         //    - We add one since index starts at 0
         for (index, ch) in vin.chars().enumerate() {
-            let trans = VIN::get_transliteration(&ch)?;
+            let trans = VIN::get_transliteration(&ch, index)?;
             let weight = VIN::get_weight(index + 1);
             products.push((trans * weight) as u16);
         }

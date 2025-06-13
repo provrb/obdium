@@ -107,8 +107,16 @@ pub fn listen_decode_vin(window: &Window) {
             }
         };
 
+        let error_message = {
+            if let Err(error) = vin.checksum() {
+                format!("{}", error)
+            } else {
+                "Decoded successfully.".to_string()
+            }
+        };
+
         let v_info = VehicleInfoExtended {
-            error_msg: "Decoded successfully.".to_string(),
+            error_msg: error_message,
             vin: vin.get_vin().to_string(),
             make: vin.get_vehicle_make().unwrap_or("N/A".into()),
             model: vin.get_vehicle_model().unwrap_or("N/A".into()),

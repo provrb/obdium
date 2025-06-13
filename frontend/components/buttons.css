@@ -23,6 +23,7 @@
   vertical-align: middle;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  user-select: none;
 }
 
 .btn.connect {
@@ -74,6 +75,7 @@
   display: inline-block;
   width: 290px;
   margin-right: 10px;
+  user-select: none;
 }
 
 .dropdown label {
