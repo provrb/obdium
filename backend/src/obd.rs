@@ -937,6 +937,8 @@ impl OBD {
             return Ok(Scalar::no_data());
         }
 
+        let equation = equation.to_uppercase();
+
         // TODO: fix this ugly code.
         let mut context: HashMapContext<DefaultNumericTypes> = HashMapContext::new();
         if equation.contains("A") {
@@ -955,7 +957,7 @@ impl OBD {
             context.set_value("E".into(), Value::from_float(response.e_value() as f64))?;
         }
 
-        match eval_float_with_context(equation, &context) {
+        match eval_float_with_context(&equation, &context) {
             Ok(res) => Ok(Scalar::new(
                 res as f32,
                 Unit::from_str(unit).unwrap_or(Unit::Unknown),
