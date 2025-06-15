@@ -255,3 +255,160 @@ export function addNotification(title, desc) {
 
   setTimeout(() => removeNotification(notification), 6000);
 }
+
+export function listenExpandPID(pidGroup) {
+  // Add expand/collapse event listener
+  const row = pidGroup.querySelector(".info-row");
+  const details = pidGroup.querySelector(".pid-details");
+
+  row.addEventListener("click", () => {
+    const expanded = row.classList.contains("expanded");
+
+    if (expanded) {
+      details.style.height = details.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        details.style.height = "0px";
+      });
+      row.classList.remove("expanded");
+    } else {
+      details.style.display = "block";
+      const height = details.scrollHeight + "px";
+      details.style.height = "0px";
+      requestAnimationFrame(() => {
+        details.style.height = height;
+      });
+      row.classList.add("expanded");
+    }
+
+    details.addEventListener("transitionend", function handler(e) {
+      if (e.propertyName === "height") {
+        if (!row.classList.contains("expanded")) {
+          details.style.display = "none";
+        } else {
+          details.style.height = "auto";
+        }
+        details.removeEventListener("transitionend", handler);
+      }
+    });
+  });
+}
+
+export function btnHoldToActivate(button, fillElement, onActivate, options = {}) {
+  const {
+    holdTime = 1000,
+    fillTransition = "width 0.3s"
+  } = options;
+
+  let interval;
+  let progress = 0;
+  let isActive = false;
+
+  function resetButtonFill() {
+    clearInterval(interval);
+    fillElement.style.transition = fillTransition;
+    fillElement.style.width = "0%";
+    progress = 0;
+    isActive = false;
+  }
+
+  button.addEventListener("mousedown", () => {
+    progress = 0;
+    isActive = true;
+    fillElement.style.transition = "none";
+    fillElement.style.width = "0%";
+    const step = 100 / (holdTime / 10);
+
+    interval = setInterval(() => {
+      if (!isActive) return;
+      progress += step;
+      fillElement.style.width = Math.min(progress, 100) + "%";
+      if (progress >= 100) {
+        clearInterval(interval);
+        resetButtonFill();
+        onActivate();
+      }
+    }, 10);
+  });
+
+  button.addEventListener("mouseup", resetButtonFill);
+  button.addEventListener("mouseleave", resetButtonFill);
+}
+
+export function addCustomPIDRow() {
+  const pidGroup = document.createElement("div");
+  const pidList = document.getElementById("pid-list");
+
+  pidGroup.className = "pid-group";
+  pidGroup.innerHTML = `
+      <div class="pid-container">
+        <div class="info-row">
+          <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
+          <span class="name">[CUSTOM]</span>
+        </div>
+        <div class="pid-details" style="display: none; height: 0;">
+          <div class="pid-data-columns">
+            <div class="pid-column">
+              <div class="pid-label">MODE</div>
+              <input class="pid-value" type="text" placeholder="??"></input>
+            </div>
+            <div class="pid-column">
+              <div class="pid-label">PID</div>
+              <input class="pid-value" type="text" placeholder="??"></input>
+            </div>
+            <div class="pid-column">
+              <div class="pid-label">COMMAND</div>
+              <div class="pid-value"></div>
+            </div>
+            <div class="pid-column">
+              <div class="pid-label">EQUATION</div>
+              <input class="pid-value" type="text" placeholder="??"></input>
+            </div>
+            <div class="pid-column">
+              <div class="pid-label">UNIT</div>
+              <input class="pid-value" type="text" placeholder="??"></input>
+            </div>
+          </div>
+          <div class="pid-button" id="remove-pid">
+            <span style="z-index: 5">REMOVE</span>
+            <div class="btn-hold-fill" id="remove-pid-fill" style="transition: width 0.3s; width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+      `;
+
+  const modeInput = pidGroup.querySelector('.pid-column:nth-child(1) .pid-value');
+  const pidInput = pidGroup.querySelector('.pid-column:nth-child(2) .pid-value');
+  const commandDiv = pidGroup.querySelector('.pid-column:nth-child(3) .pid-value');
+
+  modeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const mode = modeInput.value.trim();
+      if (!mode.startsWith('$')) {
+        modeInput.value = '$' + mode;
+      }
+
+      const pid = pidInput.value.trim();
+      commandDiv.textContent = mode && pid ? `${mode}${pid}` : '';
+    }
+  });
+  
+  pidInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const mode = modeInput.value.trim().replace("$", "");
+      const pid = pidInput.value.trim();
+      commandDiv.textContent = mode && pid ? `${mode}${pid}` : '';
+    }
+  });
+
+  const removeBtn = pidGroup.querySelector("#remove-pid");
+  const fill = pidGroup.querySelector("#remove-pid-fill");
+  btnHoldToActivate(removeBtn, fill, () => {
+    if (pidGroup) {
+      pidGroup.remove();
+    }
+  })
+
+  pidList.appendChild(pidGroup);
+
+  listenExpandPID(pidGroup);
+}

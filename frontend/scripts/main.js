@@ -11,7 +11,8 @@ import {
   clearObdView,
   appendTerminalOutput,
   addNotification,
-  removeNotification,
+  btnHoldToActivate,
+  addCustomPIDRow,
 } from "./features.js";
 
 import { saveUnitPreference } from "./settings.js";
@@ -133,37 +134,7 @@ dtcScanButton.addEventListener("click", async () => {
 });
 
 const fill = document.getElementById("btn-hold-fill");
-
-function resetButtonFill() {
-  clearInterval(interval);
-  fill.style.transition = "width 0.3s";
-  fill.style.width = "0%";
-}
-
-let holdTimeout;
-let progress = 0;
-let interval;
-
-dtcClearButton.addEventListener("mousedown", () => {
-  progress = 0;
-  fill.style.transition = "none";
-  fill.style.width = "0%";
-
-  interval = setInterval(() => {
-    progress += 1;
-    fill.style.width = progress + "%";
-    if (progress >= 100) {
-      clearInterval(interval);
-
-      // held
-      resetButtonFill();
-      clearDtcs();
-    }
-  }, 10);
-});
-
-dtcClearButton.addEventListener("mouseup", resetButtonFill);
-dtcClearButton.addEventListener("mouseleave", resetButtonFill);
+btnHoldToActivate(dtcClearButton, fill, clearDtcs);
 
 const dtcLogButton = document.getElementById("dtc-log-file");
 const dtcList = document.getElementById("dtc-list");
@@ -308,4 +279,9 @@ input.addEventListener("keydown", (e) => {
     }
     e.preventDefault();
   }
+});
+
+const addPidsButton = document.getElementById("pid-add");
+addPidsButton.addEventListener("click", () => {
+  addCustomPIDRow();
 });

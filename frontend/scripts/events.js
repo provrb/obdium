@@ -4,7 +4,7 @@ import {
   addGraphDropdownOption,
   appendTerminalOutput,
   addNotification,
-  removeNotification,
+  listenExpandPID
 } from "./features.js";
 import {
   saveConnectionConfig,
@@ -248,47 +248,14 @@ listen("update-pids", (event) => {
                 <div class="pid-value">${pidInfo.unit == "" ? "??" : pidInfo.unit.toUpperCase()}</div>
                 </div>
             </div>
-            <button class="pid-button">DETAILS</button>
+            <button class="pid-button" id="remove-pid">REMOVE</button>
             </div>
         </div>
         `;
 
     pidList.appendChild(pidGroup);
 
-    // Add expand/collapse event listener
-    const row = pidGroup.querySelector(".info-row");
-    const details = pidGroup.querySelector(".pid-details");
-
-    row.addEventListener("click", () => {
-      const expanded = row.classList.contains("expanded");
-
-      if (expanded) {
-        details.style.height = details.scrollHeight + "px";
-        requestAnimationFrame(() => {
-          details.style.height = "0px";
-        });
-        row.classList.remove("expanded");
-      } else {
-        details.style.display = "block";
-        const height = details.scrollHeight + "px";
-        details.style.height = "0px";
-        requestAnimationFrame(() => {
-          details.style.height = height;
-        });
-        row.classList.add("expanded");
-      }
-
-      details.addEventListener("transitionend", function handler(e) {
-        if (e.propertyName === "height") {
-          if (!row.classList.contains("expanded")) {
-            details.style.display = "none";
-          } else {
-            details.style.height = "auto";
-          }
-          details.removeEventListener("transitionend", handler);
-        }
-      });
-    });
+    listenExpandPID(pidGroup);
 
     addGraphDropdownOption(
       pidInfo.pid,

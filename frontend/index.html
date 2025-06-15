@@ -491,7 +491,16 @@
 
       <div id="edit" class="screen" style="display: none">
         <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
-        <div id="pid-list" class="info-row-scroll"></div>
+        <div class="button-row" style="margin-bottom: 20px">
+          <div
+            class="btn"
+            id="pid-add"
+            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
+          >
+            ADD PID
+          </div>
+        </div>
+        <div id="pid-list" class="info-row-scroll" style="margin-top: -10px;"></div>
       </div>
 
       <div id="readiness-tests" class="screen" style="display: none">
@@ -502,14 +511,14 @@
           <button
             id="readiness-test-refresh"
             class="btn"
-            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
           >
             REFRESH
           </button>
           <button
             id="readiness-test-export"
             class="btn"
-            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
           >
             EXPORT
           </button>
