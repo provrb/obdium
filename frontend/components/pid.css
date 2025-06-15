@@ -57,11 +57,16 @@
   font-size: 0.95rem;
   position: static;
   padding: 0 12px;
-  padding-bottom: 2px;
   transition:
     height 0.3s ease,
     opacity 0.3s ease,
     transform 0.3s ease;
+}
+
+.info-row.expanded + .pid-details {
+  height: 83px !important;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .pid-data-columns {
