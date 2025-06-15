@@ -74,6 +74,7 @@
   gap: 40px;
 }
 
+.info-row input,
 .pid-data-columns input {
   background-color: transparent !important;
   outline: none;
@@ -82,10 +83,17 @@
   border: none;
   border-bottom: 2px solid #494949;
   margin-top: 2px;
-  color: #f7f3ff !important;
+  color: #f7f3ff;
   font-weight: 500;
   font-size: 0.85rem;
   font-family: "Montserrat", sans-serif;
+}
+
+.info-row input {
+  width: 100%;
+  font-size: 1rem !important;
+  border: none;
+  color: #f3f3f2;
 }
 
 .pid-column {
@@ -99,7 +107,7 @@
   margin-bottom: 10px;
   height: 22px;
   width: 90px;
-  background-color: #303030;
+  background-color: #292929;
   color: #f7f3ff;
   font-weight: 700;
   font-size: 0.8em;
@@ -113,6 +121,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .pid-label {

@@ -343,7 +343,7 @@ export function addCustomPIDRow() {
       <div class="pid-container">
         <div class="info-row">
           <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-          <span class="name">[CUSTOM]</span>
+          <input class="name" type="text" placeholder="ENTER PID NAME"></input>
         </div>
         <div class="pid-details" style="display: none; height: 0;">
           <div class="pid-data-columns">
@@ -406,9 +406,10 @@ export function addCustomPIDRow() {
     if (pidGroup) {
       pidGroup.remove();
     }
-  })
+  },
+  {holdTime: 500})
 
   pidList.appendChild(pidGroup);
-
+  pidList.scrollTop = pidList.scrollHeight;
   listenExpandPID(pidGroup);
 }
