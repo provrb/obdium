@@ -47,6 +47,7 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     }
 
     PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
+    println!("Supported pids: {supported_pids_info:?}");
 
     window.listen("get-pids", move |_| {
         let _ = window_arc.emit("update-pids", &supported_pids_info);

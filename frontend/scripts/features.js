@@ -293,11 +293,13 @@ export function listenExpandPID(pidGroup) {
   });
 }
 
-export function btnHoldToActivate(button, fillElement, onActivate, options = {}) {
-  const {
-    holdTime = 1000,
-    fillTransition = "width 0.3s"
-  } = options;
+export function btnHoldToActivate(
+  button,
+  fillElement,
+  onActivate,
+  options = {},
+) {
+  const { holdTime = 1000, fillTransition = "width 0.3s" } = options;
 
   let interval;
   let progress = 0;
@@ -343,17 +345,17 @@ export function addCustomPIDRow() {
       <div class="pid-container">
         <div class="info-row">
           <button class="arrow-icon"><img src="/assets/icons/arrow-icon.png"></button>
-          <input class="name" type="text" placeholder="ENTER PID NAME"></input>
+          <input class="name" type="text" placeholder="ENTER PID NAME" maxlength="55"></input>
         </div>
         <div class="pid-details" style="display: none; height: 0;">
           <div class="pid-data-columns">
             <div class="pid-column">
               <div class="pid-label">MODE</div>
-              <input class="pid-value" type="text" placeholder="??"></input>
+              <input class="pid-value" type="text" placeholder="??" maxlength="2"></input>
             </div>
             <div class="pid-column">
               <div class="pid-label">PID</div>
-              <input class="pid-value" type="text" placeholder="??"></input>
+              <input class="pid-value" type="text" placeholder="??" maxlength="4"></input>
             </div>
             <div class="pid-column">
               <div class="pid-label">COMMAND</div>
@@ -376,38 +378,99 @@ export function addCustomPIDRow() {
       </div>
       `;
 
-  const modeInput = pidGroup.querySelector('.pid-column:nth-child(1) .pid-value');
-  const pidInput = pidGroup.querySelector('.pid-column:nth-child(2) .pid-value');
-  const commandDiv = pidGroup.querySelector('.pid-column:nth-child(3) .pid-value');
+  const modeInput = pidGroup.querySelector(
+    ".pid-column:nth-child(1) .pid-value",
+  );
+  const pidInput = pidGroup.querySelector(
+    ".pid-column:nth-child(2) .pid-value",
+  );
+  const unitInput = pidGroup.querySelector(
+    ".pid-column:nth-child(5) .pid-value",
+  );
+  const nameInput = pidGroup.querySelector(".info-row .name");
+  const commandDiv = pidGroup.querySelector(
+    ".pid-column:nth-child(3) .pid-value",
+  );
 
-  modeInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+  function isValidPID() {
+    // mode, pid, equation, unit, pid name must all be filled out
+    const mode = modeInput.value.trim();
+    const pid = pidInput.value.trim();
+    const equation = commandDiv.value.trim();
+    const unit = unitInput.value.trim();
+    const name = nameInput.value.trim();
+
+    return (
+      mode.startsWith("$") &&
+      mode.length - 1 == 22 &&
+      pid &&
+      pid.length >= 2 &&
+      unit &&
+      name
+    );
+  }
+
+  function updateCommand() {
+    const mode = modeInput.value.trim().replace("$", "");
+    const pid = pidInput.value.trim();
+    commandDiv.textContent = mode && pid ? `${mode}${pid}` : "";
+  }
+
+  function trackCustomPID() {
+    // tell the backend to track the new custom pid
+  }
+
+  modeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
       const mode = modeInput.value.trim();
-      if (!mode.startsWith('$')) {
-        modeInput.value = '$' + mode;
+      if (!mode.startsWith("$")) {
+        modeInput.value = "$" + mode;
       }
 
       const pid = pidInput.value.trim();
-      commandDiv.textContent = mode && pid ? `${mode}${pid}` : '';
+      commandDiv.textContent = mode && pid ? `${mode}${pid}` : "";
     }
   });
-  
-  pidInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      const mode = modeInput.value.trim().replace("$", "");
-      const pid = pidInput.value.trim();
-      commandDiv.textContent = mode && pid ? `${mode}${pid}` : '';
+
+  modeInput.addEventListener("blur", () => {
+    const mode = modeInput.value.trim();
+    if (!mode.startsWith("$") && mode.length > 0) {
+      modeInput.value = "$" + mode;
     }
+
+    const pid = pidInput.value.trim();
+    commandDiv.textContent = mode && pid ? `${mode}${pid}` : "";
+  });
+
+  modeInput.addEventListener("click", (e) => {
+    const mode = modeInput.value.trim();
+    if (mode.startsWith("$")) {
+      modeInput.value = mode.slice(1);
+    }
+  });
+
+  pidInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      updateCommand();
+    }
+  });
+
+  pidInput.addEventListener("blur", () => {
+    updateCommand();
   });
 
   const removeBtn = pidGroup.querySelector("#remove-pid");
   const fill = pidGroup.querySelector("#remove-pid-fill");
-  btnHoldToActivate(removeBtn, fill, () => {
-    if (pidGroup) {
-      pidGroup.remove();
-    }
-  },
-  {holdTime: 500})
+  btnHoldToActivate(
+    removeBtn,
+    fill,
+    () => {
+      if (pidGroup) {
+        pidGroup.remove();
+      }
+    },
+    { holdTime: 500 },
+  );
 
   pidList.appendChild(pidGroup);
   pidList.scrollTop = pidList.scrollHeight;

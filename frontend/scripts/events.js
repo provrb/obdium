@@ -4,7 +4,7 @@ import {
   addGraphDropdownOption,
   appendTerminalOutput,
   addNotification,
-  listenExpandPID
+  listenExpandPID,
 } from "./features.js";
 import {
   saveConnectionConfig,
