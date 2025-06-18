@@ -3,9 +3,14 @@
 ///
 /// Includes listening for requests from the frontend
 /// to perform actions
-/// 
-use super::{ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleInfoExtended, ACTIVE_OBD};
-use crate::bridge::{unlisten_events, READINESS_TESTS_LISTENER, USER_COMMAND_LISTENER};
+///
+use super::{
+    ConnectPaylod, ConnectionStatus, Dtc, Setting, VehicleInfo, VehicleInfoExtended, ACTIVE_OBD,
+};
+use crate::bridge::{
+    unlisten_events, CustomPid, CUSTOM_PIDS_TRACKED, READINESS_TESTS_LISTENER,
+    USER_COMMAND_LISTENER,
+};
 use crate::{connect_obd, track_data, OBD};
 use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
@@ -51,6 +56,27 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
 
     window.listen("get-pids", move |_| {
         let _ = window_arc.emit("update-pids", &supported_pids_info);
+    });
+}
+
+pub fn listen_track_custom_pid(window: &Arc<Window>) {
+    window.listen("track-custom-pid", move |event| {
+        let payload = match event.payload() {
+            Some(payload) => payload,
+            None => return,
+        };
+
+        let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
+        let custom_pid: CustomPid = match serde_json::from_str(payload) {
+            Ok(p) => p,
+            Err(e) => {
+                println!("Failed to parse pid payload: {e}");
+                return;
+            }
+        };
+
+        println!("Tracking PID {:?}", &custom_pid);
+        pids.push(custom_pid);
     });
 }
 
@@ -235,12 +261,12 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
             listen_set_unit_preferences(&window_arc, &obd);
             listen_send_connection_status(&window_arc, &obd);
             listen_change_obd_settings(&window_arc, &obd);
-            
+
             listen_send_pids(&window_arc, &obd);
             listen_send_readiness_test(&window_arc, &obd);
             listen_send_dtcs(&window_arc, &obd);
             listen_clear_dtcs(&window_arc, &obd);
-            
+
             listen_run_user_command(&window_arc);
         }
     });
@@ -375,7 +401,7 @@ pub fn listen_run_user_command(window: &Arc<Window>) {
             if let Err(err) = obd.send_command(&mut Command::new_arb(&command)) {
                 do_send_command_output(&window_arc, format!("Response: {}", err));
             }
-    
+
             match obd.get_pid_response() {
                 Ok(response) => {
                     do_send_command_output(
@@ -394,7 +420,6 @@ pub fn listen_run_user_command(window: &Arc<Window>) {
                 }
             }
         }
-
 
         PAUSE_OBD_COUNT.fetch_sub(1, Ordering::Relaxed);
     });
@@ -451,7 +476,10 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                 let make = match vin.get_vehicle_make() {
                     Ok(make) => make,
                     Err(err) => {
-                        println!("failed to resolve vehicle make from vin: '{}'", vin.get_vin());
+                        println!(
+                            "failed to resolve vehicle make from vin: '{}'",
+                            vin.get_vin()
+                        );
                         println!("error: {err}");
                         "??".to_string()
                     }

@@ -925,7 +925,7 @@ impl OBD {
         }
     }
 
-    pub(crate) fn calculate_dynamic_equation(
+    pub fn calculate_dynamic_equation(
         &mut self,
         equation: &str,
         unit: &str,

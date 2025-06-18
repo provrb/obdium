@@ -370,41 +370,57 @@ export function addCustomPIDRow() {
               <input class="pid-value" type="text" placeholder="??"></input>
             </div>
           </div>
-          <div class="pid-button" id="remove-pid">
-            <span style="z-index: 5">REMOVE</span>
-            <div class="btn-hold-fill" id="remove-pid-fill" style="transition: width 0.3s; width: 0%;"></div>
+          <div class="button-row">
+            <div class="pid-button" id="remove-pid">
+              <span style="z-index: 5">REMOVE</span>
+              <div class="btn-hold-fill" id="remove-pid-fill" style="transition: width 0.3s; width: 0%;"></div>
+            </div>
+            <div class="pid-button" id="track-pid">
+              <span style="z-index: 5">TRACK</span>
+              <div class="btn-hold-fill" id="track-pid-fill" style="transition: width 0.3s; width: 0%;"></div>
+            </div>
           </div>
         </div>
       </div>
       `;
 
+  const nameInput = pidGroup.querySelector(".info-row .name");
   const modeInput = pidGroup.querySelector(
     ".pid-column:nth-child(1) .pid-value",
   );
   const pidInput = pidGroup.querySelector(
     ".pid-column:nth-child(2) .pid-value",
   );
-  const unitInput = pidGroup.querySelector(
-    ".pid-column:nth-child(5) .pid-value",
-  );
-  const nameInput = pidGroup.querySelector(".info-row .name");
   const commandDiv = pidGroup.querySelector(
     ".pid-column:nth-child(3) .pid-value",
+  );
+  const equationInput = pidGroup.querySelector(
+    ".pid-column:nth-child(4) .pid-value",
+  );
+  const unitInput = pidGroup.querySelector(
+    ".pid-column:nth-child(5) .pid-value",
   );
 
   function isValidPID() {
     // mode, pid, equation, unit, pid name must all be filled out
     const mode = modeInput.value.trim();
     const pid = pidInput.value.trim();
-    const equation = commandDiv.value.trim();
+    const equation = equationInput.value.trim().toUpperCase();
     const unit = unitInput.value.trim();
     const name = nameInput.value.trim();
 
     return (
       mode.startsWith("$") &&
-      mode.length - 1 == 22 &&
+      mode.length - 1 == 2 &&
       pid &&
       pid.length >= 2 &&
+      equation &&
+      (equation.includes("A") ||
+        equation.includes("B") ||
+        equation.includes("C") ||
+        equation.includes("D") ||
+        equation.includes("E") ||
+        equation.includes("F")) &&
       unit &&
       name
     );
@@ -417,7 +433,28 @@ export function addCustomPIDRow() {
   }
 
   function trackCustomPID() {
+    const modeValue = modeInput.value.trim();
+    const pidValue = pidInput.value.trim();
+    const equationValue = equationInput.value.trim().toUpperCase();
+    const unitValue = unitInput.value.trim();
+    const commandValue = commandDiv.textContent.trim();
+    const nameValue = nameInput.value.trim();
+
+    console.log("track");
+
     // tell the backend to track the new custom pid
+    let customPid = {
+      mode: modeValue,
+      pid: pidValue,
+      unit: unitValue,
+      command: commandValue,
+      equation: equationValue,
+      name: nameValue,
+    };
+
+    emit("track-custom-pid", customPid);
+    trackBtn.disabled = true;
+    trackBtn.style += "cursor: not-allowed;";
   }
 
   modeInput.addEventListener("keydown", (e) => {
@@ -470,6 +507,20 @@ export function addCustomPIDRow() {
       }
     },
     { holdTime: 500 },
+  );
+
+  const trackBtn = pidGroup.querySelector("#track-pid");
+  const trackFill = pidGroup.querySelector("#track-pid-fill");
+
+  btnHoldToActivate(
+    trackBtn,
+    trackFill,
+    () => {
+      if (isValidPID()) {
+        trackCustomPID();
+      }
+    },
+    { holdTime: 200 },
   );
 
   pidList.appendChild(pidGroup);

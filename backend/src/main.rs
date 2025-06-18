@@ -9,8 +9,8 @@ use bridge::events::{
 };
 use obdium::OBD;
 use stats::{
-    critical_frequency_calls, frequent_calls, high_frequency_calls, less_frequent_calls,
-    once_calls, oxygen_sensors,
+    critical_frequency_calls, custom_pid_calls, frequent_calls, high_frequency_calls,
+    less_frequent_calls, once_calls, oxygen_sensors,
 };
 
 use std::{
@@ -23,6 +23,8 @@ use std::{
 };
 use tauri::{async_runtime::spawn, Manager, Window};
 
+use crate::bridge::events::listen_track_custom_pid;
+
 fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     critical_frequency_calls(window, obd);
     high_frequency_calls(window, obd);
@@ -30,6 +32,7 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     less_frequent_calls(window, obd);
     oxygen_sensors(window, obd);
     once_calls(window, obd);
+    custom_pid_calls(window, obd);
 }
 
 fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> Option<OBD> {
@@ -85,6 +88,7 @@ fn main() {
                 }
 
                 listen_send_ports(&window_arc);
+                listen_track_custom_pid(&window_arc);
                 listen_connect_elm(&window_arc);
             });
 

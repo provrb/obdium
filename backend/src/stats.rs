@@ -1,5 +1,5 @@
 use obdium::{scalar::Scalar, BankNumber};
-use obdium::{SensorNumber, Service, OBD, PAUSE_OBD_COUNT};
+use obdium::{Command, SensorNumber, Service, OBD, PAUSE_OBD_COUNT};
 use serde::{Deserialize, Serialize};
 use std::sync::atomic::Ordering;
 use std::{
@@ -8,6 +8,8 @@ use std::{
 };
 use tauri::{async_runtime::spawn, Window};
 use tokio::time;
+
+use crate::bridge::CUSTOM_PIDS_TRACKED;
 
 macro_rules! update {
     ($win:expr, $($name:expr => $val:expr),* $(,)?) => {
@@ -537,6 +539,33 @@ pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
                     );
                 }
                 _ => unreachable!(),
+            }
+        }
+    });
+}
+
+pub fn custom_pid_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+    let window = Arc::clone(window);
+    let obd = Arc::clone(obd);
+    spawn(async move {
+        let mut interval = time::interval(Duration::from_secs(1));
+        loop {
+            interval.tick().await;
+            if PAUSE_OBD_COUNT.load(Ordering::Relaxed) > 0 {
+                continue;
+            }
+
+            {
+                let mut obd = obd.lock().unwrap();
+                let pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
+                for pid in pids.iter() {
+                    let response = obd.query(Command::new_arb(&pid.command));
+                    if let Ok(scalar) =
+                        obd.calculate_dynamic_equation(&pid.equation, &pid.unit, &response)
+                    {
+                        update!(&window, &pid.name => scalar);
+                    }
+                }
             }
         }
     });

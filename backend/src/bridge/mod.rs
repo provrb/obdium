@@ -1,18 +1,18 @@
 pub mod events;
 
-use std::sync::{Arc, Mutex};
-
 use obdium::OBD;
-
-/// Structs that are used as payloads
-/// between frontend and backend.
-use serde::{Deserialize, Serialize};
 use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
 use tauri::{EventHandler, Window};
 
 pub static ACTIVE_OBD: Lazy<Mutex<Option<Arc<Mutex<OBD>>>>> = Lazy::new(|| Mutex::new(None));
-pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventHandler>>> = Lazy::new(|| Mutex::new(None));
-pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventHandler>>> = Lazy::new(|| Mutex::new(None));
+pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
+    Lazy::new(|| Mutex::new(None));
+pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
+    Lazy::new(|| Mutex::new(None));
+pub(crate) static CUSTOM_PIDS_TRACKED: Lazy<Mutex<Vec<CustomPid>>> =
+    Lazy::new(|| Mutex::new(Vec::new()));
 
 pub fn unlisten_events(window: &Arc<Window>) {
     {
@@ -29,6 +29,9 @@ pub fn unlisten_events(window: &Arc<Window>) {
     }
 }
 
+/// Structs that are used as payloads
+/// between frontend and backend.
+
 /// Very brief vehicle information
 /// No detailed information- use VehicleInfoExtended
 /// with the VIN struct for that instead.
@@ -37,6 +40,16 @@ struct VehicleInfo {
     vin: String,
     make: String,
     model: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub(crate) struct CustomPid {
+    pub name: String,
+    pub mode: String,
+    pub pid: String,
+    pub unit: String,
+    pub command: String,
+    pub equation: String,
 }
 
 /// All relevant information about a
