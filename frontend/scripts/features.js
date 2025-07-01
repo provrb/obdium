@@ -504,6 +504,7 @@ export function addCustomPIDRow() {
     () => {
       if (pidGroup) {
         pidGroup.remove();
+        emit("remove-custom-pid", nameInput.value.trim());
       }
     },
     { holdTime: 500 },

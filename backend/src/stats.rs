@@ -558,7 +558,7 @@ pub fn custom_pid_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
             {
                 let mut obd = obd.lock().unwrap();
                 let pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
-                for pid in pids.iter() {
+                for (_, pid) in pids.iter() {
                     let response = obd.query(Command::new_arb(&pid.command));
                     if let Ok(scalar) =
                         obd.calculate_dynamic_equation(&pid.equation, &pid.unit, &response)

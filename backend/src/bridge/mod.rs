@@ -3,7 +3,7 @@ pub mod events;
 use obdium::OBD;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-use std::sync::{Arc, Mutex};
+use std::{collections::HashMap, sync::{Arc, Mutex}};
 use tauri::{EventHandler, Window};
 
 pub static ACTIVE_OBD: Lazy<Mutex<Option<Arc<Mutex<OBD>>>>> = Lazy::new(|| Mutex::new(None));
@@ -11,8 +11,9 @@ pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
     Lazy::new(|| Mutex::new(None));
 pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
     Lazy::new(|| Mutex::new(None));
-pub(crate) static CUSTOM_PIDS_TRACKED: Lazy<Mutex<Vec<CustomPid>>> =
-    Lazy::new(|| Mutex::new(Vec::new()));
+
+pub(crate) static CUSTOM_PIDS_TRACKED: Lazy<Mutex<HashMap<String, CustomPid>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
 
 pub fn unlisten_events(window: &Arc<Window>) {
     {

@@ -66,6 +66,8 @@ pub fn listen_track_custom_pid(window: &Arc<Window>) {
             None => return,
         };
 
+        println!("Request to track custom pid: {payload}");
+
         let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
         let custom_pid: CustomPid = match serde_json::from_str(payload) {
             Ok(p) => p,
@@ -75,8 +77,20 @@ pub fn listen_track_custom_pid(window: &Arc<Window>) {
             }
         };
 
-        println!("Tracking PID {:?}", &custom_pid);
-        pids.push(custom_pid);
+        // println!("Tracking PID {:?}", &custom_pid);
+        pids.insert(custom_pid.name.clone(), custom_pid);
+    });
+
+    window.listen("remove-custom-pid", move |event| {
+        let pid_name = match event.payload() {
+            Some(pid_name) => pid_name,
+            None => return,
+        };
+        
+        println!("Request to remove custom pid: {pid_name}");
+
+        let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
+        pids.remove(pid_name);
     });
 }
 
