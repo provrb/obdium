@@ -21,7 +21,6 @@
   transition: background 0.2s;
   text-transform: uppercase;
   vertical-align: middle;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   user-select: none;
 }
@@ -37,14 +36,12 @@
 
 .btn:hover {
   background-color: #1d1d1d;
-  box-shadow: 0 4px 20px #1d1d1d;
 }
 
 .btn:disabled {
   background-color: #252525;
   color: #aaa;
   cursor: not-allowed;
-  box-shadow: none;
   opacity: 0.6;
 }
 
@@ -101,7 +98,6 @@
   cursor: pointer;
   text-align: left;
   border-radius: 4px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .dropdown-toggle::after {
@@ -121,7 +117,6 @@
   border-radius: 0 0 5px 5px;
   display: none;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .dropdown-menu li {

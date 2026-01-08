@@ -25,6 +25,8 @@ listen("update-card", (event) => {
     return card.textContent.includes(event.payload.name);
   });
 
+  if (window.obdViewPaused) return;
+
   // create card if it doesnt exist
   if (!exists) {
     const container = document.querySelector(".grid");

@@ -7,7 +7,6 @@
 .pid-container:hover .info-row,
 .pid-container:hover .pid-details {
   background-color: #1d1d1d;
-  box-shadow: 0 4px 20px #1d1d1d;
 }
 
 .info-row {
@@ -22,7 +21,6 @@
 
 .info-row:hover {
   background-color: #1d1d1d;
-  box-shadow: 0 4px 20px #1d1d1d;
 }
 
 .info-row .name {
@@ -35,7 +33,6 @@
 .info-row.expanded {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  box-shadow: none;
 }
 
 .info-row.expanded .arrow-icon {
