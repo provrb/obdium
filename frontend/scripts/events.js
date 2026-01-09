@@ -131,7 +131,6 @@ listen("connection-status", async (event) => {
   const protocolDropdown = document.getElementById("protocol-menu");
   const protocolSelected = document.getElementById("protocol-selected");
   const status = document.getElementById("connection-details");
-  console.log(event);
 
   if (event.payload.connected) {
     if (window.connected) return;
@@ -364,9 +363,9 @@ listen("update-readiness-tests", (event) => {
     testRow.className = "info-row";
     testRow.style = "justify-content: space-between;";
     testRow.innerHTML = `
-      <div class="name" id="test-name" style="flex: 2;">TEST: ${test.name.toUpperCase()}</div>
-      <div class="name" id="test-availability" style="flex: 1;">${test.available ? "AVAILABLE" : "UNAVAILABLE"}</div>
-      <div class="name" id="test-completeness" style="flex: 1;">${test.complete ? "COMPLETE" : "INCOMPLETE"}</div>
+      <div class="name" id="test-name" style="flex: 2; font-size: 0.97rem; font-weight: 500; text-transform: uppercase; color: #d4dadf;">TEST: ${test.name}</div>
+      <div class="name" id="test-availability" style="flex: 1; font-weight: 700; color: #f7f3ff;">${test.available ? "SUPPORTED" : "NOT SUPPORTED"}</div>
+      <div class="name" id="test-completeness" style="flex: 1; font-weight: 700; color: #f7f3ff;">${test.complete ? "READY" : "NOT READY"}</div>
     `;
 
     readinessTests.appendChild(testRow);

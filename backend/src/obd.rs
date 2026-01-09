@@ -941,6 +941,20 @@ impl OBD {
 
         // TODO: fix this ugly code.
         let mut context: HashMapContext<DefaultNumericTypes> = HashMapContext::new();
+        let variables = [
+            ("A", response.a_value()),
+            ("B", response.b_value()),
+            ("C", response.c_value()),
+            ("D", response.d_value()),
+            ("E", response.e_value()),
+        ];
+
+        for (variable, value) in variables {
+            if equation.contains(variable) {
+                context.set_value(variable.into(), Value::from_float(value as f64))?;
+            }
+        }
+
         if equation.contains("A") {
             context.set_value("A".into(), Value::from_float(response.a_value() as f64))?;
         }

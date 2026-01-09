@@ -213,7 +213,6 @@ vinExportButton.addEventListener("click", async () => {
   let vinObj = {};
   vinDetails.childNodes.forEach((card) => {
     if (card.nodeType == 1) {
-      console.log(card);
       const key = card
         .querySelector("h3")
         .textContent.replaceAll(" ", "_")
@@ -270,9 +269,7 @@ input.addEventListener("keydown", (e) => {
     }
 
     const command = input.value.slice(2).trim();
-    console.log("command:", command);
     if (command.length > 0) {
-      console.log("send");
       appendTerminalOutput(command);
       emit("terminal-command", command);
       input.value = "> ";

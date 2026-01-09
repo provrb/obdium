@@ -33,7 +33,6 @@ export function clearDtcs() {
 }
 
 export async function exportDtcs(autoSave) {
-  console.log("exporting autoSave?", autoSave);
 
   let totalJSON = [];
   let path = "./dtc_log.json";
@@ -64,7 +63,6 @@ export async function exportDtcs(autoSave) {
     }
   }
 
-  console.log("path:", path);
   await writeFile({ path, contents: JSON.stringify(totalJSON, null, 2) });
 }
 
@@ -221,6 +219,8 @@ export function removeNotification(el) {
 }
 
 export function addNotification(title, desc) {
+  if (window.hideNotifications) return; 
+
   const container = document.getElementById("notification-container");
 
   const notification = document.createElement("div");
@@ -439,8 +439,6 @@ export function addCustomPIDRow() {
     const unitValue = unitInput.value.trim();
     const commandValue = commandDiv.textContent.trim();
     const nameValue = nameInput.value.trim();
-
-    console.log("track");
 
     // tell the backend to track the new custom pid
     let customPid = {

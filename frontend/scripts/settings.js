@@ -1,13 +1,11 @@
 import { connectElm, freezeFrameDisclaimer } from "./features.js";
 const { emit } = window.__TAURI__.event;
 
-function importSettings() {
-  let settings = JSON.parse(localStorage.getItem("userSettings"));
-  if (!settings) {
-    settings = {
+const defaultUserSettings = {
       saveDtcs: false,
       autoCheckCodes: false,
       autoConnect: false,
+      hideNotifications: false,
       connectionConfig: {
         protocol: 0,
         baudRate: "0",
@@ -24,9 +22,11 @@ function importSettings() {
         flowRate: "LitresPerHour",
       },
     };
-  }
 
-  console.log("Importing settings:", settings);
+function importSettings() {
+  let settings = JSON.parse(localStorage.getItem("userSettings"));
+  if (!settings)
+    settings = defaultUserSettings 
 
   if (!settings.connectionConfig) {
     settings.connectionConfig = window.connectionConfig;
@@ -35,7 +35,6 @@ function importSettings() {
   // read from connectionConfig
   // if empty, we cannot connect
   if (settings.autoConnect && !window.connected && settings.connectionConfig) {
-    console.log("Auto-connect");
     connectElm(
       settings.connectionConfig.baudRate,
       settings.connectionConfig.serialPort,
@@ -48,19 +47,20 @@ function importSettings() {
   window.autoCheckCodes = settings.autoCheckCodes;
   window.autoSaveCodes = settings.saveDtcs;
   window.unitPreferences = settings.unitPreferences;
+  window.hideNotifications = settings.hideNotifications;
 
   // show buttons depending on which are toggled
   document.getElementById("save-dtcs").checked = settings.saveDtcs;
   document.getElementById("auto-check-codes").checked = settings.autoCheckCodes;
+  document.getElementById("hide-notifications").checked = settings.hideNotifications;
   document.getElementById("auto-connect").checked = settings.autoConnect;
   document.getElementById("hide-vin").checked = settings.showPartialVin;
   document.getElementById("del-logs").checked = settings.deleteLogsOnExit;
-  console.log("Imported settings:", settings);
+
+  updateUnitConversionDropdowns();
 }
 
 export function saveConnectionConfig() {
-  console.log("Saving connection config!");
-
   let settings = JSON.parse(localStorage.getItem("userSettings"));
   if (!settings) {
     return;
@@ -69,29 +69,19 @@ export function saveConnectionConfig() {
   if (window.connectionConfig) {
     settings.connectionConfig = window.connectionConfig;
     localStorage.setItem("userSettings", JSON.stringify(settings));
-    console.log("Saved new settings:", settings);
   }
 }
 
 export async function saveUnitPreference(unitType, unit) {
   if (!unitType || !window.unitPreferences[unitType]) return;
-
-  if (window.unitPreferences[unitType] == unit) {
-    // already set
-    return;
-  }
-
   window.unitPreferences[unitType] = unit;
-  console.log("Unit type:", unitType, "Unit:", unit);
-  console.log("Unit preferences:", window.unitPreferences);
   emit("set-unit-preferences", window.unitPreferences);
 
   // save setting
   let settings = JSON.parse(localStorage.getItem("userSettings"));
-  if (!settings) return;
+  if (!settings) settings = defaultUserSettings;
 
   settings.unitPreferences = window.unitPreferences;
-
   localStorage.setItem("userSettings", JSON.stringify(settings));
 
   updateUnitConversionDropdowns();
@@ -103,14 +93,12 @@ export async function updateUnitConversionDropdowns() {
     window.unitPreferences,
   )) {
     document.querySelectorAll("#unit-preference").forEach((dropdown) => {
-      console.log(` -> ${dropdown.getAttribute("data-target")}`);
       if (dropdown.getAttribute("data-target") == unitTypeKey) {
         const ul =
           dropdown.nextElementSibling &&
           dropdown.nextElementSibling.classList.contains("dropdown-menu")
             ? dropdown.nextElementSibling
             : null;
-        console.log(dropdown.children);
         if (ul) {
           ul.querySelectorAll("li").forEach((li) => {
             if (li.getAttribute("data-value") === unitValue) {
@@ -126,7 +114,7 @@ export async function updateUnitConversionDropdowns() {
 async function settingChange(event) {
   // get existing settings
   let settings = JSON.parse(localStorage.getItem("userSettings"));
-  if (!settings) return;
+  if (!settings) settings = defaultUserSettings;
 
   // settings to save to localStorage
   // save dtcs
@@ -167,7 +155,6 @@ async function settingChange(event) {
       await new Promise((r) => setTimeout(r, 2000));
       emit("settings-changed", { tId: "replay-responses", checked: false });
       emit("settings-changed", { tId, checked, data: window.logFilePath });
-      document.log("record response: ", checked);
       break;
     case "replay-responses":
       // uncheck record requests
@@ -176,6 +163,10 @@ async function settingChange(event) {
       emit("settings-changed", { tId: "record-responses", checked: false });
       emit("settings-changed", { tId, checked });
       break;
+    case "hide-notifications":
+      settings.hideNotifications = checked;
+      window.hideNotifications = settings.hideNotifications;
+      break;
     case "use-freeze-frame":
       emit("settings-changed", { tId, checked });
       freezeFrameDisclaimer(checked);
@@ -183,7 +174,6 @@ async function settingChange(event) {
   }
 
   localStorage.setItem("userSettings", JSON.stringify(settings));
-  console.log("Saved settings:", settings);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -197,6 +187,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("change", settingChange);
   document
     .getElementById("replay-responses")
+    .addEventListener("change", settingChange);
+  document
+    .getElementById("hide-notifications")
     .addEventListener("change", settingChange);
   document
     .getElementById("save-dtcs")
