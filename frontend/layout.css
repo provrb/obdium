@@ -60,7 +60,6 @@
   font-weight: 700;
   margin-left: 1px;
 }
-
 @keyframes pulse {
   0% {
     transform: scale(1);

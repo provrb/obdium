@@ -49,6 +49,7 @@ h1 {
   gap: 4px;
   margin-top: -12px;
   margin-bottom: 12px;
+  margin-left: 1px;
 }
 
 .text-hint {

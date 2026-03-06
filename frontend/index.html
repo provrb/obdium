@@ -426,19 +426,19 @@
 
       <div id="dashboard" class="screen" style="display: flex">
         <div id="dashboard-header" class="screen-label">OBD OVERVIEW</div>
-
+        <div class="connection-details">MONITOR REAL-TIME VEHICLE OBD VALUES</div>
         <div class="button-row" style="margin-bottom: 20px">
           <div
             class="btn"
             id="obd-pause"
-            style="background-color: #1f1f1f; width: 100px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
             PAUSE
           </div>
           <div
             class="btn"
             id="obd-clear"
-            style="background-color: #1f1f1f; width: 100px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
             CLEAR
           </div>
@@ -449,34 +449,35 @@
 
       <div id="view-dtcs" class="screen" style="display: none">
         <div id="dtc-header" class="screen-label">DIAGNOSTIC TROUBLE CODES</div>
+        <div class="connection-details">VIEW DETAILED DTC CODES, CLEAR CODES, OR EXPORT TO FILE</div>
         <div class="button-row">
           <div
             class="btn"
             id="dtc-scan-button"
-            style="background-color: #1f1f1f; width: 140px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
-            SCAN CODES
+            SCAN
           </div>
           <div
             class="btn"
             id="dtc-clear-button"
             style="
               background-color: #1f1f1f;
-              width: 160px;
+              width: 105px;
               margin-top: -5px;
               position: relative;
               overflow: hidden;
             "
           >
-            <span style="z-index: 5">CLEAR CODES</span>
+            <span style="z-index: 5">CLEAR</span>
             <div class="btn-hold-fill" id="btn-hold-fill"></div>
           </div>
           <div
             class="btn"
             id="dtc-log-file"
-            style="background-color: #1f1f1f; width: 160px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
-            SAVE TO FILE
+           EXPORT 
           </div>
         </div>
 
@@ -491,11 +492,12 @@
 
       <div id="edit" class="screen" style="display: none">
         <div id="pid-list-header" class="screen-label">VIEW PIDS (0)</div>
+        <div class="connection-details">ADD & VIEW SUPPORTED PIDS TO 'OBD OVERVIEW'</div>
         <div class="button-row" style="margin-bottom: 20px">
           <div
             class="btn"
             id="pid-add"
-            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
             ADD PID
           </div>
@@ -511,18 +513,19 @@
         <div id="readiness-tests-header" class="screen-label">
           I/M READINESS TESTS
         </div>
+        <div class="connection-details">VIEW STATUS OF INSPECTION/MAINTENANCE TESTS</div>
         <div class="button-row">
           <button
             id="readiness-test-refresh"
             class="btn"
-            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
             REFRESH
           </button>
           <button
             id="readiness-test-export"
             class="btn"
-            style="background-color: #1f1f1f; width: 120px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 105px; margin-top: -5px"
           >
             EXPORT
           </button>
@@ -536,6 +539,7 @@
 
       <div id="graphs" class="screen" style="display: none">
         <div id="graphs-header" class="screen-label">GRAPHS</div>
+        <div class="connection-details">VISUALIZE VARIOUS OBD DATA OVER TIME</div>
 
         <div class="graphs" style="padding-right: 10px">
           <div
@@ -763,20 +767,21 @@
       </div>
 
       <div id="vin" class="screen" style="display: none">
-        <div id="vin-decoding-header" class="screen-label">DECODING VIN</div>
+        <div id="vin-decoding-header" class="screen-label">VIN DECODING</div>
+        <div class="connection-details">INPUT VIN TO RETRIEVE SPECIFIC VEHICLE DETAILS</div>
         <div class="button-row" style="margin-bottom: 20px">
           <button
             id="vin-export"
             disabled
             class="btn"
-            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 140px; margin-top: -5px"
           >
             EXPORT
           </button>
           <button
             id="vin-decode-start"
             class="btn"
-            style="background-color: #1f1f1f; width: 135px; margin-top: -5px"
+            style="background-color: #1f1f1f; width: 140px; margin-top: -5px"
           >
             DECODE
           </button>
@@ -799,6 +804,7 @@
 
       <div id="settings" class="screen" style="display: none">
         <div id="settings-header" class="screen-label">PREFERENCES</div>
+        <div class="connection-details">CONFIGURE SAVED SETTINGS, OPTIONS, AND PREFERENCES</div>
 
         <div style="display: flex">
           <div>
