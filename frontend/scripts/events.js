@@ -341,14 +341,18 @@ listen("update-serial-ports", (event) => {
   demoModePortOption.dataset.value = "DEMO MODE";
   menu.appendChild(demoModePortOption);
 
-  if (event.payload === "") {
+  if (!event.payload) {
     return;
   }
 
-  const portOption = document.createElement("li");
-  portOption.textContent = event.payload;
-  portOption.dataset.value = event.payload;
-  menu.appendChild(portOption);
+  console.log("received serial ports:", event);
+
+  for (const port of event.payload) {
+    const portOption = document.createElement("li");
+    portOption.textContent = port;
+    portOption.dataset.value = port;
+    menu.appendChild(portOption);
+  }
 });
 
 const readinessTests = document.getElementById("readiness-tests-list");

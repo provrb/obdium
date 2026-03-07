@@ -268,51 +268,58 @@ impl OBD {
         }
     }
 
-    pub fn get_open_serial_port() -> String {
+    pub fn get_open_serial_ports() -> Vec<String> {
+        let mut open_serial_ports = Vec::<String>::new();
         match serialport::available_ports() {
             Ok(ports) => {
-                for port in ports.iter() {
-                    // test each port with a simple AT command
-
-                    if let Ok(mut com) = serialport::new(&port.port_name, 38400)
-                        .timeout(Duration::from_millis(300))
+                ports.iter().for_each(|p| {
+                    let port_name = p.port_name.to_owned();
+                    let Ok(mut con) = serialport::new(&port_name, 38400)
+                        .timeout(Duration::from_millis(320))
                         .open()
-                    {
-                        let _ = com.clear(serialport::ClearBuffer::All);
+                    else {
+                        return;
+                    };
 
-                        if com.write_all(b"ATI\r").is_err() {
-                            continue;
-                        }
+                    let _ = con.clear(serialport::ClearBuffer::All);
+                    if con.write_all(b"ATI\r").is_err() {
+                        return;
+                    }
 
-                        let mut buffer = [0u8; 1];
-                        let mut response = String::new();
-
-                        loop {
-                            match com.read(&mut buffer) {
-                                Ok(1) => {
-                                    let byte = buffer[0];
-                                    response.push(byte as char);
-                                }
-                                Ok(0) => std::thread::sleep(std::time::Duration::from_millis(10)),
-                                Ok(_) => break,
-                                Err(_) => break,
+                    let mut buffer = [0u8; 1];
+                    let mut response = String::new();
+                    loop {
+                        match con.read(&mut buffer) {
+                            Ok(1) => {
+                                let byte = buffer[0];
+                                response.push(byte as char);
                             }
-                        }
-
-                        let as_string = String::from_utf8_lossy(&buffer);
-                        let cleaned = as_string.trim_matches(|c: char| !c.is_ascii_graphic());
-
-                        if cleaned.ends_with('>') || cleaned.contains("ELM") {
-                            return port.port_name.clone();
+                            Ok(0) => std::thread::sleep(Duration::from_millis(10)),
+                            Ok(_) => break,
+                            Err(_) => break,
                         }
                     }
-                }
+
+                    let as_string = String::from_utf8_lossy(&buffer);
+                    let cleaned = as_string.trim_matches(|c: char| !c.is_ascii_graphic());
+
+                    println!(
+                        "- response from serial port: `{}` for port: {}",
+                        cleaned, port_name
+                    );
+
+                    if cleaned.ends_with('>') || cleaned.contains("ELM") {
+                        open_serial_ports.push(port_name);
+                    }
+                });
             }
             Err(err) => {
                 println!("error getting available serial ports: {err}");
             }
         }
-        String::new()
+
+        println!("Ports: {:?}", open_serial_ports);
+        open_serial_ports
     }
 
     pub fn init(&mut self) -> Result<(), Error> {
@@ -417,6 +424,7 @@ impl OBD {
             None => return Err(Error::NoConnection),
         };
 
+        let _ = stream.set_timeout(Duration::from_secs(1));
         let _ = stream.clear(serialport::ClearBuffer::All);
 
         let mut cmd = req.as_bytes();

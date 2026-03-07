@@ -86,7 +86,7 @@ pub fn listen_track_custom_pid(window: &Arc<Window>) {
             Some(pid_name) => pid_name,
             None => return,
         };
-        
+
         println!("Request to remove custom pid: {pid_name}");
 
         let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
@@ -125,7 +125,7 @@ pub fn listen_send_ports(window: &Arc<Window>) {
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("get-serial-ports", move |_| {
         println!("sending serial ports!");
-        let _ = window_arc.emit("update-serial-ports", OBD::get_open_serial_port());
+        let _ = window_arc.emit("update-serial-ports", OBD::get_open_serial_ports());
     });
 }
 
