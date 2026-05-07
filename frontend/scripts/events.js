@@ -384,13 +384,9 @@ listen("update-command-output", (event) => {
 const exportButton = document.getElementById("vin-export");
 
 // show vehicle info if no error
-listen("decode-vin", (event) => {
+listen("decode-vin-result", (event) => {
   const data = event.payload;
   console.log("Decode VIN data:", data);
-
-  if (!data.error_msg) {
-    return;
-  }
 
   addNotification("VIN DECODING", data.error_msg);
 

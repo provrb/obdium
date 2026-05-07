@@ -136,7 +136,7 @@ pub fn listen_decode_vin(window: &WebviewWindow) {
                     ..Default::default()
                 };
 
-                let _ = window_arc.emit("decode-vin", v_info);
+                let _ = window_arc.emit("decode-vin-result", v_info);
                 return;
             }
         };
@@ -199,7 +199,7 @@ pub fn listen_decode_vin(window: &WebviewWindow) {
             vehicle_manufacturer: vin.get_vehicle_manufacturer().unwrap_or("N/A".into()),
         };
 
-        let _ = window_arc.emit("decode-vin", v_info);
+        let _ = window_arc.emit("decode-vin-result", v_info);
     });
 }
 
