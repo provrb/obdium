@@ -7,18 +7,18 @@ use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
 };
-use tauri::{EventHandler, Window};
+use tauri::{EventId, Listener, WebviewWindow};
 
 pub static ACTIVE_OBD: Lazy<Mutex<Option<Arc<Mutex<OBD>>>>> = Lazy::new(|| Mutex::new(None));
-pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
+pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventId>>> =
     Lazy::new(|| Mutex::new(None));
-pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventHandler>>> =
+pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventId>>> =
     Lazy::new(|| Mutex::new(None));
 
 pub(crate) static CUSTOM_PIDS_TRACKED: Lazy<Mutex<HashMap<String, CustomPid>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
 
-pub fn unlisten_events(window: &Arc<Window>) {
+pub fn unlisten_events(window: &Arc<WebviewWindow>) {
     {
         let mut handler = USER_COMMAND_LISTENER.lock().unwrap();
         if let Some(id) = handler.take() {

@@ -21,11 +21,11 @@ use std::{
     thread::sleep,
     time::Duration,
 };
-use tauri::{async_runtime::spawn, Manager, Window};
+use tauri::{Listener, Manager, WebviewWindow, async_runtime::spawn};
 
 use crate::bridge::events::listen_track_custom_pid;
 
-fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+fn track_data(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     critical_frequency_calls(window, obd);
     high_frequency_calls(window, obd);
     frequent_calls(window, obd);
@@ -35,7 +35,7 @@ fn track_data(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     custom_pid_calls(window, obd);
 }
 
-fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> Option<OBD> {
+fn connect_obd(window: &WebviewWindow, port: String, baud_rate: u32, protocol: u8) -> Option<OBD> {
     // Try to connect obd
     let mut obd = OBD::new();
 
@@ -68,8 +68,11 @@ fn connect_obd(window: &Window, port: String, baud_rate: u32, protocol: u8) -> O
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_shell::init())
         .setup(|app| {
-            let window = app.get_window("main").unwrap();
+            let window = app.get_webview_window("main").unwrap();
             let frontend_ready = Arc::new(AtomicBool::new(false));
 
             spawn(async move {

@@ -16,10 +16,11 @@ use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
 use obdium::vin::VIN;
 use obdium::{Command, PAUSE_OBD_COUNT};
+use tauri::{Emitter, Listener};
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use tauri::{async_runtime::spawn, Window};
+use tauri::{async_runtime::spawn, WebviewWindow};
 use tokio::time::sleep;
 
 // "Listen" events
@@ -27,7 +28,7 @@ use tokio::time::sleep;
 // Where the backend "listens" for events from the frontend
 // All listen events are prefixed with 'listen'
 
-pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_send_pids(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
     std::thread::sleep(Duration::from_millis(50));
 
@@ -59,13 +60,9 @@ pub fn listen_send_pids(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn listen_track_custom_pid(window: &Arc<Window>) {
+pub fn listen_track_custom_pid(window: &Arc<WebviewWindow>) {
     window.listen("track-custom-pid", move |event| {
-        let payload = match event.payload() {
-            Some(payload) => payload,
-            None => return,
-        };
-
+        let payload = event.payload();
         println!("Request to track custom pid: {payload}");
 
         let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
@@ -82,11 +79,7 @@ pub fn listen_track_custom_pid(window: &Arc<Window>) {
     });
 
     window.listen("remove-custom-pid", move |event| {
-        let pid_name = match event.payload() {
-            Some(pid_name) => pid_name,
-            None => return,
-        };
-
+        let pid_name = event.payload();
         println!("Request to remove custom pid: {pid_name}");
 
         let mut pids = CUSTOM_PIDS_TRACKED.lock().unwrap();
@@ -94,7 +87,7 @@ pub fn listen_track_custom_pid(window: &Arc<Window>) {
     });
 }
 
-pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_send_readiness_test(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window_arc = Arc::new(window.clone());
     let obd_arc = Arc::clone(obd);
     let window_clone = Arc::clone(&window_arc);
@@ -120,7 +113,7 @@ pub fn listen_send_readiness_test(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     }
 }
 
-pub fn listen_send_ports(window: &Arc<Window>) {
+pub fn listen_send_ports(window: &Arc<WebviewWindow>) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("get-serial-ports", move |_| {
@@ -130,11 +123,11 @@ pub fn listen_send_ports(window: &Arc<Window>) {
 }
 
 // TODO: This is an eye sore.
-pub fn listen_decode_vin(window: &Window) {
+pub fn listen_decode_vin(window: &WebviewWindow) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
     window_clone.listen("decode-vin", move |event| {
-        let vin = match VIN::new(event.payload().unwrap().replace("\"", "")) {
+        let vin = match VIN::new(event.payload().replace("\"", "")) {
             Ok(vin) => vin,
             Err(err) => {
                 // emit error
@@ -210,16 +203,12 @@ pub fn listen_decode_vin(window: &Window) {
     });
 }
 
-pub fn listen_connect_elm(window: &Arc<Window>) {
+pub fn listen_connect_elm(window: &Arc<WebviewWindow>) {
     let window_arc = Arc::new(window.clone());
     let window_clone = Arc::clone(&window_arc);
 
     window_clone.listen("connect-elm", move |event| {
-        let payload = match event.payload() {
-            Some(payload) => payload,
-            None => return,
-        };
-
+        let payload = event.payload();
         let connect_payload: ConnectPaylod = match serde_json::from_str(payload) {
             Ok(p) => p,
             Err(e) => {
@@ -286,7 +275,7 @@ pub fn listen_connect_elm(window: &Arc<Window>) {
     });
 }
 
-pub fn listen_disconnect_elm(window: &Arc<Window>) {
+pub fn listen_disconnect_elm(window: &Arc<WebviewWindow>) {
     let window_arc_for_listen = Arc::clone(&window);
     window_arc_for_listen.listen("disconnect-elm", {
         let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
@@ -318,14 +307,10 @@ pub fn listen_disconnect_elm(window: &Arc<Window>) {
     });
 }
 
-pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_change_obd_settings(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     window.listen("settings-changed", move |event| {
-        let payload = match event.payload() {
-            Some(payload) => payload,
-            None => return,
-        };
-
+        let payload = event.payload();
         let setting: Setting = match serde_json::from_str(payload) {
             Ok(p) => p,
             Err(e) => {
@@ -351,7 +336,7 @@ pub fn listen_change_obd_settings(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn listen_send_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_send_dtcs(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     let window_arc = Arc::clone(window);
     window.listen("get-dtcs", move |_| {
@@ -377,7 +362,7 @@ pub fn listen_send_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn listen_clear_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_clear_dtcs(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     window.listen("clear-dtcs", move |_| {
         let mut obd = obd_arc.lock().unwrap();
@@ -385,7 +370,7 @@ pub fn listen_clear_dtcs(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_send_connection_status(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     let window_arc = Arc::clone(window);
     window.listen("get-connection-status", move |_| {
@@ -394,16 +379,13 @@ pub fn listen_send_connection_status(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>
     });
 }
 
-pub fn listen_run_user_command(window: &Arc<Window>) {
+pub fn listen_run_user_command(window: &Arc<WebviewWindow>) {
     let window_arc = Arc::clone(window);
     let user_command_event = window.listen("terminal-command", move |event| {
         PAUSE_OBD_COUNT.fetch_add(1, Ordering::Relaxed);
         std::thread::sleep(Duration::from_millis(50));
 
-        let command = match event.payload() {
-            Some(command) => command.replace("\"", ""),
-            None => return,
-        };
+        let command = event.payload();
 
         let obd_arc = {
             let active = ACTIVE_OBD.lock().unwrap();
@@ -444,13 +426,10 @@ pub fn listen_run_user_command(window: &Arc<Window>) {
     }
 }
 
-pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn listen_set_unit_preferences(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd_arc = Arc::clone(obd);
     window.listen("set-unit-preferences", move |event| {
-        let payload = match event.payload() {
-            Some(payload) => payload,
-            None => return,
-        };
+        let payload = event.payload();
         println!("Setting unit preference to {}", payload);
 
         let mut obd = obd_arc.lock().unwrap();
@@ -472,11 +451,11 @@ pub fn listen_set_unit_preferences(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) 
 //
 // In this case, the frontend would be listening for these events.
 
-pub fn do_send_command_output(window: &Arc<Window>, msg: String) {
+pub fn do_send_command_output(window: &Arc<WebviewWindow>, msg: String) {
     let _ = window.emit("update-command-output", msg);
 }
 
-pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn do_send_vehicle_details(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let obd = Arc::clone(obd);
     let window = Arc::clone(window);
     spawn(async move {
@@ -528,7 +507,7 @@ pub fn do_send_vehicle_details(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn do_send_connection_status(window: &Window, obd: &OBD, message: String, connected: bool) {
+pub fn do_send_connection_status(window: &WebviewWindow, obd: &OBD, message: String, connected: bool) {
     let port = obd.serial_port_name().unwrap_or_default();
     let baud = obd.serial_port_baud_rate().unwrap_or_default();
     let conn_status = ConnectionStatus {
