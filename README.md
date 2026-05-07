@@ -88,7 +88,7 @@ For any questions about the implementation or logic behind OBDium, feel free to 
 2. **Install Tauri**
 
    ```sh
-   cargo install tauri-cli --version 1.6.5
+   cargo install tauri-cli --version "^2.0.0"
    ```
 
 3. **Clone the repository**
@@ -166,4 +166,4 @@ Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
 - [`frontend/`](/frontend/): Main GUI logic
 
 ## License
-This code has minimal restrictions, such that any distributions are made free-of-cost. See [`LICENSE`](LICENSE) for details.
+This project is licensed under GPL-3.0. See [`LICENSE`](LICENSE) for details.
