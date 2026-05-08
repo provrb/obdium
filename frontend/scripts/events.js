@@ -386,8 +386,6 @@ const exportButton = document.getElementById("vin-export");
 // show vehicle info if no error
 listen("decode-vin-result", (event) => {
   const data = event.payload;
-  console.log("Decode VIN data:", data);
-
   addNotification("VIN DECODING", data.error_msg);
 
   const container = document.getElementById("vin-container");
