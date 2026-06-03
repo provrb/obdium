@@ -268,55 +268,76 @@ impl OBD {
         }
     }
 
-    pub fn get_open_serial_ports() -> Vec<String> {
-        let mut open_serial_ports = Vec::<String>::new();
-        match serialport::available_ports() {
-            Ok(ports) => {
-                ports.iter().for_each(|p| {
-                    let port_name = p.port_name.to_owned();
-                    let Ok(mut con) = serialport::new(&port_name, 38400)
-                        .timeout(Duration::from_millis(320))
-                        .open()
-                    else {
-                        return;
-                    };
-
-                    let _ = con.clear(serialport::ClearBuffer::All);
-                    if con.write_all(b"ATI\r").is_err() {
-                        return;
-                    }
-
-                    let mut buffer = [0u8; 1];
-                    let mut response = String::new();
-                    loop {
-                        match con.read(&mut buffer) {
-                            Ok(1) => {
-                                let byte = buffer[0];
-                                response.push(byte as char);
-                            }
-                            Ok(0) => std::thread::sleep(Duration::from_millis(10)),
-                            Ok(_) => break,
-                            Err(_) => break,
-                        }
-                    }
-
-                    let as_string = String::from_utf8_lossy(&buffer);
-                    let cleaned = as_string.trim_matches(|c: char| !c.is_ascii_graphic());
-
-                    println!(
-                        "- response from serial port: `{}` for port: {}",
-                        cleaned, port_name
-                    );
-
-                    if cleaned.ends_with('>') || cleaned.contains("ELM") {
-                        open_serial_ports.push(port_name);
-                    }
-                });
-            }
+    pub fn get_open_serial_ports() -> Vec<(String, u32)> {
+        let ports = match serialport::available_ports() {
+            Ok(p) => p,
             Err(err) => {
                 println!("error getting available serial ports: {err}");
+                return Vec::new();
             }
-        }
+        };
+        
+        const BAUD_RATES: [u32; 6] = [38400, 9600, 115200, 57600, 230400, 4800];
+        let handles: Vec<_> = ports
+            .into_iter()
+            .map(|port| {
+                std::thread::spawn(move || {
+                    let port_name = port.port_name;
+                    for baud_rate in BAUD_RATES.iter() {
+                        let Ok(mut con) = serialport::new(&port_name, *baud_rate)
+                            .timeout(Duration::from_millis(500))
+                            .open()
+                        else {
+                            continue;
+                        };
+
+                        let _ = con.clear(serialport::ClearBuffer::All);
+
+                        if con.write_all(b"ATZ\r").is_err() {
+                            continue;
+                        }
+
+                        std::thread::sleep(Duration::from_millis(500));
+                        let _ = con.clear(serialport::ClearBuffer::All);
+
+                        if con.write_all(b"ATI\r").is_err() {
+                            continue;
+                        }
+
+                        let mut buffer: [u8; 256] = [0u8; 256];
+                        let mut total_read = 0;
+                        loop {
+                            match con.read(&mut buffer[total_read..]) {
+                                Ok(n) if n > 0 => total_read += n,
+                                Ok(_) => break,
+                                Err(e)
+                                    if e.kind() == std::io::ErrorKind::TimedOut
+                                        || e.kind() == std::io::ErrorKind::WouldBlock =>
+                                {
+                                    break
+                                }
+                                Err(_) => break,
+                            }
+                        }
+
+                        let response = String::from_utf8_lossy(&buffer[..total_read]);
+                        let cleaned = response.trim_matches(|c: char| !c.is_ascii_graphic());
+
+                        println!("- response: `{}` for port: {}", cleaned.escape_debug(), port_name);
+
+                        if cleaned.ends_with('>') || cleaned.contains("ELM") {
+                            return Some((port_name, *baud_rate));
+                        }
+                    }
+                    None
+                })
+            })
+            .collect();
+
+        let open_serial_ports: Vec<(String, u32)> = handles
+            .into_iter()
+            .filter_map(|h| h.join().ok().flatten())
+            .collect();
 
         println!("Ports: {:?}", open_serial_ports);
         open_serial_ports

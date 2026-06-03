@@ -97,6 +97,10 @@ pauseObdButton.addEventListener("click", () => {
 });
 
 dropdowns.forEach((dropdown) => {
+  if (dropdown.id == "baud-rate-dropdown") {
+    return;
+  }
+
   handleDropdown(dropdown, ".dropdown-toggle", ".dropdown-menu");
 });
 
