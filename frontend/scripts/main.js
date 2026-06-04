@@ -97,6 +97,10 @@ pauseObdButton.addEventListener("click", () => {
 });
 
 dropdowns.forEach((dropdown) => {
+  if (dropdown.id == "baud-rate-dropdown") {
+    return;
+  }
+
   handleDropdown(dropdown, ".dropdown-toggle", ".dropdown-menu");
 });
 
@@ -235,18 +239,18 @@ vinExportButton.addEventListener("click", async () => {
   await writeFile({ path, contents: JSON.stringify(vinObj, null, 2) });
 });
 
-appWindow.listen("tauri://close-requested", async () => {
-  // check if delete logs on exit setting is set
-  if (window.deleteLogsOnExit && window.logFilePath) {
-    try {
-      removeFile(window.logFilePath);
-    } catch (err) {
-      console.error("Error when trying to delete log:", err);
-    }
-  }
+// appWindow.listen("tauri://close-requested", async () => {
+//   // check if delete logs on exit setting is set
+//   if (window.deleteLogsOnExit && window.logFilePath) {
+//     try {
+//       removeFile(window.logFilePath);
+//     } catch (err) {
+//       console.error("Error when trying to delete log:", err);
+//     }
+//   }
 
-  await appWindow.close();
-});
+//   await appWindow.close();
+// });
 
 const input = document.getElementById("terminal-input");
 

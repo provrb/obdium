@@ -6,7 +6,8 @@ use std::{
     sync::{Arc, Mutex},
     time::Duration,
 };
-use tauri::{async_runtime::spawn, Window};
+use tauri::async_runtime::spawn;
+use tauri::{Emitter, WebviewWindow};
 use tokio::time;
 
 use crate::bridge::CUSTOM_PIDS_TRACKED;
@@ -26,7 +27,7 @@ struct Card {
     value: f32,
 }
 
-fn update_card<T>(window: &Window, name: T, scalar: Scalar)
+fn update_card<T>(window: &WebviewWindow, name: T, scalar: Scalar)
 where
     T: Into<String> + std::fmt::Debug,
 {
@@ -39,7 +40,7 @@ where
     window.emit("update-card", card).unwrap();
 }
 
-pub fn critical_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn critical_frequency_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
     spawn(async move {
@@ -71,7 +72,7 @@ pub fn critical_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn high_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn high_frequency_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
 
@@ -228,7 +229,7 @@ pub fn high_frequency_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn frequent_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
     spawn(async move {
@@ -278,7 +279,7 @@ pub fn frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn less_frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn less_frequent_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
     spawn(async move {
@@ -418,7 +419,7 @@ pub fn less_frequent_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn oxygen_sensors(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
     spawn(async move {
@@ -544,7 +545,7 @@ pub fn oxygen_sensors(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn custom_pid_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn custom_pid_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);
     spawn(async move {
@@ -571,7 +572,7 @@ pub fn custom_pid_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
     });
 }
 
-pub fn once_calls(window: &Arc<Window>, obd: &Arc<Mutex<OBD>>) {
+pub fn once_calls(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     // Once calls
     let window = Arc::clone(window);
     let obd = Arc::clone(obd);

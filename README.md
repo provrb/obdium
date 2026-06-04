@@ -88,7 +88,7 @@ For any questions about the implementation or logic behind OBDium, feel free to 
 2. **Install Tauri**
 
    ```sh
-   cargo install tauri-cli --version 1.6.5
+   cargo install tauri-cli --version "^2.0.0"
    ```
 
 3. **Clone the repository**
@@ -98,22 +98,30 @@ For any questions about the implementation or logic behind OBDium, feel free to 
    cd obdium
    ```
 
-4. Download SQLite Databases with Git LFS
-  
-   ```sh
-   git lfs fetch
-   ```
+With this you can:
 
-5. **Build the project**
+1. **Build the project**
 
    ```sh
    cargo tauri build
    ```
 
-6. **Find the application**:
+2. **Find the application**:
 
-   - The file built will be located in: `backend/target/release`
-   - MSI and NSIS installers will be located in: `backend/target/release/bundle`
+   - The application binary will be located in: `backend/target/release`
+   - Windows' MSI and NSIS installers will be located in: `backend/target/release/bundle`
+   - Linux bundles will be located in:
+      - `backend/target/release/bundle/deb`
+      - `backend/target/release/bundle/rpm`
+      - `backend/target/release/bundle/appimage`
+
+OR
+
+1. **Run the project in developer mode**
+
+   ```sh
+   cargo tauri dev --no-watch
+   ```
 
 ## Usage
 
@@ -129,14 +137,14 @@ To replay already recorded requests simply:
 
 Data will start popping up and simulate a real vehicle.
 
-### Connecting
+### Connecting to an actual vehicle
 
 1. Run the application
 2. Connect your ELM327 adapter to your vehicles OBD-II port and device.
 3. Turn on your ignition or start your vehicle
 4. Navigate to the **Connection** panel:
-   - Select the OBD-II protocol, serial port, and baud rate to use.
-   - If no serial ports appear, you can click the refresh button to reload serial ports.
+   - Select your serial port. If no serial ports appear, you can click the refresh button to reload and rediscover serial ports.
+   - If you'd like, you can change or leave the `OBD-II Protocol` and `baud rate` options as is.
 5. Click 'Connect'
 
 ### Features
@@ -149,6 +157,7 @@ Data will start popping up and simulate a real vehicle.
   - Resume tracking by clicking on it again at the very bottom of the dashboard.
 - Modify preferences like units, privacy, or startup settings in the **Settings** panel.
 - View an index of all PIDs in the **PID List** panel.
+- Add a custom PID to track in the **PID List** panel.
 
 ## Contributing
 Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
@@ -166,4 +175,4 @@ Please view the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
 - [`frontend/`](/frontend/): Main GUI logic
 
 ## License
-This code has minimal restrictions, such that any distributions are made free-of-cost. See [`LICENSE`](LICENSE) for details.
+This project is licensed under GPL-3.0. See [`LICENSE`](LICENSE) for details.

@@ -330,29 +330,44 @@ listen("update-dtcs", (event) => {
   }
 });
 
-const menu = document.getElementById("serial-port-dropdown-menu");
+const serialPortMenu = document.getElementById("serial-port-dropdown-menu");
 const serialPortSelected = document.getElementById("serial-port-selected");
+const baudRateSelected = document.getElementById("baud-rate-selected");
 
 listen("update-serial-ports", (event) => {
-  menu.innerHTML = "";
+  serialPortMenu.innerHTML = "";
 
-  const demoModePortOption = document.createElement("li");
+  const demoModePortOption = document.createElement("li"); 
   demoModePortOption.textContent = "DEMO MODE";
   demoModePortOption.dataset.value = "DEMO MODE";
-  menu.appendChild(demoModePortOption);
+  serialPortMenu.appendChild(demoModePortOption);
+
+  demoModePortOption.addEventListener("click", () => {
+    baudRateSelected.textContent = "0";
+  })
 
   if (!event.payload) {
     return;
   }
-
+  
   console.log("received serial ports:", event);
 
-  for (const port of event.payload) {
+  for (const [port, baudRate] of event.payload) {
+    // append serial port connect option
     const portOption = document.createElement("li");
     portOption.textContent = port;
     portOption.dataset.value = port;
-    menu.appendChild(portOption);
+    serialPortMenu.appendChild(portOption);
+
+    portOption.addEventListener("click", () => {
+      baudRateSelected.textContent = baudRate;
+    });
   }
+
+  const refreshButton = document.getElementById("refresh-serial-ports");
+  const refreshIcon = refreshButton.querySelector("svg");
+
+  refreshIcon.classList.remove("spinning");
 });
 
 const readinessTests = document.getElementById("readiness-tests-list");
@@ -384,13 +399,8 @@ listen("update-command-output", (event) => {
 const exportButton = document.getElementById("vin-export");
 
 // show vehicle info if no error
-listen("decode-vin", (event) => {
+listen("decode-vin-result", (event) => {
   const data = event.payload;
-
-  if (!data.error_msg) {
-    return;
-  }
-
   addNotification("VIN DECODING", data.error_msg);
 
   const container = document.getElementById("vin-container");
@@ -428,4 +438,12 @@ listen("decode-vin", (event) => {
   }
 
   exportButton.disabled = false;
+});
+
+listen("display-notification", (event) => {
+  const title = event.payload.title;
+  const desc = event.payload.description;
+  console.log(title, desc);
+  
+  addNotification(title, desc);
 });

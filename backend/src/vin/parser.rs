@@ -2,7 +2,7 @@ use sqlite::Connection;
 use std::cell::OnceCell;
 use thiserror::Error;
 
-use crate::vin::{ElementId, VPIC_DB_PATH};
+use crate::vin::{vpic_db_path, ElementId};
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -221,14 +221,16 @@ impl VIN {
 
     pub(crate) fn connect_to_vpic_db(&mut self) -> Result<&Connection, Error> {
         if self.vpic_db_con.is_none() {
-            match Connection::open(VPIC_DB_PATH) {
-                Ok(con) => {
-                    self.vpic_db_con = Some(con);
-                    return self.vpic_connection();
-                }
-                Err(err) => {
-                    println!("error: {err}");
-                    return Err(Error::VPICConnectFailed);
+            if let Some(vpic_db_path) = vpic_db_path() {
+                match Connection::open(vpic_db_path) {
+                    Ok(con) => {
+                        self.vpic_db_con = Some(con);
+                        return self.vpic_connection();
+                    }
+                    Err(err) => {
+                        println!("error: {err}");
+                        return Err(Error::VPICConnectFailed);
+                    }
                 }
             }
         }
