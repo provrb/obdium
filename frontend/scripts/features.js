@@ -219,6 +219,7 @@ export function removeNotification(el) {
 }
 
 export function addNotification(title, desc) {
+  console.log("created notification", title, desc);
   if (window.hideNotifications) return; 
 
   const container = document.getElementById("notification-container");

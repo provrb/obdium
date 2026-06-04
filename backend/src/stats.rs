@@ -1,13 +1,13 @@
 use obdium::{scalar::Scalar, BankNumber};
 use obdium::{Command, SensorNumber, Service, OBD, PAUSE_OBD_COUNT};
 use serde::{Deserialize, Serialize};
-use tauri::{Emitter, WebviewWindow};
 use std::sync::atomic::Ordering;
 use std::{
     sync::{Arc, Mutex},
     time::Duration,
 };
-use tauri::{async_runtime::spawn};
+use tauri::async_runtime::spawn;
+use tauri::{Emitter, WebviewWindow};
 use tokio::time;
 
 use crate::bridge::CUSTOM_PIDS_TRACKED;

@@ -439,3 +439,11 @@ listen("decode-vin-result", (event) => {
 
   exportButton.disabled = false;
 });
+
+listen("display-notification", (event) => {
+  const title = event.payload.title;
+  const desc = event.payload.description;
+  console.log(title, desc);
+  
+  addNotification(title, desc);
+});

@@ -10,10 +10,8 @@ use std::{
 use tauri::{EventId, Listener, WebviewWindow};
 
 pub static ACTIVE_OBD: Lazy<Mutex<Option<Arc<Mutex<OBD>>>>> = Lazy::new(|| Mutex::new(None));
-pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventId>>> =
-    Lazy::new(|| Mutex::new(None));
-pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventId>>> =
-    Lazy::new(|| Mutex::new(None));
+pub static USER_COMMAND_LISTENER: Lazy<Mutex<Option<EventId>>> = Lazy::new(|| Mutex::new(None));
+pub static READINESS_TESTS_LISTENER: Lazy<Mutex<Option<EventId>>> = Lazy::new(|| Mutex::new(None));
 
 pub(crate) static CUSTOM_PIDS_TRACKED: Lazy<Mutex<HashMap<String, CustomPid>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
@@ -54,6 +52,12 @@ pub(crate) struct CustomPid {
     pub unit: String,
     pub command: String,
     pub equation: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub(crate) struct FrontendNotification {
+    pub title: &'static str,
+    pub description: &'static str,
 }
 
 /// All relevant information about a

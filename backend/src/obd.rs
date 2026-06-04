@@ -276,7 +276,7 @@ impl OBD {
                 return Vec::new();
             }
         };
-        
+
         const BAUD_RATES: [u32; 6] = [38400, 9600, 115200, 57600, 230400, 4800];
         let handles: Vec<_> = ports
             .into_iter()
@@ -323,7 +323,11 @@ impl OBD {
                         let response = String::from_utf8_lossy(&buffer[..total_read]);
                         let cleaned = response.trim_matches(|c: char| !c.is_ascii_graphic());
 
-                        println!("- response: `{}` for port: {}", cleaned.escape_debug(), port_name);
+                        println!(
+                            "- response: `{}` for port: {}",
+                            cleaned.escape_debug(),
+                            port_name
+                        );
 
                         if cleaned.ends_with('>') || cleaned.contains("ELM") {
                             return Some((port_name, *baud_rate));

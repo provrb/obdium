@@ -16,11 +16,11 @@ use obdium::dicts::PID_INFOS;
 use obdium::scalar::UnitPreferences;
 use obdium::vin::VIN;
 use obdium::{Command, PAUSE_OBD_COUNT};
-use tauri::{Emitter, Listener};
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tauri::{async_runtime::spawn, WebviewWindow};
+use tauri::{Emitter, Listener};
 use tokio::time::sleep;
 
 // "Listen" events
@@ -507,7 +507,12 @@ pub fn do_send_vehicle_details(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>
     });
 }
 
-pub fn do_send_connection_status(window: &WebviewWindow, obd: &OBD, message: String, connected: bool) {
+pub fn do_send_connection_status(
+    window: &WebviewWindow,
+    obd: &OBD,
+    message: String,
+    connected: bool,
+) {
     let port = obd.serial_port_name().unwrap_or_default();
     let baud = obd.serial_port_baud_rate().unwrap_or_default();
     let conn_status = ConnectionStatus {
