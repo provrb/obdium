@@ -38,12 +38,13 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [Implementation](#implementation-and-logic)
 - [Features](#features)
+- [Implementation](#implementation-and-logic)
+- [Installation](#installation)
 - [Usage](#usage)
-- [License](#license)
-- [Contributing](#contributing)
 - [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Overview
 
