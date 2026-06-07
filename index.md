@@ -5,7 +5,7 @@ permalink: /
 
 # Welcome to OBDium
 
-OBDium is a free, fast, modern, open-source on-board diagnostics (OBD-II) program. This website contains the programs documentaion, and serves as an extensive user manual. **Please note this manual is still being actively worked on. All fields are subject to change.**
+OBDium is a free, fast, modern, open-source on-board diagnostics (OBD-II) program. This website contains the programs documentation, and serves as an extensive user manual. **Please note this manual is still being actively worked on. All fields are subject to change.**
 
 ## Navigate the Documentation:
 - Getting started
