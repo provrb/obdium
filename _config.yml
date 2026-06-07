@@ -52,3 +52,8 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+heading_anchors: true
+aux_links:
+  "View on GitHub":
+    - "https://github.com/provrb/obdium"
