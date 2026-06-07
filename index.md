@@ -1,22 +1,19 @@
 ---
-layout: page
-title: Getting Started
-nav_order: 1
-permalink: /getting-started/
+layout: home
+permalink: /
 ---
 
-# Getting Started with OBDium
+# Welcome to OBDium
 
-Welcome to the user manual for OBDium. Here you will find detailed information on how to use the OBDium software product, from connecting your vehicle to working with advanced diagnostic features.
+OBDium is a free, fast, modern, open-source on-board diagnostics (OBD-II) program. This website contains the programs documentaion, and serves as an extensive user manual. **Please note this manual is still being actively worked on. All fields are subject to change.**
 
-OBDium is designed with the goal of modernizing vehicle diagnostics, making the process simple, fast, and most of all: accesible. By following this manual, you will learn how to navigate the software efficiently and make full use of its features.
+## Navigate the Documentation:
+- Getting started
+- Connecting to your vehicle
+- Reading diagnostic trouble codes (DTCs)
+- Viewing live sensor data
+- Managing custom PIDs
 
-## Manual Overview
-The left sidebar contains all major categories of the software, organized into expandable sections. Each section covers a specific part of OBDium, such as diagnostics, live data, and configuration tools. You can quickly search this manual for anything using the search box at the top of the page. 
-
-
-## Next Steps
-The 'Getting Started' section will walk you through the installation process, connecting, and show you around the app.
-
-- If you have not installed OBDium yet, navigate to [Installing OBDium](/getting_started/installing.html).
-- Or if you have installed the software already, navigate to [First Launch](/getting_started/first_launch.html).
+## Contributing & Issues
+- If you'd like to contribute to OBDium or its documentation, check out the [CONTRIBUTING](https://github.com/provrb/obdium/blob/main/CONTRIBUTING.md) guidelines in the main repository.
+- If you experience any issues, please feel free to create an [Issue](https://github.com/provrb/obdium/issues/new) or submit a [pull request](https://github.com/provrb/obdium/pulls).
