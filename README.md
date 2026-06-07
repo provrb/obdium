@@ -7,6 +7,13 @@
   <img alt="repo-language-count" src="https://img.shields.io/github/languages/count/provrb/obdium?style=flat&color=0080ff">
 </div>
 
+<div align="center">
+  <p>
+    Confused?
+    <a href="https://provrb.github.io/obdium/">Click me to visit OBDium's WIP user manual!</a>
+  </p>
+</div>
+
 ![AppImage](/docs/banner2.jpg)
 
 <details>
