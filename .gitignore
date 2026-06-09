@@ -1,5 +1,6 @@
 /backend/target/
 target/
+/backend/gen/schemas/
 /backend/data/vpic.sqlite
 
 # Logs
