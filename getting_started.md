@@ -18,5 +18,5 @@ The left sidebar contains all major categories of the software, organized into e
 ## Next Steps
 The 'Getting Started' section will walk you through the installation process, connecting, and show you around the app.
 
-- If you have not installed OBDium yet, navigate to [Installing OBDium](/getting_started/installing.html).
-- Or if you have installed the software already, navigate to [First Launch](/getting_started/first_launch.html).
+- If you have not installed OBDium yet, navigate to [Installing OBDium](/obdium/getting_started/installing.html).
+- Or if you have installed the software already, navigate to [First Launch](/obdium/getting_started/first_launch.html).
