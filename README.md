@@ -61,7 +61,7 @@ Our goal with OBDium is to fill a gap in the ecosystem, providing the best free,
 
 ## Features
 
-- **⚠️ View Troube Codes:** Read diagnostic trouble codes, including **Powertrain, Body, Chassis,** and **Network** alongside a description
+- **⚠️ View Trouble Codes:** Read diagnostic trouble codes, including **Powertrain, Body, Chassis,** and **Network** alongside a description
 - **🧠 Live Vehicle Metrics:** Reads and decodes various OBD-II PIDs (engine, fuel, air, exhaust, diagnostics, etc.) with plans for manufacturer specific PIDs soon
 - **🔎 Advanced VIN Decoding:** In-depth VIN decoding using a custom parser and SQLite-backed lookups based off of the NHTSA's VPIC MSSQL database
 - **🧪 I/M Readiness Tests:** Verify that your car's emissions systems are functioning properly for both compression and spark ignition engines.
