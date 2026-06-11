@@ -5,18 +5,18 @@ OBDium deals with raw vehicle diagnostics (e.g Mode $01, $06, $09), hex decoding
 ---
 
 ## Guidelines
+There are two simple guideline for making a commit:
 
-1. **Know the Protocols**  
-   If you're working on anything protocol-related, like parsing responses or decoding monitor data, you should already understand:
-   - SAE J1979 / ISO 15031
-   - OBD-II mode structure
-   - Bit-level interpretation of hex payloads
+### 1. Be knowledgeable
+- If you're working on anything protocol-related, like parsing responses or decoding monitor data, you should already understand:
+  - SAE J1979 / ISO 15031
+  - OBD-II mode structure
+  - Bit-level interpretation of hex payloads
 
-2. **No Trial-and-Error Commits**  
-   If you're trial-and-erroring, your PR will be closed. Incorrect logic can mislead consumers or break core functionality. If you’re unsure, do some quick research. Take some time to understand the area a bit more and come back!
+### 2. Test your feature thoroughly
+- If you're working on anything protocol-related, it is essential that you either thoroughly test your feature using either an ELM327 emulator or real vehicle. Your code will be tested on a real vehicle before being pushed.
 
-3. **Communicate**
-   If you have any questions about an idea, please, feel free to open an [Issue](../../issues).
+Otherwise, if you're working on something not apart of the core logic, like the frontend, a markdown file, or even documenting logic (including the backend), don't hesitate to submit a pull request.
 
 ## To Contribute
 1. Fork the repository
@@ -37,12 +37,6 @@ OBDium deals with raw vehicle diagnostics (e.g Mode $01, $06, $09), hex decoding
 
 - **Clear**  
   Use real commit messages. If something’s not obvious, be sure to explain it.
-
-## What Gets Shut Down Fast
-
-- Blatantly incorrect PRs with no evidence the feature works
-- AI-generated PRs with no understanding
-- Guess and check PRs
 
 ## Where Do I Start?
 There are plenty of great resources to start. The first step is to have a decent understanding of what goes on under the hood. Here are a couple great resources:
