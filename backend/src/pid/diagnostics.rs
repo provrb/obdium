@@ -266,7 +266,7 @@ impl OBD {
         if raw == "44" {
             Ok(())
         } else {
-            Err(Error::DTCClearFailed)
+            Err(Error::DTCClearFailed(raw))
         }
     }
 

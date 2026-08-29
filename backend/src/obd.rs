@@ -1,11 +1,14 @@
+use serialport::ErrorKind::{Io, NoDevice};
 use serialport::SerialPort;
 use sqlite::State;
+use tauri_plugin_dialog::MessageDialogResult::No;
 use std::collections::HashMap;
 use std::fmt;
 use std::io::{Read, Write};
 use std::str::{self, FromStr};
 use std::thread::sleep;
 use std::time::Duration;
+use thiserror::Error;
 
 use crate::cmd::{Command, CommandType};
 use crate::response::Response;
@@ -31,43 +34,31 @@ pub enum SensorNumber {
     Sensor8,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
+    #[error("Failed to establish connection with adapter")]
     ConnectionFailed,
+    #[error("Attempted to perform a read/write action via serial connection, but no serial connection to adapter is active")]
     NoConnection,
 
-    InitFailed,
+    #[error("Failed to initialize connection via adapter sending command: {0}")]
+    InitFailedSendingCommand(String),
+    #[error("Could not initialize connection via adapter - Failed reading response")]
+    InitFailedReadingResponse,
+    #[error("No response containing 'OK' received from adapter while initializing connection")]
+    InitFailedNoOKReceived,
 
+    #[error("Invalid OBD protocol given while trying to connect. Expected number between 0-9, got: {0} ")]
+    InvalidProtocol(u8),
+    #[error("Received invalid or mangled response to command via serial connection")]
     InvalidResponse,
+    #[error("Received response explicitly containing 'NODATA' thus no meaningful data was received")]
     NoData,
-    DTCClearFailed,
+    #[error("No positive response received after sending OBD request to clear DTCs. Expected positive response '44' but got '{0}'")]
+    DTCClearFailed(String),
 
-    ECUUnavailable,
-    ELM327WriteError,
-    ELM327ReadError,
-}
-
-impl Error {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Error::InvalidResponse => "invalid response from ecu.",
-            Error::NoConnection => "no serial connection active.",
-            Error::NoData => "'NO DATA' received from ECU.",
-            Error::ECUUnavailable => "ecu not available.",
-            Error::ELM327WriteError => "error writing through serial connection.",
-            Error::ELM327ReadError => "error reading through serial connection.",
-            Error::ConnectionFailed => "failed to establish connection with elm327.",
-            Error::InitFailed => "failed to initialize obd with ecu.",
-            Error::DTCClearFailed => "failed to clear diagnostic trouble codes.",
-        }
-    }
-}
-
-impl fmt::Display for Error {
-    #[inline(always)]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "obd error; {}", self.as_str())
-    }
+    #[error("Error occured during I/O operation via serial communication. Error details (if any): {0}")]
+    AdapterReadWriteError(String)
 }
 
 pub enum Service {
@@ -231,7 +222,7 @@ impl OBD {
                 7 => Command::new_at(b"ATSP7"),
                 8 => Command::new_at(b"ATSP8"),
                 9 => Command::new_at(b"ATSP9"),
-                _ => return Err(Error::InitFailed),
+                _ => return Err(Error::InvalidProtocol(protocol)),
             };
 
             self.send_command(&mut command)?;
@@ -371,8 +362,8 @@ impl OBD {
                 self.get_recorded_response(&command)
             } else {
                 self.send_command(&mut command)
-                    .map_err(|_| Error::InitFailed)?;
-                self.get_at_response().map_err(|_| Error::InitFailed)?
+                    .map_err(|_| Error::InitFailedSendingCommand(command.as_string()))?;
+                self.get_at_response()?
             };
 
             if self.record_requests {
@@ -386,7 +377,7 @@ impl OBD {
                 (_, Some(data)) if data.contains("OK") => {}
                 x => {
                     println!("{:?}", x);
-                    return Err(Error::InitFailed);
+                    return Err(Error::InitFailedNoOKReceived);
                 }
             }
         }
@@ -674,7 +665,14 @@ impl OBD {
         };
 
         port.clear(serialport::ClearBuffer::All)
-            .map_err(|_| Error::ELM327ReadError)?;
+            .map_err(|error| 
+                match error.kind() {
+                    NoDevice => Error::NoConnection,
+                    Io(_) => Error::AdapterReadWriteError(error.description),
+                    _ => Error::AdapterReadWriteError("unknown i/o error".to_string()),
+                } 
+        )?;
+
 
         let mut buffer = [0u8; 1];
         let mut response = String::new();
