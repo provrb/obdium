@@ -31,8 +31,7 @@ pub fn unlisten_events(window: &Arc<WebviewWindow>) {
     }
 }
 
-/// Structs that are used as payloads
-/// between frontend and backend.
+// Structs that are used as payloads between frontend and backend.
 
 /// Very brief vehicle information
 /// No detailed information- use VehicleInfoExtended

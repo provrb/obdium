@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlite::State;
-use std::fmt;
+use std::{default, fmt};
 
 use crate::{
     engine::EngineType,
@@ -85,12 +85,13 @@ impl fmt::Display for AuxiliaryInputStatus {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum TroubleCodeCategory {
     Powertrain,
     Chassis,
     Body,
     Network,
+    #[default]
     Unknown,
 }
 
@@ -113,12 +114,6 @@ impl TroubleCodeCategory {
             TroubleCodeCategory::Network => "Network",
             TroubleCodeCategory::Unknown => "Unknown",
         }
-    }
-}
-
-impl Default for TroubleCodeCategory {
-    fn default() -> Self {
-        Self::Unknown
     }
 }
 

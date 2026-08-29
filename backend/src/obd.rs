@@ -1,9 +1,7 @@
 use serialport::ErrorKind::{Io, NoDevice};
 use serialport::SerialPort;
 use sqlite::State;
-use tauri_plugin_dialog::MessageDialogResult::No;
 use std::collections::HashMap;
-use std::fmt;
 use std::io::{Read, Write};
 use std::str::{self, FromStr};
 use std::thread::sleep;
@@ -763,18 +761,13 @@ impl OBD {
                         payload.extend(bytes[2..2 + length].iter().map(|&s| s.to_string()));
                     }
                 }
-                0x1 => {
-                    // first frame
-
-                    if bytes.len() >= 4 {
-                        payload.extend(bytes[4..].iter().map(|&s| s.to_string()));
-                    }
+                // first frame
+                0x1 if bytes.len() >= 4 => {
+                    payload.extend(bytes[4..].iter().map(|&s| s.to_string()));
                 }
-                0x2 => {
-                    // consecutive frame
-                    if !bytes.is_empty() {
-                        payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
-                    }
+                // consecutive frame
+                0x2 if !bytes.is_empty() => {
+                    payload.extend(bytes[1..].iter().map(|&s| s.to_string()));
                 }
                 _ => {}
             }

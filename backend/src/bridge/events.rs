@@ -46,7 +46,7 @@ pub fn listen_send_pids(window: &Arc<WebviewWindow>, obd: &Arc<Mutex<OBD>>) {
     supported_pids_info
         .iter_mut()
         .for_each(|pid| pid.supported = supported_pids.contains(&&pid.pid.to_string()));
-    supported_pids_info.sort_by(|a, b| b.supported.cmp(&a.supported));
+    supported_pids_info.sort_by_key(|b| std::cmp::Reverse(b.supported));
 
     if supported_pids_info.is_empty() {
         supported_pids_info = PID_INFOS.to_vec();
@@ -276,7 +276,7 @@ pub fn listen_connect_elm(window: &Arc<WebviewWindow>) {
 }
 
 pub fn listen_disconnect_elm(window: &Arc<WebviewWindow>) {
-    let window_arc_for_listen = Arc::clone(&window);
+    let window_arc_for_listen = Arc::clone(window);
     window_arc_for_listen.listen("disconnect-elm", {
         let window_arc_for_listen = Arc::clone(&window_arc_for_listen);
         move |_| {
@@ -394,7 +394,7 @@ pub fn listen_run_user_command(window: &Arc<WebviewWindow>) {
 
         if let Some(obd_arc) = obd_arc {
             let mut obd = obd_arc.lock().unwrap();
-            if let Err(err) = obd.send_command(&mut Command::new_arb(&command)) {
+            if let Err(err) = obd.send_command(&mut Command::new_arb(command)) {
                 do_send_command_output(&window_arc, format!("Response: {}", err));
             }
 

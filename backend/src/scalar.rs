@@ -5,7 +5,7 @@ use std::{
     str::FromStr,
 };
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum Unit {
     Percent,
     Ratio,
@@ -36,6 +36,7 @@ pub enum Unit {
     MiligramsPerStroke,
     PSI,
     Unknown,
+    #[default]
     NoData,
 }
 
@@ -77,12 +78,6 @@ impl FromStr for Unit {
             "ft-lb" => Ok(Unit::FootPounds),
             _ => Err(ParseUnitError),
         }
-    }
-}
-
-impl Default for Unit {
-    fn default() -> Self {
-        Self::NoData
     }
 }
 
