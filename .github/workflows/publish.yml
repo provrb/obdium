@@ -1,4 +1,4 @@
-# https://github.com/marketplace/actions/tauri-build
+# workflow from: https://github.com/marketplace/actions/tauri-build
 
 name: 'publish'
 
