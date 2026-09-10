@@ -58,7 +58,7 @@ jobs:
         target: ${{ matrix.platform.rust_target }}
 
     # The artifacts output can now be used to upload the artifacts
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v7
       with:
         name: artifacts
         path: "${{ join(fromJSON(steps.tauri_build.outputs.artifacts), '\n') }}"
