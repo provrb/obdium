@@ -244,24 +244,30 @@ impl OBD {
     }
 
     pub fn get_permanant_trouble_codes(&mut self) -> Vec<TroubleCode> {
-        if let Err(err) = self.send_command(&mut Command::new_svc(b"0A")) {
-            println!("when getting dtc6: {err}");
-            return Vec::new();
-        }
-
-        let mut raw_response = self.read_iso_tp_response().join("");
-        OBD::decode_trouble_codes(&mut raw_response)
+        self.scan_module_codes(true)
     }
 
     pub fn clear_trouble_codes(&mut self) -> Result<(), Error> {
-        let response = self.query(Command::new_svc(b"04"));
-        let raw = response.formatted_response.unwrap_or_default();
-
-        // positive response
-        if raw == "44" {
+        let headers = ["7E0", "7E1", "7E2", "7DF"];
+        let mut accepted = false;
+        let mut last = String::new();
+        for header in headers {
+            let _ = self.query(Command::new_arb(&format!("ATSH{header}")));
+            let response = self.query(Command::new_arb("04"));
+            let raw = response.raw_response().unwrap_or_default();
+            println!("{header} clear mode 04: {}", raw.escape_debug());
+            last = raw.replace('\r', " ").replace('\n', " ");
+            if raw.replace(' ', "").contains("44") {
+                accepted = true;
+            }
+            let uds = self.query(Command::new_arb("14FFFFFF"));
+            println!("{header} clear mode 14: {}", uds.raw_response().unwrap_or_default().escape_debug());
+        }
+        let _ = self.query(Command::new_arb("ATSH7DF"));
+        if accepted {
             Ok(())
         } else {
-            Err(Error::DTCClearFailed(raw))
+            Err(Error::DTCClearFailed(last))
         }
     }
 
@@ -406,19 +412,118 @@ impl OBD {
 
     // Check on this. Might be broken when there are more than 3 DTC's
     pub fn get_trouble_codes(&mut self) -> Vec<TroubleCode> {
-        let n_dtcs = self.get_num_trouble_codes();
-        if n_dtcs == 0 {
-            // no trouble codes
-            return Vec::new();
-        }
+        self.scan_module_codes(false)
+    }
 
-        if let Err(err) = self.send_command(&mut Command::new_svc(b"03")) {
-            println!("when getting dtc1: {err}");
-            return Vec::new();
+    fn scan_module_codes(&mut self, permanent_only: bool) -> Vec<TroubleCode> {
+        let modules = [("DME", "7E0"), ("EGS", "7E1"), ("DSC", "7E2"), ("ABS", "7E3")];
+        let mut codes = Vec::new();
+        for (name, header) in modules {
+            let _ = self.query(Command::new_arb(&format!("ATSH{header}")));
+            let services: &[(&str, bool)] = if permanent_only {
+                &[("0A", true)]
+            } else {
+                &[("03", false), ("07", false), ("0A", true)]
+            };
+            for (service, permanent) in services {
+                let response = self.query(Command::new_arb(service));
+                let raw = response.raw_response().unwrap_or_default();
+                println!("{name} mode {service}: {}", raw.escape_debug());
+                codes.extend(Self::codes_from_sae(name, &raw, *permanent));
+            }
+            if !permanent_only {
+                let response = self.query(Command::new_arb("1902FF"));
+                let raw = response.raw_response().unwrap_or_default();
+                println!("{name} mode 19: {}", raw.escape_debug());
+                codes.extend(Self::codes_from_uds(name, &raw));
+            }
         }
+        let _ = self.query(Command::new_arb("ATSH7DF"));
+        codes.sort_by(|a, b| a.dtc.cmp(&b.dtc));
+        codes.dedup_by(|a, b| a.dtc == b.dtc && a.permanant == b.permanant);
+        codes
+    }
 
-        let mut raw_response = self.read_iso_tp_response().join("");
-        OBD::decode_trouble_codes(&mut raw_response)
+    fn codes_from_sae(module: &str, raw: &str, permanent: bool) -> Vec<TroubleCode> {
+        let bytes = Self::hex_tokens(raw);
+        let mut codes = Vec::new();
+        let mut i = 0;
+        while i + 3 < bytes.len() {
+            if bytes[i] == 0x43 || bytes[i] == 0x47 || bytes[i] == 0x4A {
+                let is_permanent = bytes[i] == 0x4A || permanent;
+                let count = bytes[i + 1] as usize;
+                if count == 0 || count > 16 || i + 2 + count * 2 > bytes.len() {
+                    i += 1;
+                    continue;
+                }
+                let mut at = i + 2;
+                for _ in 0..count {
+                    let left = bytes[at];
+                    let right = bytes[at + 1];
+                    at += 2;
+                    if left == 0 && right == 0 {
+                        continue;
+                    }
+                    let mut code = Self::trouble_code_from_bytes(left, right, is_permanent);
+                    if code.description == "none" {
+                        code.description = format!("{module} emissions");
+                    }
+                    println!("decoded {module}: {} permanent={is_permanent}", code.dtc);
+                    codes.push(code);
+                }
+                i = at;
+                continue;
+            }
+            i += 1;
+        }
+        codes
+    }
+
+    fn codes_from_uds(module: &str, raw: &str) -> Vec<TroubleCode> {
+        let bytes = Self::hex_tokens(raw);
+        let mut codes = Vec::new();
+        let mut i = 0;
+        while i + 4 < bytes.len() {
+            if bytes[i] == 0x59 && bytes[i + 1] == 0x02 {
+                i += 3;
+                while i + 3 < bytes.len() {
+                    if bytes[i] == 0 && bytes[i + 1] == 0 && bytes[i + 2] == 0 {
+                        break;
+                    }
+                    let mut code = Self::trouble_code_from_bytes(bytes[i], bytes[i + 1], false);
+                    code.description = format!("{module} mode 19, status {:02X}", bytes[i + 3]);
+                    println!("decoded {module} mode 19: {}", code.dtc);
+                    codes.push(code);
+                    i += 4;
+                }
+                break;
+            }
+            i += 1;
+        }
+        codes
+    }
+
+    fn trouble_code_from_bytes(left: u8, right: u8, permanent: bool) -> TroubleCode {
+        let category = match left >> 6 {
+            0 => TroubleCodeCategory::Powertrain,
+            1 => TroubleCodeCategory::Chassis,
+            2 => TroubleCodeCategory::Body,
+            _ => TroubleCodeCategory::Network,
+        };
+        let dtc = format!(
+            "{}{:01X}{:01X}{:02X}",
+            category.system_letter(),
+            (left >> 4) & 0x03,
+            left & 0x0F,
+            right
+        );
+        TroubleCode::new(category, dtc, permanent)
+    }
+
+    fn hex_tokens(raw: &str) -> Vec<u8> {
+        raw.split_whitespace()
+            .filter_map(|token| u8::from_str_radix(token, 16).ok())
+            .collect()
     }
 
     pub fn decode_trouble_codes(response: &mut String) -> Vec<TroubleCode> {
